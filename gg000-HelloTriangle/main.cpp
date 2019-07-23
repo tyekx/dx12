@@ -283,23 +283,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	gpsoDesc.NumRenderTargets = 1;
 	gpsoDesc.DepthStencilState.StencilEnable = FALSE;
 	gpsoDesc.DepthStencilState.DepthEnable = FALSE;
-	gpsoDesc.BlendState.RenderTarget[0].BlendEnable = FALSE;
 	gpsoDesc.SampleMask = UINT_MAX;
 	gpsoDesc.SampleDesc.Count = 1;
 	gpsoDesc.SampleDesc.Quality = 0;
 	gpsoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	gpsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
-	gpsoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-	gpsoDesc.RasterizerState.FrontCounterClockwise = FALSE;
-	gpsoDesc.RasterizerState.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
-	gpsoDesc.RasterizerState.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
-	gpsoDesc.RasterizerState.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
-	gpsoDesc.RasterizerState.DepthClipEnable = TRUE;
-	gpsoDesc.RasterizerState.MultisampleEnable = FALSE;
-	gpsoDesc.RasterizerState.AntialiasedLineEnable = FALSE;
-	gpsoDesc.RasterizerState.ForcedSampleCount = 0;
-	gpsoDesc.RasterizerState.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+	gpsoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+	gpsoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 
 	gpsoDesc.VS.pShaderBytecode = vsByteCode->GetBufferPointer();
 	gpsoDesc.VS.BytecodeLength = vsByteCode->GetBufferSize();
@@ -368,6 +358,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	}
 
 	commandList->Close();
+
+	const UINT64 fv = fenceValue;
+	DX_API("Failed to signal from command queue")
+		commandQueue->Signal(fence.Get(), fv);
+
+	fenceValue++;
+
+	if(fence->GetCompletedValue() < fv) {
+		DX_API("Failed to sign up for event completion")
+			fence->SetEventOnCompletion(fv, fenceEvent);
+		WaitForSingleObject(fenceEvent, INFINITE);
+	}
+
+	frameIndex = swapChain->GetCurrentBackBufferIndex();
 
 	while(winMessage.message != WM_QUIT) {
 		if(PeekMessage(&winMessage, NULL, 0, 0, PM_REMOVE)) {
