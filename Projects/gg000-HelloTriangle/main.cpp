@@ -1,11 +1,20 @@
 #include "App.h"
 
+App * app;
+
 LRESULT CALLBACK WindowProcess(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam) {
 	switch(message) {
 	case WM_DESTROY:
-		// adds a WM_QUIT message to the message queue
+		app->Destroy();
 		PostQuitMessage(0);
 		return 0;
+	case WM_SIZE:
+		int height = HIWORD(lParam);
+		int width = LOWORD(lParam);
+		if(app != nullptr) {
+			app->Resize(width, height);
+		}
+		break;
 	}
 
 	return DefWindowProc(windowHandle, message, wParam, lParam);
@@ -145,21 +154,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		dxgiFactory->MakeWindowAssociation(windowHandle, DXGI_MWA_NO_ALT_ENTER);
 
 
-	App app;
-	app.SetDevice(device);
-	app.SetCommandQueue(commandQueue);
-	app.SetSwapChain(swapChain);
-
-	app.CreateSwapChainResources();
-	app.CreateResources();
-	app.LoadAssets();
+	app = new App{};
+	app->SetDevice(device);
+	app->SetCommandQueue(commandQueue);
+	app->SetSwapChain(swapChain);
+	
+	app->CreateSwapChainResources();
+	app->CreateResources();
+	app->LoadAssets();
 
 	while(winMessage.message != WM_QUIT) {
 		if(PeekMessage(&winMessage, NULL, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&winMessage);
 			DispatchMessage(&winMessage);
 		} else {
-			app.Render();
+			app->Render();
 		}
 	}
 

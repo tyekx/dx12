@@ -51,6 +51,7 @@ protected:
 	com_ptr<ID3D12CommandAllocator> commandAllocator;
 	com_ptr<ID3D12Resource> renderTargets[BACKBUFFER_DEPTH];
 
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 	unsigned int rtvDescriptorHandleIncrementSize;
 
 	// Graphics Pipeline State Object
@@ -116,7 +117,6 @@ public:
 		PopulateCommandList();
 
 		// Execute
-
 		ID3D12CommandList * cLists[] = { commandList.Get() };
 		commandQueue->ExecuteCommandLists(_countof(cLists), cLists);
 
@@ -124,7 +124,6 @@ public:
 			swapChain->Present(1, 0);
 
 		// Sync
-
 		WaitForPreviousFrame();
 	}
 
@@ -188,30 +187,6 @@ public:
 		DX_API("Failed to create command allocator")
 			device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(commandAllocator.GetAddressOf()));
 
-		// Create Render Target View Descriptor Heap, like a RenderTargetView** on the GPU. A set of pointers.
-
-		D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
-		rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-		rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-		rtvHeapDesc.NumDescriptors = BACKBUFFER_DEPTH;
-		rtvHeapDesc.NodeMask = 0;
-
-		DX_API("Failed to create render target view descriptor heap")
-			device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(rtvDescriptorHeap.GetAddressOf()));
-
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-		rtvDescriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
-		// Create Render Target Views
-
-		for(unsigned int i = 0; i < BACKBUFFER_DEPTH; ++i) {
-			DX_API("Failed to get swap chain buffer")
-				swapChain->GetBuffer(i, IID_PPV_ARGS(renderTargets[i].GetAddressOf()));
-
-			device->CreateRenderTargetView(renderTargets[i].Get(), nullptr, rtvHandle);
-
-			rtvHandle.ptr += rtvDescriptorHandleIncrementSize;
-		}
 
 		// Input Layout
 
@@ -294,8 +269,19 @@ public:
 		WaitForPreviousFrame();
 	}
 
-	virtual void ReleaseResources() {
+	virtual void ReleaseAssets() {
+		vertexBuffer.Reset();
+	}
 
+	virtual void ReleaseResources() {
+		commandList.Reset();
+		gpso.Reset();
+		fence.Reset();
+		commandAllocator.Reset();
+		rootSignature.Reset();
+		commandQueue.Reset();
+		swapChain.Reset();
+		device.Reset();
 	}
 
 	virtual void CreateSwapChainResources() {
@@ -311,10 +297,54 @@ public:
 		scissorRect.top = 0;
 		scissorRect.right = scDesc.BufferDesc.Width;
 		scissorRect.bottom = scDesc.BufferDesc.Height;
+
+		// Create Render Target View Descriptor Heap, like a RenderTargetView** on the GPU. A set of pointers.
+
+		D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
+		rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+		rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+		rtvHeapDesc.NumDescriptors = BACKBUFFER_DEPTH;
+		rtvHeapDesc.NodeMask = 0;
+
+		DX_API("Failed to create render target view descriptor heap")
+			device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(rtvDescriptorHeap.GetAddressOf()));
+
+		rtvHandle = rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+		rtvDescriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+		// Create Render Target Views
+
+		for(unsigned int i = 0; i < BACKBUFFER_DEPTH; ++i) {
+			DX_API("Failed to get swap chain buffer")
+				swapChain->GetBuffer(i, IID_PPV_ARGS(renderTargets[i].GetAddressOf()));
+
+			CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHandle{ rtvHandle };
+			cpuHandle.Offset(i * rtvDescriptorHandleIncrementSize);
+
+			device->CreateRenderTargetView(renderTargets[i].Get(), nullptr, cpuHandle);
+		}
+	}
+
+	void Resize(int w, int h) {
+		WaitForPreviousFrame();
+
+		ReleaseSwapChainResources();
+		DX_API("Failed to resize swap chain")
+			swapChain->ResizeBuffers(BACKBUFFER_DEPTH, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
+		CreateSwapChainResources();
 	}
 
 	virtual void ReleaseSwapChainResources() {
+		for(unsigned int i = 0; i < BACKBUFFER_DEPTH; ++i) {
+			renderTargets[i].Reset();
+		}
+		rtvDescriptorHeap.Reset();
+	}
 
+	virtual void Destroy() {
+		WaitForPreviousFrame();
+		ReleaseSwapChainResources();
+		ReleaseResources();
 	}
 
 	virtual void SetCommandQueue(com_ptr<ID3D12CommandQueue> cQueue) {
