@@ -78,11 +78,8 @@ void GetAdapters(IDXGIFactory6 * dxgiFactory, std::vector<com_ptr<IDXGIAdapter1>
 }
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, LPWSTR command, INT nShowCmd) {
+
 	HWND windowHandle = InitWindow(hInstance);
-
-	ShowWindow(windowHandle, nShowCmd);
-	MSG winMessage = { 0 };
-
 	// DirectX stuff
 	com_ptr<ID3D12Debug> debugController{ nullptr };
 	com_ptr<IDXGIFactory6> dxgiFactory{ nullptr };
@@ -162,6 +159,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	app->CreateSwapChainResources();
 	app->CreateResources();
 	app->LoadAssets();
+
+	ShowWindow(windowHandle, nShowCmd);
+	MSG winMessage = { 0 };
 
 	while(winMessage.message != WM_QUIT) {
 		if(PeekMessage(&winMessage, NULL, 0, 0, PM_REMOVE)) {

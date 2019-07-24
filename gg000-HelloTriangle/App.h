@@ -55,6 +55,8 @@ protected:
 	unsigned int rtvDescriptorHandleIncrementSize;
 
 	// Graphics Pipeline State Object
+	com_ptr<ID3DBlob> vsByteCode;
+	com_ptr<ID3DBlob> psByteCode;
 	com_ptr<ID3D12PipelineState> gpso;
 	com_ptr<ID3D12GraphicsCommandList> commandList{ nullptr };
 
@@ -201,7 +203,6 @@ public:
 
 		// Vertex / Pixel Shaders
 
-		com_ptr<ID3DBlob> vsByteCode;
 		com_ptr<ID3DBlob> vsError;
 		HRESULT cRes = D3DCompile(vertexShaderCode, strlen(vertexShaderCode), "basic vertex shader", nullptr, nullptr, "vs_main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, vsByteCode.GetAddressOf(), vsError.GetAddressOf());
 
@@ -210,8 +211,6 @@ public:
 			std::string err = "Failed to compile vertex shader: " + std::string{ ptr };
 			DX_API(err.c_str()) cRes;
 		}
-
-		com_ptr<ID3DBlob> psByteCode;
 		com_ptr<ID3DBlob> psError;
 
 		cRes = D3DCompile(pixelShaderCode, strlen(pixelShaderCode), "basic pixel shader", nullptr, nullptr, "ps_main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, psByteCode.GetAddressOf(), psError.GetAddressOf());
@@ -275,10 +274,12 @@ public:
 
 	virtual void ReleaseResources() {
 		commandList.Reset();
+		vsByteCode.Reset();
+		psByteCode.Reset();
+		rootSignature.Reset();
 		gpso.Reset();
 		fence.Reset();
 		commandAllocator.Reset();
-		rootSignature.Reset();
 		commandQueue.Reset();
 		swapChain.Reset();
 		device.Reset();
@@ -323,6 +324,8 @@ public:
 
 			device->CreateRenderTargetView(renderTargets[i].Get(), nullptr, cpuHandle);
 		}
+
+		frameIndex = swapChain->GetCurrentBackBufferIndex();
 	}
 
 	void Resize(int w, int h) {
@@ -345,6 +348,7 @@ public:
 		WaitForPreviousFrame();
 		ReleaseSwapChainResources();
 		ReleaseResources();
+		ReleaseAssets();
 	}
 
 	virtual void SetCommandQueue(com_ptr<ID3D12CommandQueue> cQueue) {

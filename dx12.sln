@@ -3,42 +3,26 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gg000-HelloTriangle", "Projects\gg000-HelloTriangle\gg000-HelloTriangle.vcxproj", "{226FA8CD-44EA-46B9-83A4-79EECED4CF3D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Egg", "Egg\Egg.vcxproj", "{C235BD63-6E30-4F13-A0FF-C5D5FCA38558}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Egg", "Projects\Egg\Egg.vcxproj", "{C235BD63-6E30-4F13-A0FF-C5D5FCA38558}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gg000-HelloTriangle", "gg000-HelloTriangle\gg000-HelloTriangle.vcxproj", "{226FA8CD-44EA-46B9-83A4-79EECED4CF3D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gg001-Libraries", "gg001-Libraries\gg001-Libraries.vcxproj", "{21F31DA3-6E9E-4F34-B228-64D1164E2D1D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gg001-Libraries", "gg001-Libraries\gg001-Libraries.vcxproj", "{96607F87-0577-4DB9-8BD7-066E92F2EC0F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C235BD63-6E30-4F13-A0FF-C5D5FCA38558} = {C235BD63-6E30-4F13-A0FF-C5D5FCA38558}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{226FA8CD-44EA-46B9-83A4-79EECED4CF3D}.Debug|x64.ActiveCfg = Debug|x64
-		{226FA8CD-44EA-46B9-83A4-79EECED4CF3D}.Debug|x64.Build.0 = Debug|x64
-		{226FA8CD-44EA-46B9-83A4-79EECED4CF3D}.Debug|x86.ActiveCfg = Debug|x64
-		{226FA8CD-44EA-46B9-83A4-79EECED4CF3D}.Release|x64.ActiveCfg = Debug|x64
-		{226FA8CD-44EA-46B9-83A4-79EECED4CF3D}.Release|x64.Build.0 = Debug|x64
-		{226FA8CD-44EA-46B9-83A4-79EECED4CF3D}.Release|x86.ActiveCfg = Debug|x64
-		{226FA8CD-44EA-46B9-83A4-79EECED4CF3D}.Release|x86.Build.0 = Debug|x64
 		{C235BD63-6E30-4F13-A0FF-C5D5FCA38558}.Debug|x64.ActiveCfg = Debug|x64
 		{C235BD63-6E30-4F13-A0FF-C5D5FCA38558}.Debug|x64.Build.0 = Debug|x64
-		{C235BD63-6E30-4F13-A0FF-C5D5FCA38558}.Debug|x86.ActiveCfg = Debug|x64
-		{C235BD63-6E30-4F13-A0FF-C5D5FCA38558}.Release|x64.ActiveCfg = Debug|x64
-		{C235BD63-6E30-4F13-A0FF-C5D5FCA38558}.Release|x64.Build.0 = Debug|x64
-		{C235BD63-6E30-4F13-A0FF-C5D5FCA38558}.Release|x86.ActiveCfg = Debug|x64
-		{C235BD63-6E30-4F13-A0FF-C5D5FCA38558}.Release|x86.Build.0 = Debug|x64
-		{21F31DA3-6E9E-4F34-B228-64D1164E2D1D}.Debug|x64.ActiveCfg = Debug|x64
-		{21F31DA3-6E9E-4F34-B228-64D1164E2D1D}.Debug|x64.Build.0 = Debug|x64
-		{21F31DA3-6E9E-4F34-B228-64D1164E2D1D}.Debug|x86.ActiveCfg = Debug|Win32
-		{21F31DA3-6E9E-4F34-B228-64D1164E2D1D}.Debug|x86.Build.0 = Debug|Win32
-		{21F31DA3-6E9E-4F34-B228-64D1164E2D1D}.Release|x64.ActiveCfg = Release|x64
-		{21F31DA3-6E9E-4F34-B228-64D1164E2D1D}.Release|x64.Build.0 = Release|x64
-		{21F31DA3-6E9E-4F34-B228-64D1164E2D1D}.Release|x86.ActiveCfg = Release|Win32
-		{21F31DA3-6E9E-4F34-B228-64D1164E2D1D}.Release|x86.Build.0 = Release|Win32
+		{226FA8CD-44EA-46B9-83A4-79EECED4CF3D}.Debug|x64.ActiveCfg = Debug|x64
+		{226FA8CD-44EA-46B9-83A4-79EECED4CF3D}.Debug|x64.Build.0 = Debug|x64
+		{96607F87-0577-4DB9-8BD7-066E92F2EC0F}.Debug|x64.ActiveCfg = Debug|x64
+		{96607F87-0577-4DB9-8BD7-066E92F2EC0F}.Debug|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
