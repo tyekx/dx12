@@ -11,6 +11,8 @@
 template<typename T>
 using com_ptr = Microsoft::WRL::ComPtr<T>;
 
+using DxgiFactory = IDXGIFactory6;
+
 namespace Egg {
 
 	namespace Internal {

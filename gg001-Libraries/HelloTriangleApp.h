@@ -2,7 +2,7 @@
 
 #include <Egg/App.h>
 #include <Egg/Shader.h>
-#include <Egg/PSOManager.h>
+#include <Egg/PsoManager.h>
 #include <memory>
 
 using namespace Egg;
@@ -13,19 +13,18 @@ protected:
 	com_ptr<ID3D12CommandAllocator> commandAllocator;
 
 	// Graphics Pipeline State Object
-	com_ptr<ID3D12PipelineState> gpso;
+	com_ptr<ID3D12PipelineState> basicPso;
 	com_ptr<ID3D12GraphicsCommandList> commandList;
 
 	// Asset Data
 	com_ptr<ID3D12Resource> vertexBuffer;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 
-	std::unique_ptr<PSOManager> psoManager;
-
+	std::unique_ptr<PsoManager> psoManager;
 
 	void PopulateCommandList() {
 		commandAllocator->Reset();
-		commandList->Reset(commandAllocator.Get(), gpso.Get());
+		commandList->Reset(commandAllocator.Get(), basicPso.Get());
 
 		commandList->SetGraphicsRootSignature(rootSignature.Get());
 		commandList->RSSetViewports(1, &viewPort);
@@ -67,6 +66,10 @@ protected:
 
 
 public:
+	virtual void Update(double T, double dt) override {
+
+	}
+
 	virtual void Render() override {
 		PopulateCommandList();
 
@@ -90,9 +93,9 @@ public:
 		};
 
 		Vertex triangleVertices[] = {
-			{ {  0.0f   ,  0.85f  , 0.0f }, { 1.0f, 0.0f, 0.0f } },
-			{ {  0.7071f, -0.8571f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
-			{ { -0.7071f, -0.8571f, 0.0f }, { 0.0f, 0.0f, 1.0f } }
+			{ {  0.0f   ,  1.0f   , 0.5f }, { 1.0f, 0.0f, 0.0f } },
+			{ {  0.866025f , -0.5f , 0.5f }, { 0.0f, 1.0f, 0.0f } },
+			{ { -0.866025f , -0.5f , 0.5f }, { 0.0f, 0.0f, 1.0f } }
 		};
 
 		unsigned int vertexBufferSize = sizeof(triangleVertices);
@@ -120,7 +123,7 @@ public:
 
 	virtual void CreateResources() override {
 		App::CreateResources();
-		psoManager.reset(new PSOManager{ device });
+		psoManager.reset(new PsoManager{ device });
 
 		// Create Root Signature
 
@@ -156,7 +159,7 @@ public:
 		Shader vertexShader = Shader::LoadCSO("Shaders/DefaultVS.cso");
 		Shader pixelShader = Shader::LoadCSO("Shaders/DefaultPS.cso");
 
-		gpso = psoManager->Add(rootSignature.Get(), inputLayout, vertexShader.GetByteCode(), pixelShader.GetByteCode());
+		basicPso = psoManager->Add(rootSignature.Get(), inputLayout, vertexShader.GetByteCode(), pixelShader.GetByteCode());
 
 		// Create Command Allocator
 		DX_API("Failed to create command allocator")
@@ -164,7 +167,7 @@ public:
 
 		// Create Graphics Command List, set the newly created GPSO as its initial state
 		DX_API("Failed to greate graphics command list")
-			device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator.Get(), gpso.Get(), IID_PPV_ARGS(commandList.GetAddressOf()));
+			device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator.Get(), basicPso.Get(), IID_PPV_ARGS(commandList.GetAddressOf()));
 
 		commandList->Close();
 
@@ -180,7 +183,7 @@ public:
 		psoManager.reset(nullptr);
 		commandList.Reset();
 		rootSignature.Reset();
-		gpso.Reset();
+		basicPso.Reset();
 		fence.Reset();
 		commandAllocator.Reset();
 		App::ReleaseResources();

@@ -1,24 +1,116 @@
 #include "HelloTriangleApp.h"
 #include <Egg/Utility.h>
+#include <Egg/Math/Math.h>
+#include <chrono>
  
-__declspec(align(16)) class ConstantBufferData {
-	float x;
+__declspec(align(16)) struct ConstantBufferData {
+	Float4x4 modelTransform;
 };
 
 class HelloConstantBufferApp : public HelloTriangleApp {
 protected:
+	com_ptr<ID3D12RootSignature> cbRootSignature;
 	com_ptr<ID3D12DescriptorHeap> cbvHeap;
 	com_ptr<ID3D12Resource> constantBuffer;
+	com_ptr<ID3D12PipelineState> cbPso;
 	BYTE * cbvDataBegin;
 	ConstantBufferData Data;
 
-	virtual void CreatePso() {
-		
+public:
+	virtual void Update(double T, double dt) override {
+		Data.modelTransform = Float4x4::rotation(Float3{ 0.0f, 0.0f, 1.0f }, ((float)T) * 0.5f);
+		//Data.modelTransform *= Float4x4::translation(Float3(0.0f, -0.25f, 0.0f));
+		Data.modelTransform *= Float4x4::proj(2.25f, aspectRatio, 0.1f, 1.0f);
+		memcpy(cbvDataBegin, &Data, sizeof(ConstantBufferData));
 	}
 
-public:
+	void PopulateCommandList() {
+		commandAllocator->Reset();
+		commandList->Reset(commandAllocator.Get(), cbPso.Get());
+
+		commandList->SetGraphicsRootSignature(cbRootSignature.Get());
+		commandList->RSSetViewports(1, &viewPort);
+		commandList->RSSetScissorRects(1, &scissorRect);
+
+		commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+
+		CD3DX12_CPU_DESCRIPTOR_HANDLE rHandle(rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), frameIndex, rtvDescriptorHandleIncrementSize);
+		commandList->OMSetRenderTargets(1, &rHandle, FALSE, nullptr);
+
+		const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+		commandList->ClearRenderTargetView(rHandle, clearColor, 0, nullptr);
+
+		commandList->SetDescriptorHeaps(1, cbvHeap.GetAddressOf());
+		commandList->SetGraphicsRootDescriptorTable(0, cbvHeap->GetGPUDescriptorHandleForHeapStart());
+
+		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
+		commandList->DrawInstanced(3, 1, 0, 0);
+
+		commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+
+		DX_API("Failed to close command list")
+			commandList->Close();
+	}
+
+	virtual void Render() override {
+		PopulateCommandList();
+
+		// Execute
+		ID3D12CommandList * cLists[] = { commandList.Get() };
+		commandQueue->ExecuteCommandLists(_countof(cLists), cLists);
+
+		DX_API("Failed to present swap chain")
+			swapChain->Present(1, 0);
+
+		WaitForPreviousFrame();
+	}
+
 	virtual void CreateResources() override {
 		HelloTriangleApp::CreateResources();
+
+		CD3DX12_DESCRIPTOR_RANGE cbvTable;
+		cbvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+
+		CD3DX12_ROOT_PARAMETER rsRootParams[1];
+		rsRootParams[0].InitAsDescriptorTable(1, &cbvTable);
+
+		// Create Root Signature
+
+		D3D12_ROOT_SIGNATURE_DESC rootDesc = { 0 };
+		rootDesc.NumParameters = _countof(rsRootParams);
+		rootDesc.pParameters = rsRootParams;
+		rootDesc.NumStaticSamplers = 0;
+		rootDesc.pStaticSamplers = nullptr;
+		rootDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+		com_ptr<ID3DBlob> signature;
+		com_ptr<ID3DBlob> error;
+
+		DX_API("Failed to serialize root signature")
+			D3D12SerializeRootSignature(&rootDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, signature.GetAddressOf(), error.GetAddressOf());
+
+		DX_API("Failed to create root signature")
+			device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(cbRootSignature.GetAddressOf()));
+
+
+		// Input Layout
+
+		D3D12_INPUT_ELEMENT_DESC inputDesc[] = {
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+			{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+		};
+
+		D3D12_INPUT_LAYOUT_DESC inputLayout;
+		inputLayout.NumElements = _countof(inputDesc);
+		inputLayout.pInputElementDescs = inputDesc;
+
+		// Vertex / Pixel Shaders
+
+		Shader vertexShader = Shader::LoadCSO("Shaders/cbBasicVS.cso");
+		Shader pixelShader = Shader::LoadCSO("Shaders/DefaultPS.cso");
+
+		cbPso = psoManager->Add(cbRootSignature.Get(), inputLayout, vertexShader.GetByteCode(), pixelShader.GetByteCode());
 
 		D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc = {};
 		cbvHeapDesc.NumDescriptors = 1;
@@ -47,6 +139,7 @@ public:
 		DX_API("Failed to map constant buffer")
 			constantBuffer->Map(0, &readRange, reinterpret_cast<void**>(&cbvDataBegin));
 	}
+
 
 	virtual void ReleaseResources() override {
 
@@ -104,32 +197,6 @@ HWND InitWindow(HINSTANCE hInstance) {
 	return wnd;
 }
 
-void GetAdapters(IDXGIFactory6 * dxgiFactory, std::vector<com_ptr<IDXGIAdapter1>> & adapters) {
-	HRESULT adapterQueryResult;
-	unsigned int adapterId = 0;
-	OutputDebugStringW(L"Detected Video Adapters:\n");
-	do {
-		com_ptr<IDXGIAdapter1> tempAdapter{ nullptr };
-		adapterQueryResult = dxgiFactory->EnumAdapters1(adapterId, tempAdapter.GetAddressOf());
-
-		if(adapterQueryResult != S_OK && adapterQueryResult != DXGI_ERROR_NOT_FOUND) {
-			ASSERT(false, "Failed to query DXGI adapter");
-		}
-
-		if(tempAdapter != nullptr) {
-			DXGI_ADAPTER_DESC desc;
-			tempAdapter->GetDesc(&desc);
-
-			OutputDebugStringW(L"\t");
-			OutputDebugStringW(desc.Description);
-			OutputDebugStringW(L"\n");
-
-			adapters.push_back(std::move(tempAdapter));
-		}
-
-		adapterId++;
-	} while(adapterQueryResult != DXGI_ERROR_NOT_FOUND);
-}
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, LPWSTR command, INT nShowCmd) {
 
@@ -151,7 +218,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		CreateDXGIFactory1(IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
 
 	std::vector<com_ptr<IDXGIAdapter1>> adapters;
-	GetAdapters(dxgiFactory.Get(), adapters);
+	Egg::Utility::GetAdapters(dxgiFactory.Get(), adapters);
 
 	// select your adapter here, NULL = system default
 	IUnknown * selectedAdapter = (adapters.size() > 0) ? adapters[0].Get() : NULL;
@@ -204,8 +271,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	DX_API("Failed to make window association") // disable ALT+Enter shortcut to full screen mode
 		dxgiFactory->MakeWindowAssociation(windowHandle, DXGI_MWA_NO_ALT_ENTER);
 
-
-	app = new HelloTriangleApp{};
+	app = new HelloConstantBufferApp{};
 	app->SetDevice(device);
 	app->SetCommandQueue(commandQueue);
 	app->SetSwapChain(swapChain);
@@ -217,11 +283,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	ShowWindow(windowHandle, nShowCmd);
 	MSG winMessage = { 0 };
 
+	using clock_t = std::chrono::high_resolution_clock;
+
+	std::chrono::time_point<clock_t> start = clock_t::now();
+	std::chrono::time_point<clock_t> end;
+	double T = 0.0;
+	double dt = 0.0;
 	while(winMessage.message != WM_QUIT) {
 		if(PeekMessage(&winMessage, NULL, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&winMessage);
 			DispatchMessage(&winMessage);
 		} else {
+			end = clock_t::now();
+			dt = std::chrono::duration<double>(end - start).count();
+			T += dt;
+			start = end;
+			
+			app->Update(T, dt);
 			app->Render();
 		}
 	}

@@ -19,6 +19,7 @@ namespace Egg {
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 		com_ptr<ID3D12DescriptorHeap> rtvDescriptorHeap;
 		std::vector<com_ptr<ID3D12Resource>> renderTargets;
+		float aspectRatio;
 
 		// Sync objects
 		com_ptr<ID3D12Fence> fence;
@@ -38,6 +39,8 @@ namespace Egg {
 			viewPort.TopLeftY = 0;
 			viewPort.Width = scDesc.BufferDesc.Width;
 			viewPort.Height = scDesc.BufferDesc.Height;
+
+			aspectRatio = viewPort.Width / (float)viewPort.Height;
 
 			scissorRect.left = 0;
 			scissorRect.top = 0;
@@ -84,6 +87,7 @@ namespace Egg {
 		}
 
 		virtual void Render() = 0;
+		virtual void Update(double T, double dt) = 0;
 
 		virtual void LoadAssets() { }
 

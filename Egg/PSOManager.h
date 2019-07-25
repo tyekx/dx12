@@ -4,7 +4,7 @@
 
 namespace Egg {
 
-	class PSOManager {
+	class PsoManager {
 		com_ptr<ID3D12Device> device;
 		std::vector<D3D12_GRAPHICS_PIPELINE_STATE_DESC> gpsoDescs;
 		std::vector< com_ptr<ID3D12PipelineState> > gpsos;
@@ -143,7 +143,7 @@ namespace Egg {
 		}
 
 	public:
-		PSOManager(com_ptr<ID3D12Device> dev) : device{ dev } { }
+		PsoManager(com_ptr<ID3D12Device> dev) : device{ dev } { }
 
 		com_ptr<ID3D12PipelineState> Add(ID3D12RootSignature * rootSignature, const D3D12_INPUT_LAYOUT_DESC & inputLayout, const D3D12_SHADER_BYTECODE & vertexShader, const D3D12_SHADER_BYTECODE & pixelShader ) {
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC gpsoDesc;
