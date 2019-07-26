@@ -1,29 +1,19 @@
 #pragma once
 
-#include <stdlib.h>
-#include <stdexcept>
-
-#pragma warning( disable : 4201 )
-
-#include "boolswizzle.h"
-#include "bool1.h"
-#include "bool2.h"
-#include "bool3.h"
-#include "bool4.h"
-
-#include "intswizzle.h"
-#include "int1.h"
-#include "int2.h"
-#include "int3.h"
-#include "int4.h"
-
-#include "floatswizzle.h"
-#include "float2swizzle.h"
-#include "float3swizzle.h"
-#include "float4swizzle.h"
-#include "float1.h"
-#include "float2.h"
-#include "float3.h"
-#include "float4.h"
-
-#include "float4x4.h"
+#include "Float1.h"
+#include "Float2.h"
+#include "Float3.h"
+#include "Float4.h"
+#include "Int1.h"
+#include "Int2.h"
+#include "Int3.h"
+#include "Int4.h"
+#include "UInt1.h"
+#include "UInt2.h"
+#include "UInt3.h"
+#include "UInt4.h"
+#include "Bool1.h"
+#include "Bool2.h"
+#include "Bool3.h"
+#include "Bool4.h"
+#include "Float4x4.h"

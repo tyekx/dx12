@@ -1,488 +1,405 @@
 #pragma once
 
-#include <math.h>
+#include "Bool3.h"
+#include "Bool2.h"
 
+namespace Egg {
+    namespace Math {
 
+        class Bool2;
+        class Bool3;
 
-class Bool2;
-class Bool3;
+        class Bool4 {
+        public:
+            union {
+                struct {
+                    bool x;
+                    bool y;
+                    bool z;
+                    bool w;
+                };
 
-class Bool4
-{
-public:
-	union{
-		struct {
-			bool x;
-			bool y;
-			bool z;
-			bool w;
-		};
+                Bool2Swizzle<Bool2, 4, 0, 0> xx;
+                Bool2Swizzle<Bool2, 4, 0, 1> xy;
+                Bool2Swizzle<Bool2, 4, 0, 2> xz;
+                Bool2Swizzle<Bool2, 4, 0, 3> xw;
+                Bool2Swizzle<Bool2, 4, 1, 0> yx;
+                Bool2Swizzle<Bool2, 4, 1, 1> yy;
+                Bool2Swizzle<Bool2, 4, 1, 2> yz;
+                Bool2Swizzle<Bool2, 4, 1, 3> yw;
+                Bool2Swizzle<Bool2, 4, 2, 0> zx;
+                Bool2Swizzle<Bool2, 4, 2, 1> zy;
+                Bool2Swizzle<Bool2, 4, 2, 2> zz;
+                Bool2Swizzle<Bool2, 4, 2, 3> zw;
+                Bool2Swizzle<Bool2, 4, 3, 0> wx;
+                Bool2Swizzle<Bool2, 4, 3, 1> wy;
+                Bool2Swizzle<Bool2, 4, 3, 2> wz;
+                Bool2Swizzle<Bool2, 4, 3, 3> ww;
 
-		bool v[4];
+                Bool3Swizzle<Bool3, 4, 0, 0, 0> xxx;
+                Bool3Swizzle<Bool3, 4, 0, 0, 1> xxy;
+                Bool3Swizzle<Bool3, 4, 0, 0, 2> xxz;
+                Bool3Swizzle<Bool3, 4, 0, 0, 3> xxw;
+                Bool3Swizzle<Bool3, 4, 0, 1, 0> xyx;
+                Bool3Swizzle<Bool3, 4, 0, 1, 1> xyy;
+                Bool3Swizzle<Bool3, 4, 0, 1, 2> xyz;
+                Bool3Swizzle<Bool3, 4, 0, 1, 3> xyw;
+                Bool3Swizzle<Bool3, 4, 0, 2, 0> xzx;
+                Bool3Swizzle<Bool3, 4, 0, 2, 1> xzy;
+                Bool3Swizzle<Bool3, 4, 0, 2, 2> xzz;
+                Bool3Swizzle<Bool3, 4, 0, 2, 3> xzw;
+                Bool3Swizzle<Bool3, 4, 0, 3, 0> xwx;
+                Bool3Swizzle<Bool3, 4, 0, 3, 1> xwy;
+                Bool3Swizzle<Bool3, 4, 0, 3, 2> xwz;
+                Bool3Swizzle<Bool3, 4, 0, 3, 3> xww;
+                Bool3Swizzle<Bool3, 4, 1, 0, 0> yxx;
+                Bool3Swizzle<Bool3, 4, 1, 0, 1> yxy;
+                Bool3Swizzle<Bool3, 4, 1, 0, 2> yxz;
+                Bool3Swizzle<Bool3, 4, 1, 0, 3> yxw;
+                Bool3Swizzle<Bool3, 4, 1, 1, 0> yyx;
+                Bool3Swizzle<Bool3, 4, 1, 1, 1> yyy;
+                Bool3Swizzle<Bool3, 4, 1, 1, 2> yyz;
+                Bool3Swizzle<Bool3, 4, 1, 1, 3> yyw;
+                Bool3Swizzle<Bool3, 4, 1, 2, 0> yzx;
+                Bool3Swizzle<Bool3, 4, 1, 2, 1> yzy;
+                Bool3Swizzle<Bool3, 4, 1, 2, 2> yzz;
+                Bool3Swizzle<Bool3, 4, 1, 2, 3> yzw;
+                Bool3Swizzle<Bool3, 4, 1, 3, 0> ywx;
+                Bool3Swizzle<Bool3, 4, 1, 3, 1> ywy;
+                Bool3Swizzle<Bool3, 4, 1, 3, 2> ywz;
+                Bool3Swizzle<Bool3, 4, 1, 3, 3> yww;
+                Bool3Swizzle<Bool3, 4, 2, 0, 0> zxx;
+                Bool3Swizzle<Bool3, 4, 2, 0, 1> zxy;
+                Bool3Swizzle<Bool3, 4, 2, 0, 2> zxz;
+                Bool3Swizzle<Bool3, 4, 2, 0, 3> zxw;
+                Bool3Swizzle<Bool3, 4, 2, 1, 0> zyx;
+                Bool3Swizzle<Bool3, 4, 2, 1, 1> zyy;
+                Bool3Swizzle<Bool3, 4, 2, 1, 2> zyz;
+                Bool3Swizzle<Bool3, 4, 2, 1, 3> zyw;
+                Bool3Swizzle<Bool3, 4, 2, 2, 0> zzx;
+                Bool3Swizzle<Bool3, 4, 2, 2, 1> zzy;
+                Bool3Swizzle<Bool3, 4, 2, 2, 2> zzz;
+                Bool3Swizzle<Bool3, 4, 2, 2, 3> zzw;
+                Bool3Swizzle<Bool3, 4, 2, 3, 0> zwx;
+                Bool3Swizzle<Bool3, 4, 2, 3, 1> zwy;
+                Bool3Swizzle<Bool3, 4, 2, 3, 2> zwz;
+                Bool3Swizzle<Bool3, 4, 2, 3, 3> zww;
+                Bool3Swizzle<Bool3, 4, 3, 0, 0> wxx;
+                Bool3Swizzle<Bool3, 4, 3, 0, 1> wxy;
+                Bool3Swizzle<Bool3, 4, 3, 0, 2> wxz;
+                Bool3Swizzle<Bool3, 4, 3, 0, 3> wxw;
+                Bool3Swizzle<Bool3, 4, 3, 1, 0> wyx;
+                Bool3Swizzle<Bool3, 4, 3, 1, 1> wyy;
+                Bool3Swizzle<Bool3, 4, 3, 1, 2> wyz;
+                Bool3Swizzle<Bool3, 4, 3, 1, 3> wyw;
+                Bool3Swizzle<Bool3, 4, 3, 2, 0> wzx;
+                Bool3Swizzle<Bool3, 4, 3, 2, 1> wzy;
+                Bool3Swizzle<Bool3, 4, 3, 2, 2> wzz;
+                Bool3Swizzle<Bool3, 4, 3, 2, 3> wzw;
+                Bool3Swizzle<Bool3, 4, 3, 3, 0> wwx;
+                Bool3Swizzle<Bool3, 4, 3, 3, 1> wwy;
+                Bool3Swizzle<Bool3, 4, 3, 3, 2> wwz;
+                Bool3Swizzle<Bool3, 4, 3, 3, 3> www;
 
-		boolswizzle<4, Bool2, 0, 0> xx;
-		boolswizzle<4, Bool2, 0, 1> xy;
-		boolswizzle<4, Bool2, 0, 2> xz;
-		boolswizzle<4, Bool2, 0, 3> xw;
-		boolswizzle<4, Bool2, 1, 0> yx;
-		boolswizzle<4, Bool2, 1, 1> yy;
-		boolswizzle<4, Bool2, 1, 2> yz;
-		boolswizzle<4, Bool2, 1, 3> yw;
-		boolswizzle<4, Bool2, 2, 0> zx;
-		boolswizzle<4, Bool2, 2, 1> zy;
-		boolswizzle<4, Bool2, 2, 2> zz;
-		boolswizzle<4, Bool2, 2, 3> zw;
-		boolswizzle<4, Bool2, 3, 0> wx;
-		boolswizzle<4, Bool2, 3, 1> wy;
-		boolswizzle<4, Bool2, 3, 2> wz;
-		boolswizzle<4, Bool2, 3, 3> ww;
+                Bool4Swizzle<Bool4, 4, 0, 0, 0, 0> xxxx;
+                Bool4Swizzle<Bool4, 4, 0, 0, 1, 0> xxxy;
+                Bool4Swizzle<Bool4, 4, 0, 0, 2, 0> xxxz;
+                Bool4Swizzle<Bool4, 4, 0, 0, 3, 0> xxxw;
+                Bool4Swizzle<Bool4, 4, 0, 0, 0, 1> xxyx;
+                Bool4Swizzle<Bool4, 4, 0, 0, 1, 1> xxyy;
+                Bool4Swizzle<Bool4, 4, 0, 0, 2, 1> xxyz;
+                Bool4Swizzle<Bool4, 4, 0, 0, 3, 1> xxyw;
+                Bool4Swizzle<Bool4, 4, 0, 0, 0, 2> xxzx;
+                Bool4Swizzle<Bool4, 4, 0, 0, 1, 2> xxzy;
+                Bool4Swizzle<Bool4, 4, 0, 0, 2, 2> xxzz;
+                Bool4Swizzle<Bool4, 4, 0, 0, 3, 2> xxzw;
+                Bool4Swizzle<Bool4, 4, 0, 0, 0, 3> xxwx;
+                Bool4Swizzle<Bool4, 4, 0, 0, 1, 3> xxwy;
+                Bool4Swizzle<Bool4, 4, 0, 0, 2, 3> xxwz;
+                Bool4Swizzle<Bool4, 4, 0, 0, 3, 3> xxww;
+                Bool4Swizzle<Bool4, 4, 0, 1, 0, 0> xyxx;
+                Bool4Swizzle<Bool4, 4, 0, 1, 1, 0> xyxy;
+                Bool4Swizzle<Bool4, 4, 0, 1, 2, 0> xyxz;
+                Bool4Swizzle<Bool4, 4, 0, 1, 3, 0> xyxw;
+                Bool4Swizzle<Bool4, 4, 0, 1, 0, 1> xyyx;
+                Bool4Swizzle<Bool4, 4, 0, 1, 1, 1> xyyy;
+                Bool4Swizzle<Bool4, 4, 0, 1, 2, 1> xyyz;
+                Bool4Swizzle<Bool4, 4, 0, 1, 3, 1> xyyw;
+                Bool4Swizzle<Bool4, 4, 0, 1, 0, 2> xyzx;
+                Bool4Swizzle<Bool4, 4, 0, 1, 1, 2> xyzy;
+                Bool4Swizzle<Bool4, 4, 0, 1, 2, 2> xyzz;
+                Bool4Swizzle<Bool4, 4, 0, 1, 3, 2> xyzw;
+                Bool4Swizzle<Bool4, 4, 0, 1, 0, 3> xywx;
+                Bool4Swizzle<Bool4, 4, 0, 1, 1, 3> xywy;
+                Bool4Swizzle<Bool4, 4, 0, 1, 2, 3> xywz;
+                Bool4Swizzle<Bool4, 4, 0, 1, 3, 3> xyww;
+                Bool4Swizzle<Bool4, 4, 0, 2, 0, 0> xzxx;
+                Bool4Swizzle<Bool4, 4, 0, 2, 1, 0> xzxy;
+                Bool4Swizzle<Bool4, 4, 0, 2, 2, 0> xzxz;
+                Bool4Swizzle<Bool4, 4, 0, 2, 3, 0> xzxw;
+                Bool4Swizzle<Bool4, 4, 0, 2, 0, 1> xzyx;
+                Bool4Swizzle<Bool4, 4, 0, 2, 1, 1> xzyy;
+                Bool4Swizzle<Bool4, 4, 0, 2, 2, 1> xzyz;
+                Bool4Swizzle<Bool4, 4, 0, 2, 3, 1> xzyw;
+                Bool4Swizzle<Bool4, 4, 0, 2, 0, 2> xzzx;
+                Bool4Swizzle<Bool4, 4, 0, 2, 1, 2> xzzy;
+                Bool4Swizzle<Bool4, 4, 0, 2, 2, 2> xzzz;
+                Bool4Swizzle<Bool4, 4, 0, 2, 3, 2> xzzw;
+                Bool4Swizzle<Bool4, 4, 0, 2, 0, 3> xzwx;
+                Bool4Swizzle<Bool4, 4, 0, 2, 1, 3> xzwy;
+                Bool4Swizzle<Bool4, 4, 0, 2, 2, 3> xzwz;
+                Bool4Swizzle<Bool4, 4, 0, 2, 3, 3> xzww;
+                Bool4Swizzle<Bool4, 4, 0, 3, 0, 0> xwxx;
+                Bool4Swizzle<Bool4, 4, 0, 3, 1, 0> xwxy;
+                Bool4Swizzle<Bool4, 4, 0, 3, 2, 0> xwxz;
+                Bool4Swizzle<Bool4, 4, 0, 3, 3, 0> xwxw;
+                Bool4Swizzle<Bool4, 4, 0, 3, 0, 1> xwyx;
+                Bool4Swizzle<Bool4, 4, 0, 3, 1, 1> xwyy;
+                Bool4Swizzle<Bool4, 4, 0, 3, 2, 1> xwyz;
+                Bool4Swizzle<Bool4, 4, 0, 3, 3, 1> xwyw;
+                Bool4Swizzle<Bool4, 4, 0, 3, 0, 2> xwzx;
+                Bool4Swizzle<Bool4, 4, 0, 3, 1, 2> xwzy;
+                Bool4Swizzle<Bool4, 4, 0, 3, 2, 2> xwzz;
+                Bool4Swizzle<Bool4, 4, 0, 3, 3, 2> xwzw;
+                Bool4Swizzle<Bool4, 4, 0, 3, 0, 3> xwwx;
+                Bool4Swizzle<Bool4, 4, 0, 3, 1, 3> xwwy;
+                Bool4Swizzle<Bool4, 4, 0, 3, 2, 3> xwwz;
+                Bool4Swizzle<Bool4, 4, 0, 3, 3, 3> xwww;
+                Bool4Swizzle<Bool4, 4, 1, 0, 0, 0> yxxx;
+                Bool4Swizzle<Bool4, 4, 1, 0, 1, 0> yxxy;
+                Bool4Swizzle<Bool4, 4, 1, 0, 2, 0> yxxz;
+                Bool4Swizzle<Bool4, 4, 1, 0, 3, 0> yxxw;
+                Bool4Swizzle<Bool4, 4, 1, 0, 0, 1> yxyx;
+                Bool4Swizzle<Bool4, 4, 1, 0, 1, 1> yxyy;
+                Bool4Swizzle<Bool4, 4, 1, 0, 2, 1> yxyz;
+                Bool4Swizzle<Bool4, 4, 1, 0, 3, 1> yxyw;
+                Bool4Swizzle<Bool4, 4, 1, 0, 0, 2> yxzx;
+                Bool4Swizzle<Bool4, 4, 1, 0, 1, 2> yxzy;
+                Bool4Swizzle<Bool4, 4, 1, 0, 2, 2> yxzz;
+                Bool4Swizzle<Bool4, 4, 1, 0, 3, 2> yxzw;
+                Bool4Swizzle<Bool4, 4, 1, 0, 0, 3> yxwx;
+                Bool4Swizzle<Bool4, 4, 1, 0, 1, 3> yxwy;
+                Bool4Swizzle<Bool4, 4, 1, 0, 2, 3> yxwz;
+                Bool4Swizzle<Bool4, 4, 1, 0, 3, 3> yxww;
+                Bool4Swizzle<Bool4, 4, 1, 1, 0, 0> yyxx;
+                Bool4Swizzle<Bool4, 4, 1, 1, 1, 0> yyxy;
+                Bool4Swizzle<Bool4, 4, 1, 1, 2, 0> yyxz;
+                Bool4Swizzle<Bool4, 4, 1, 1, 3, 0> yyxw;
+                Bool4Swizzle<Bool4, 4, 1, 1, 0, 1> yyyx;
+                Bool4Swizzle<Bool4, 4, 1, 1, 1, 1> yyyy;
+                Bool4Swizzle<Bool4, 4, 1, 1, 2, 1> yyyz;
+                Bool4Swizzle<Bool4, 4, 1, 1, 3, 1> yyyw;
+                Bool4Swizzle<Bool4, 4, 1, 1, 0, 2> yyzx;
+                Bool4Swizzle<Bool4, 4, 1, 1, 1, 2> yyzy;
+                Bool4Swizzle<Bool4, 4, 1, 1, 2, 2> yyzz;
+                Bool4Swizzle<Bool4, 4, 1, 1, 3, 2> yyzw;
+                Bool4Swizzle<Bool4, 4, 1, 1, 0, 3> yywx;
+                Bool4Swizzle<Bool4, 4, 1, 1, 1, 3> yywy;
+                Bool4Swizzle<Bool4, 4, 1, 1, 2, 3> yywz;
+                Bool4Swizzle<Bool4, 4, 1, 1, 3, 3> yyww;
+                Bool4Swizzle<Bool4, 4, 1, 2, 0, 0> yzxx;
+                Bool4Swizzle<Bool4, 4, 1, 2, 1, 0> yzxy;
+                Bool4Swizzle<Bool4, 4, 1, 2, 2, 0> yzxz;
+                Bool4Swizzle<Bool4, 4, 1, 2, 3, 0> yzxw;
+                Bool4Swizzle<Bool4, 4, 1, 2, 0, 1> yzyx;
+                Bool4Swizzle<Bool4, 4, 1, 2, 1, 1> yzyy;
+                Bool4Swizzle<Bool4, 4, 1, 2, 2, 1> yzyz;
+                Bool4Swizzle<Bool4, 4, 1, 2, 3, 1> yzyw;
+                Bool4Swizzle<Bool4, 4, 1, 2, 0, 2> yzzx;
+                Bool4Swizzle<Bool4, 4, 1, 2, 1, 2> yzzy;
+                Bool4Swizzle<Bool4, 4, 1, 2, 2, 2> yzzz;
+                Bool4Swizzle<Bool4, 4, 1, 2, 3, 2> yzzw;
+                Bool4Swizzle<Bool4, 4, 1, 2, 0, 3> yzwx;
+                Bool4Swizzle<Bool4, 4, 1, 2, 1, 3> yzwy;
+                Bool4Swizzle<Bool4, 4, 1, 2, 2, 3> yzwz;
+                Bool4Swizzle<Bool4, 4, 1, 2, 3, 3> yzww;
+                Bool4Swizzle<Bool4, 4, 1, 3, 0, 0> ywxx;
+                Bool4Swizzle<Bool4, 4, 1, 3, 1, 0> ywxy;
+                Bool4Swizzle<Bool4, 4, 1, 3, 2, 0> ywxz;
+                Bool4Swizzle<Bool4, 4, 1, 3, 3, 0> ywxw;
+                Bool4Swizzle<Bool4, 4, 1, 3, 0, 1> ywyx;
+                Bool4Swizzle<Bool4, 4, 1, 3, 1, 1> ywyy;
+                Bool4Swizzle<Bool4, 4, 1, 3, 2, 1> ywyz;
+                Bool4Swizzle<Bool4, 4, 1, 3, 3, 1> ywyw;
+                Bool4Swizzle<Bool4, 4, 1, 3, 0, 2> ywzx;
+                Bool4Swizzle<Bool4, 4, 1, 3, 1, 2> ywzy;
+                Bool4Swizzle<Bool4, 4, 1, 3, 2, 2> ywzz;
+                Bool4Swizzle<Bool4, 4, 1, 3, 3, 2> ywzw;
+                Bool4Swizzle<Bool4, 4, 1, 3, 0, 3> ywwx;
+                Bool4Swizzle<Bool4, 4, 1, 3, 1, 3> ywwy;
+                Bool4Swizzle<Bool4, 4, 1, 3, 2, 3> ywwz;
+                Bool4Swizzle<Bool4, 4, 1, 3, 3, 3> ywww;
+                Bool4Swizzle<Bool4, 4, 2, 0, 0, 0> zxxx;
+                Bool4Swizzle<Bool4, 4, 2, 0, 1, 0> zxxy;
+                Bool4Swizzle<Bool4, 4, 2, 0, 2, 0> zxxz;
+                Bool4Swizzle<Bool4, 4, 2, 0, 3, 0> zxxw;
+                Bool4Swizzle<Bool4, 4, 2, 0, 0, 1> zxyx;
+                Bool4Swizzle<Bool4, 4, 2, 0, 1, 1> zxyy;
+                Bool4Swizzle<Bool4, 4, 2, 0, 2, 1> zxyz;
+                Bool4Swizzle<Bool4, 4, 2, 0, 3, 1> zxyw;
+                Bool4Swizzle<Bool4, 4, 2, 0, 0, 2> zxzx;
+                Bool4Swizzle<Bool4, 4, 2, 0, 1, 2> zxzy;
+                Bool4Swizzle<Bool4, 4, 2, 0, 2, 2> zxzz;
+                Bool4Swizzle<Bool4, 4, 2, 0, 3, 2> zxzw;
+                Bool4Swizzle<Bool4, 4, 2, 0, 0, 3> zxwx;
+                Bool4Swizzle<Bool4, 4, 2, 0, 1, 3> zxwy;
+                Bool4Swizzle<Bool4, 4, 2, 0, 2, 3> zxwz;
+                Bool4Swizzle<Bool4, 4, 2, 0, 3, 3> zxww;
+                Bool4Swizzle<Bool4, 4, 2, 1, 0, 0> zyxx;
+                Bool4Swizzle<Bool4, 4, 2, 1, 1, 0> zyxy;
+                Bool4Swizzle<Bool4, 4, 2, 1, 2, 0> zyxz;
+                Bool4Swizzle<Bool4, 4, 2, 1, 3, 0> zyxw;
+                Bool4Swizzle<Bool4, 4, 2, 1, 0, 1> zyyx;
+                Bool4Swizzle<Bool4, 4, 2, 1, 1, 1> zyyy;
+                Bool4Swizzle<Bool4, 4, 2, 1, 2, 1> zyyz;
+                Bool4Swizzle<Bool4, 4, 2, 1, 3, 1> zyyw;
+                Bool4Swizzle<Bool4, 4, 2, 1, 0, 2> zyzx;
+                Bool4Swizzle<Bool4, 4, 2, 1, 1, 2> zyzy;
+                Bool4Swizzle<Bool4, 4, 2, 1, 2, 2> zyzz;
+                Bool4Swizzle<Bool4, 4, 2, 1, 3, 2> zyzw;
+                Bool4Swizzle<Bool4, 4, 2, 1, 0, 3> zywx;
+                Bool4Swizzle<Bool4, 4, 2, 1, 1, 3> zywy;
+                Bool4Swizzle<Bool4, 4, 2, 1, 2, 3> zywz;
+                Bool4Swizzle<Bool4, 4, 2, 1, 3, 3> zyww;
+                Bool4Swizzle<Bool4, 4, 2, 2, 0, 0> zzxx;
+                Bool4Swizzle<Bool4, 4, 2, 2, 1, 0> zzxy;
+                Bool4Swizzle<Bool4, 4, 2, 2, 2, 0> zzxz;
+                Bool4Swizzle<Bool4, 4, 2, 2, 3, 0> zzxw;
+                Bool4Swizzle<Bool4, 4, 2, 2, 0, 1> zzyx;
+                Bool4Swizzle<Bool4, 4, 2, 2, 1, 1> zzyy;
+                Bool4Swizzle<Bool4, 4, 2, 2, 2, 1> zzyz;
+                Bool4Swizzle<Bool4, 4, 2, 2, 3, 1> zzyw;
+                Bool4Swizzle<Bool4, 4, 2, 2, 0, 2> zzzx;
+                Bool4Swizzle<Bool4, 4, 2, 2, 1, 2> zzzy;
+                Bool4Swizzle<Bool4, 4, 2, 2, 2, 2> zzzz;
+                Bool4Swizzle<Bool4, 4, 2, 2, 3, 2> zzzw;
+                Bool4Swizzle<Bool4, 4, 2, 2, 0, 3> zzwx;
+                Bool4Swizzle<Bool4, 4, 2, 2, 1, 3> zzwy;
+                Bool4Swizzle<Bool4, 4, 2, 2, 2, 3> zzwz;
+                Bool4Swizzle<Bool4, 4, 2, 2, 3, 3> zzww;
+                Bool4Swizzle<Bool4, 4, 2, 3, 0, 0> zwxx;
+                Bool4Swizzle<Bool4, 4, 2, 3, 1, 0> zwxy;
+                Bool4Swizzle<Bool4, 4, 2, 3, 2, 0> zwxz;
+                Bool4Swizzle<Bool4, 4, 2, 3, 3, 0> zwxw;
+                Bool4Swizzle<Bool4, 4, 2, 3, 0, 1> zwyx;
+                Bool4Swizzle<Bool4, 4, 2, 3, 1, 1> zwyy;
+                Bool4Swizzle<Bool4, 4, 2, 3, 2, 1> zwyz;
+                Bool4Swizzle<Bool4, 4, 2, 3, 3, 1> zwyw;
+                Bool4Swizzle<Bool4, 4, 2, 3, 0, 2> zwzx;
+                Bool4Swizzle<Bool4, 4, 2, 3, 1, 2> zwzy;
+                Bool4Swizzle<Bool4, 4, 2, 3, 2, 2> zwzz;
+                Bool4Swizzle<Bool4, 4, 2, 3, 3, 2> zwzw;
+                Bool4Swizzle<Bool4, 4, 2, 3, 0, 3> zwwx;
+                Bool4Swizzle<Bool4, 4, 2, 3, 1, 3> zwwy;
+                Bool4Swizzle<Bool4, 4, 2, 3, 2, 3> zwwz;
+                Bool4Swizzle<Bool4, 4, 2, 3, 3, 3> zwww;
+                Bool4Swizzle<Bool4, 4, 3, 0, 0, 0> wxxx;
+                Bool4Swizzle<Bool4, 4, 3, 0, 1, 0> wxxy;
+                Bool4Swizzle<Bool4, 4, 3, 0, 2, 0> wxxz;
+                Bool4Swizzle<Bool4, 4, 3, 0, 3, 0> wxxw;
+                Bool4Swizzle<Bool4, 4, 3, 0, 0, 1> wxyx;
+                Bool4Swizzle<Bool4, 4, 3, 0, 1, 1> wxyy;
+                Bool4Swizzle<Bool4, 4, 3, 0, 2, 1> wxyz;
+                Bool4Swizzle<Bool4, 4, 3, 0, 3, 1> wxyw;
+                Bool4Swizzle<Bool4, 4, 3, 0, 0, 2> wxzx;
+                Bool4Swizzle<Bool4, 4, 3, 0, 1, 2> wxzy;
+                Bool4Swizzle<Bool4, 4, 3, 0, 2, 2> wxzz;
+                Bool4Swizzle<Bool4, 4, 3, 0, 3, 2> wxzw;
+                Bool4Swizzle<Bool4, 4, 3, 0, 0, 3> wxwx;
+                Bool4Swizzle<Bool4, 4, 3, 0, 1, 3> wxwy;
+                Bool4Swizzle<Bool4, 4, 3, 0, 2, 3> wxwz;
+                Bool4Swizzle<Bool4, 4, 3, 0, 3, 3> wxww;
+                Bool4Swizzle<Bool4, 4, 3, 1, 0, 0> wyxx;
+                Bool4Swizzle<Bool4, 4, 3, 1, 1, 0> wyxy;
+                Bool4Swizzle<Bool4, 4, 3, 1, 2, 0> wyxz;
+                Bool4Swizzle<Bool4, 4, 3, 1, 3, 0> wyxw;
+                Bool4Swizzle<Bool4, 4, 3, 1, 0, 1> wyyx;
+                Bool4Swizzle<Bool4, 4, 3, 1, 1, 1> wyyy;
+                Bool4Swizzle<Bool4, 4, 3, 1, 2, 1> wyyz;
+                Bool4Swizzle<Bool4, 4, 3, 1, 3, 1> wyyw;
+                Bool4Swizzle<Bool4, 4, 3, 1, 0, 2> wyzx;
+                Bool4Swizzle<Bool4, 4, 3, 1, 1, 2> wyzy;
+                Bool4Swizzle<Bool4, 4, 3, 1, 2, 2> wyzz;
+                Bool4Swizzle<Bool4, 4, 3, 1, 3, 2> wyzw;
+                Bool4Swizzle<Bool4, 4, 3, 1, 0, 3> wywx;
+                Bool4Swizzle<Bool4, 4, 3, 1, 1, 3> wywy;
+                Bool4Swizzle<Bool4, 4, 3, 1, 2, 3> wywz;
+                Bool4Swizzle<Bool4, 4, 3, 1, 3, 3> wyww;
+                Bool4Swizzle<Bool4, 4, 3, 2, 0, 0> wzxx;
+                Bool4Swizzle<Bool4, 4, 3, 2, 1, 0> wzxy;
+                Bool4Swizzle<Bool4, 4, 3, 2, 2, 0> wzxz;
+                Bool4Swizzle<Bool4, 4, 3, 2, 3, 0> wzxw;
+                Bool4Swizzle<Bool4, 4, 3, 2, 0, 1> wzyx;
+                Bool4Swizzle<Bool4, 4, 3, 2, 1, 1> wzyy;
+                Bool4Swizzle<Bool4, 4, 3, 2, 2, 1> wzyz;
+                Bool4Swizzle<Bool4, 4, 3, 2, 3, 1> wzyw;
+                Bool4Swizzle<Bool4, 4, 3, 2, 0, 2> wzzx;
+                Bool4Swizzle<Bool4, 4, 3, 2, 1, 2> wzzy;
+                Bool4Swizzle<Bool4, 4, 3, 2, 2, 2> wzzz;
+                Bool4Swizzle<Bool4, 4, 3, 2, 3, 2> wzzw;
+                Bool4Swizzle<Bool4, 4, 3, 2, 0, 3> wzwx;
+                Bool4Swizzle<Bool4, 4, 3, 2, 1, 3> wzwy;
+                Bool4Swizzle<Bool4, 4, 3, 2, 2, 3> wzwz;
+                Bool4Swizzle<Bool4, 4, 3, 2, 3, 3> wzww;
+                Bool4Swizzle<Bool4, 4, 3, 3, 0, 0> wwxx;
+                Bool4Swizzle<Bool4, 4, 3, 3, 1, 0> wwxy;
+                Bool4Swizzle<Bool4, 4, 3, 3, 2, 0> wwxz;
+                Bool4Swizzle<Bool4, 4, 3, 3, 3, 0> wwxw;
+                Bool4Swizzle<Bool4, 4, 3, 3, 0, 1> wwyx;
+                Bool4Swizzle<Bool4, 4, 3, 3, 1, 1> wwyy;
+                Bool4Swizzle<Bool4, 4, 3, 3, 2, 1> wwyz;
+                Bool4Swizzle<Bool4, 4, 3, 3, 3, 1> wwyw;
+                Bool4Swizzle<Bool4, 4, 3, 3, 0, 2> wwzx;
+                Bool4Swizzle<Bool4, 4, 3, 3, 1, 2> wwzy;
+                Bool4Swizzle<Bool4, 4, 3, 3, 2, 2> wwzz;
+                Bool4Swizzle<Bool4, 4, 3, 3, 3, 2> wwzw;
+                Bool4Swizzle<Bool4, 4, 3, 3, 0, 3> wwwx;
+                Bool4Swizzle<Bool4, 4, 3, 3, 1, 3> wwwy;
+                Bool4Swizzle<Bool4, 4, 3, 3, 2, 3> wwwz;
+                Bool4Swizzle<Bool4, 4, 3, 3, 3, 3> wwww;
+            };
 
-		boolswizzle<4, Bool3, 0, 0, 0> xxx;
-		boolswizzle<4, Bool3, 0, 0, 1> xxy;
-		boolswizzle<4, Bool3, 0, 0, 2> xxz;
-		boolswizzle<4, Bool3, 0, 0, 3> xxw;
-		boolswizzle<4, Bool3, 0, 1, 0> xyx;
-		boolswizzle<4, Bool3, 0, 1, 1> xyy;
-		boolswizzle<4, Bool3, 0, 1, 2> xyz;
-		boolswizzle<4, Bool3, 0, 1, 3> xyw;
-		boolswizzle<4, Bool3, 0, 2, 0> xzx;
-		boolswizzle<4, Bool3, 0, 2, 1> xzy;
-		boolswizzle<4, Bool3, 0, 2, 2> xzz;
-		boolswizzle<4, Bool3, 0, 2, 3> xzw;
-		boolswizzle<4, Bool3, 0, 3, 0> xwx;
-		boolswizzle<4, Bool3, 0, 3, 1> xwy;
-		boolswizzle<4, Bool3, 0, 3, 2> xwz;
-		boolswizzle<4, Bool3, 0, 3, 3> xww;
+            Bool4(bool x, bool y, bool z, bool w);
 
-		boolswizzle<4, Bool3, 1, 0, 0> yxx;
-		boolswizzle<4, Bool3, 1, 0, 1> yxy;
-		boolswizzle<4, Bool3, 1, 0, 2> yxz;
-		boolswizzle<4, Bool3, 1, 0, 3> yxw;
-		boolswizzle<4, Bool3, 1, 1, 0> yyx;
-		boolswizzle<4, Bool3, 1, 1, 1> yyy;
-		boolswizzle<4, Bool3, 1, 1, 2> yyz;
-		boolswizzle<4, Bool3, 1, 1, 3> yyw;
-		boolswizzle<4, Bool3, 1, 2, 0> yzx;
-		boolswizzle<4, Bool3, 1, 2, 1> yzy;
-		boolswizzle<4, Bool3, 1, 2, 2> yzz;
-		boolswizzle<4, Bool3, 1, 2, 3> yzw;
-		boolswizzle<4, Bool3, 1, 3, 0> ywx;
-		boolswizzle<4, Bool3, 1, 3, 1> ywy;
-		boolswizzle<4, Bool3, 1, 3, 2> ywz;
-		boolswizzle<4, Bool3, 1, 3, 3> yww;
+            Bool4(bool x, bool y, const Bool2 & zw);
 
-		boolswizzle<4, Bool3, 2, 0, 0> zxx;
-		boolswizzle<4, Bool3, 2, 0, 1> zxy;
-		boolswizzle<4, Bool3, 2, 0, 2> zxz;
-		boolswizzle<4, Bool3, 2, 0, 3> zxw;
-		boolswizzle<4, Bool3, 2, 1, 0> zyx;
-		boolswizzle<4, Bool3, 2, 1, 1> zyy;
-		boolswizzle<4, Bool3, 2, 1, 2> zyz;
-		boolswizzle<4, Bool3, 2, 1, 3> zyw;
-		boolswizzle<4, Bool3, 2, 2, 0> zzx;
-		boolswizzle<4, Bool3, 2, 2, 1> zzy;
-		boolswizzle<4, Bool3, 2, 2, 2> zzz;
-		boolswizzle<4, Bool3, 2, 2, 3> zzw;
-		boolswizzle<4, Bool3, 2, 3, 0> zwx;
-		boolswizzle<4, Bool3, 2, 3, 1> zwy;
-		boolswizzle<4, Bool3, 2, 3, 2> zwz;
-		boolswizzle<4, Bool3, 2, 3, 3> zww;
+            Bool4(const Bool2 & xy, const Bool2 & zw);
 
-		boolswizzle<4, Bool3, 3, 0, 0> wxx;
-		boolswizzle<4, Bool3, 3, 0, 1> wxy;
-		boolswizzle<4, Bool3, 3, 0, 2> wxz;
-		boolswizzle<4, Bool3, 3, 0, 3> wxw;
-		boolswizzle<4, Bool3, 3, 1, 0> wyx;
-		boolswizzle<4, Bool3, 3, 1, 1> wyy;
-		boolswizzle<4, Bool3, 3, 1, 2> wyz;
-		boolswizzle<4, Bool3, 3, 1, 3> wyw;
-		boolswizzle<4, Bool3, 3, 2, 0> wzx;
-		boolswizzle<4, Bool3, 3, 2, 1> wzy;
-		boolswizzle<4, Bool3, 3, 2, 2> wzz;
-		boolswizzle<4, Bool3, 3, 2, 3> wzw;
-		boolswizzle<4, Bool3, 3, 3, 0> wwx;
-		boolswizzle<4, Bool3, 3, 3, 1> wwy;
-		boolswizzle<4, Bool3, 3, 3, 2> wwz;
-		boolswizzle<4, Bool3, 3, 3, 3> www;
+            Bool4(const Bool2 & xy, bool z, bool w);
 
-		boolswizzle<4, Bool4, 0, 0, 0, 0> xxxx;
-		boolswizzle<4, Bool4, 0, 0, 0, 1> xxxy;
-		boolswizzle<4, Bool4, 0, 0, 0, 2> xxxz;
-		boolswizzle<4, Bool4, 0, 0, 0, 3> xxxw;
-		boolswizzle<4, Bool4, 0, 0, 1, 0> xxyx;
-		boolswizzle<4, Bool4, 0, 0, 1, 1> xxyy;
-		boolswizzle<4, Bool4, 0, 0, 1, 2> xxyz;
-		boolswizzle<4, Bool4, 0, 0, 1, 3> xxyw;
-		boolswizzle<4, Bool4, 0, 0, 2, 0> xxzx;
-		boolswizzle<4, Bool4, 0, 0, 2, 1> xxzy;
-		boolswizzle<4, Bool4, 0, 0, 2, 2> xxzz;
-		boolswizzle<4, Bool4, 0, 0, 2, 3> xxzw;
-		boolswizzle<4, Bool4, 0, 0, 3, 0> xxwx;
-		boolswizzle<4, Bool4, 0, 0, 3, 1> xxwy;
-		boolswizzle<4, Bool4, 0, 0, 3, 2> xxwz;
-		boolswizzle<4, Bool4, 0, 0, 3, 3> xxww;
-		boolswizzle<4, Bool4, 0, 1, 0, 0> xyxx;
-		boolswizzle<4, Bool4, 0, 1, 0, 1> xyxy;
-		boolswizzle<4, Bool4, 0, 1, 0, 2> xyxz;
-		boolswizzle<4, Bool4, 0, 1, 0, 3> xyxw;
-		boolswizzle<4, Bool4, 0, 1, 1, 0> xyyx;
-		boolswizzle<4, Bool4, 0, 1, 1, 1> xyyy;
-		boolswizzle<4, Bool4, 0, 1, 1, 2> xyyz;
-		boolswizzle<4, Bool4, 0, 1, 1, 3> xyyw;
-		boolswizzle<4, Bool4, 0, 1, 2, 0> xyzx;
-		boolswizzle<4, Bool4, 0, 1, 2, 1> xyzy;
-		boolswizzle<4, Bool4, 0, 1, 2, 2> xyzz;
-		boolswizzle<4, Bool4, 0, 1, 2, 3> xyzw;
-		boolswizzle<4, Bool4, 0, 1, 3, 0> xywx;
-		boolswizzle<4, Bool4, 0, 1, 3, 1> xywy;
-		boolswizzle<4, Bool4, 0, 1, 3, 2> xywz;
-		boolswizzle<4, Bool4, 0, 1, 3, 3> xyww;
-		boolswizzle<4, Bool4, 0, 2, 0, 0> xzxx;
-		boolswizzle<4, Bool4, 0, 2, 0, 1> xzxy;
-		boolswizzle<4, Bool4, 0, 2, 0, 2> xzxz;
-		boolswizzle<4, Bool4, 0, 2, 0, 3> xzxw;
-		boolswizzle<4, Bool4, 0, 2, 1, 0> xzyx;
-		boolswizzle<4, Bool4, 0, 2, 1, 1> xzyy;
-		boolswizzle<4, Bool4, 0, 2, 1, 2> xzyz;
-		boolswizzle<4, Bool4, 0, 2, 1, 3> xzyw;
-		boolswizzle<4, Bool4, 0, 2, 2, 0> xzzx;
-		boolswizzle<4, Bool4, 0, 2, 2, 1> xzzy;
-		boolswizzle<4, Bool4, 0, 2, 2, 2> xzzz;
-		boolswizzle<4, Bool4, 0, 2, 2, 3> xzzw;
-		boolswizzle<4, Bool4, 0, 2, 3, 0> xzwx;
-		boolswizzle<4, Bool4, 0, 2, 3, 1> xzwy;
-		boolswizzle<4, Bool4, 0, 2, 3, 2> xzwz;
-		boolswizzle<4, Bool4, 0, 2, 3, 3> xzww;
-		boolswizzle<4, Bool4, 0, 3, 0, 0> xwxx;
-		boolswizzle<4, Bool4, 0, 3, 0, 1> xwxy;
-		boolswizzle<4, Bool4, 0, 3, 0, 2> xwxz;
-		boolswizzle<4, Bool4, 0, 3, 0, 3> xwxw;
-		boolswizzle<4, Bool4, 0, 3, 1, 0> xwyx;
-		boolswizzle<4, Bool4, 0, 3, 1, 1> xwyy;
-		boolswizzle<4, Bool4, 0, 3, 1, 2> xwyz;
-		boolswizzle<4, Bool4, 0, 3, 1, 3> xwyw;
-		boolswizzle<4, Bool4, 0, 3, 2, 0> xwzx;
-		boolswizzle<4, Bool4, 0, 3, 2, 1> xwzy;
-		boolswizzle<4, Bool4, 0, 3, 2, 2> xwzz;
-		boolswizzle<4, Bool4, 0, 3, 2, 3> xwzw;
-		boolswizzle<4, Bool4, 0, 3, 3, 0> xwwx;
-		boolswizzle<4, Bool4, 0, 3, 3, 1> xwwy;
-		boolswizzle<4, Bool4, 0, 3, 3, 2> xwwz;
-		boolswizzle<4, Bool4, 0, 3, 3, 3> xwww;
+            Bool4(const Bool3 & xyz, bool w);
 
-		boolswizzle<4, Bool4, 1, 0, 0, 0> yxxx;
-		boolswizzle<4, Bool4, 1, 0, 0, 1> yxxy;
-		boolswizzle<4, Bool4, 1, 0, 0, 2> yxxz;
-		boolswizzle<4, Bool4, 1, 0, 0, 3> yxxw;
-		boolswizzle<4, Bool4, 1, 0, 1, 0> yxyx;
-		boolswizzle<4, Bool4, 1, 0, 1, 1> yxyy;
-		boolswizzle<4, Bool4, 1, 0, 1, 2> yxyz;
-		boolswizzle<4, Bool4, 1, 0, 1, 3> yxyw;
-		boolswizzle<4, Bool4, 1, 0, 2, 0> yxzx;
-		boolswizzle<4, Bool4, 1, 0, 2, 1> yxzy;
-		boolswizzle<4, Bool4, 1, 0, 2, 2> yxzz;
-		boolswizzle<4, Bool4, 1, 0, 2, 3> yxzw;
-		boolswizzle<4, Bool4, 1, 0, 3, 0> yxwx;
-		boolswizzle<4, Bool4, 1, 0, 3, 1> yxwy;
-		boolswizzle<4, Bool4, 1, 0, 3, 2> yxwz;
-		boolswizzle<4, Bool4, 1, 0, 3, 3> yxww;
-		boolswizzle<4, Bool4, 1, 1, 0, 0> yyxx;
-		boolswizzle<4, Bool4, 1, 1, 0, 1> yyxy;
-		boolswizzle<4, Bool4, 1, 1, 0, 2> yyxz;
-		boolswizzle<4, Bool4, 1, 1, 0, 3> yyxw;
-		boolswizzle<4, Bool4, 1, 1, 1, 0> yyyx;
-		boolswizzle<4, Bool4, 1, 1, 1, 1> yyyy;
-		boolswizzle<4, Bool4, 1, 1, 1, 2> yyyz;
-		boolswizzle<4, Bool4, 1, 1, 1, 3> yyyw;
-		boolswizzle<4, Bool4, 1, 1, 2, 0> yyzx;
-		boolswizzle<4, Bool4, 1, 1, 2, 1> yyzy;
-		boolswizzle<4, Bool4, 1, 1, 2, 2> yyzz;
-		boolswizzle<4, Bool4, 1, 1, 2, 3> yyzw;
-		boolswizzle<4, Bool4, 1, 1, 3, 0> yywx;
-		boolswizzle<4, Bool4, 1, 1, 3, 1> yywy;
-		boolswizzle<4, Bool4, 1, 1, 3, 2> yywz;
-		boolswizzle<4, Bool4, 1, 1, 3, 3> yyww;
-		boolswizzle<4, Bool4, 1, 2, 0, 0> yzxx;
-		boolswizzle<4, Bool4, 1, 2, 0, 1> yzxy;
-		boolswizzle<4, Bool4, 1, 2, 0, 2> yzxz;
-		boolswizzle<4, Bool4, 1, 2, 0, 3> yzxw;
-		boolswizzle<4, Bool4, 1, 2, 1, 0> yzyx;
-		boolswizzle<4, Bool4, 1, 2, 1, 1> yzyy;
-		boolswizzle<4, Bool4, 1, 2, 1, 2> yzyz;
-		boolswizzle<4, Bool4, 1, 2, 1, 3> yzyw;
-		boolswizzle<4, Bool4, 1, 2, 2, 0> yzzx;
-		boolswizzle<4, Bool4, 1, 2, 2, 1> yzzy;
-		boolswizzle<4, Bool4, 1, 2, 2, 2> yzzz;
-		boolswizzle<4, Bool4, 1, 2, 2, 3> yzzw;
-		boolswizzle<4, Bool4, 1, 2, 3, 0> yzwx;
-		boolswizzle<4, Bool4, 1, 2, 3, 1> yzwy;
-		boolswizzle<4, Bool4, 1, 2, 3, 2> yzwz;
-		boolswizzle<4, Bool4, 1, 2, 3, 3> yzww;
-		boolswizzle<4, Bool4, 1, 3, 0, 0> ywxx;
-		boolswizzle<4, Bool4, 1, 3, 0, 1> ywxy;
-		boolswizzle<4, Bool4, 1, 3, 0, 2> ywxz;
-		boolswizzle<4, Bool4, 1, 3, 0, 3> ywxw;
-		boolswizzle<4, Bool4, 1, 3, 1, 0> ywyx;
-		boolswizzle<4, Bool4, 1, 3, 1, 1> ywyy;
-		boolswizzle<4, Bool4, 1, 3, 1, 2> ywyz;
-		boolswizzle<4, Bool4, 1, 3, 1, 3> ywyw;
-		boolswizzle<4, Bool4, 1, 3, 2, 0> ywzx;
-		boolswizzle<4, Bool4, 1, 3, 2, 1> ywzy;
-		boolswizzle<4, Bool4, 1, 3, 2, 2> ywzz;
-		boolswizzle<4, Bool4, 1, 3, 2, 3> ywzw;
-		boolswizzle<4, Bool4, 1, 3, 3, 0> ywwx;
-		boolswizzle<4, Bool4, 1, 3, 3, 1> ywwy;
-		boolswizzle<4, Bool4, 1, 3, 3, 2> ywwz;
-		boolswizzle<4, Bool4, 1, 3, 3, 3> ywww;
+            Bool4(bool x, const Bool3 & yzw);
 
-		boolswizzle<4, Bool4, 2, 0, 0, 0> zxxx;
-		boolswizzle<4, Bool4, 2, 0, 0, 1> zxxy;
-		boolswizzle<4, Bool4, 2, 0, 0, 2> zxxz;
-		boolswizzle<4, Bool4, 2, 0, 0, 3> zxxw;
-		boolswizzle<4, Bool4, 2, 0, 1, 0> zxyx;
-		boolswizzle<4, Bool4, 2, 0, 1, 1> zxyy;
-		boolswizzle<4, Bool4, 2, 0, 1, 2> zxyz;
-		boolswizzle<4, Bool4, 2, 0, 1, 3> zxyw;
-		boolswizzle<4, Bool4, 2, 0, 2, 0> zxzx;
-		boolswizzle<4, Bool4, 2, 0, 2, 1> zxzy;
-		boolswizzle<4, Bool4, 2, 0, 2, 2> zxzz;
-		boolswizzle<4, Bool4, 2, 0, 2, 3> zxzw;
-		boolswizzle<4, Bool4, 2, 0, 3, 0> zxwx;
-		boolswizzle<4, Bool4, 2, 0, 3, 1> zxwy;
-		boolswizzle<4, Bool4, 2, 0, 3, 2> zxwz;
-		boolswizzle<4, Bool4, 2, 0, 3, 3> zxww;
-		boolswizzle<4, Bool4, 2, 1, 0, 0> zyxx;
-		boolswizzle<4, Bool4, 2, 1, 0, 1> zyxy;
-		boolswizzle<4, Bool4, 2, 1, 0, 2> zyxz;
-		boolswizzle<4, Bool4, 2, 1, 0, 3> zyxw;
-		boolswizzle<4, Bool4, 2, 1, 1, 0> zyyx;
-		boolswizzle<4, Bool4, 2, 1, 1, 1> zyyy;
-		boolswizzle<4, Bool4, 2, 1, 1, 2> zyyz;
-		boolswizzle<4, Bool4, 2, 1, 1, 3> zyyw;
-		boolswizzle<4, Bool4, 2, 1, 2, 0> zyzx;
-		boolswizzle<4, Bool4, 2, 1, 2, 1> zyzy;
-		boolswizzle<4, Bool4, 2, 1, 2, 2> zyzz;
-		boolswizzle<4, Bool4, 2, 1, 2, 3> zyzw;
-		boolswizzle<4, Bool4, 2, 1, 3, 0> zywx;
-		boolswizzle<4, Bool4, 2, 1, 3, 1> zywy;
-		boolswizzle<4, Bool4, 2, 1, 3, 2> zywz;
-		boolswizzle<4, Bool4, 2, 1, 3, 3> zyww;
-		boolswizzle<4, Bool4, 2, 2, 0, 0> zzxx;
-		boolswizzle<4, Bool4, 2, 2, 0, 1> zzxy;
-		boolswizzle<4, Bool4, 2, 2, 0, 2> zzxz;
-		boolswizzle<4, Bool4, 2, 2, 0, 3> zzxw;
-		boolswizzle<4, Bool4, 2, 2, 1, 0> zzyx;
-		boolswizzle<4, Bool4, 2, 2, 1, 1> zzyy;
-		boolswizzle<4, Bool4, 2, 2, 1, 2> zzyz;
-		boolswizzle<4, Bool4, 2, 2, 1, 3> zzyw;
-		boolswizzle<4, Bool4, 2, 2, 2, 0> zzzx;
-		boolswizzle<4, Bool4, 2, 2, 2, 1> zzzy;
-		boolswizzle<4, Bool4, 2, 2, 2, 2> zzzz;
-		boolswizzle<4, Bool4, 2, 2, 2, 3> zzzw;
-		boolswizzle<4, Bool4, 2, 2, 3, 0> zzwx;
-		boolswizzle<4, Bool4, 2, 2, 3, 1> zzwy;
-		boolswizzle<4, Bool4, 2, 2, 3, 2> zzwz;
-		boolswizzle<4, Bool4, 2, 2, 3, 3> zzww;
-		boolswizzle<4, Bool4, 2, 3, 0, 0> zwxx;
-		boolswizzle<4, Bool4, 2, 3, 0, 1> zwxy;
-		boolswizzle<4, Bool4, 2, 3, 0, 2> zwxz;
-		boolswizzle<4, Bool4, 2, 3, 0, 3> zwxw;
-		boolswizzle<4, Bool4, 2, 3, 1, 0> zwyx;
-		boolswizzle<4, Bool4, 2, 3, 1, 1> zwyy;
-		boolswizzle<4, Bool4, 2, 3, 1, 2> zwyz;
-		boolswizzle<4, Bool4, 2, 3, 1, 3> zwyw;
-		boolswizzle<4, Bool4, 2, 3, 2, 0> zwzx;
-		boolswizzle<4, Bool4, 2, 3, 2, 1> zwzy;
-		boolswizzle<4, Bool4, 2, 3, 2, 2> zwzz;
-		boolswizzle<4, Bool4, 2, 3, 2, 3> zwzw;
-		boolswizzle<4, Bool4, 2, 3, 3, 0> zwwx;
-		boolswizzle<4, Bool4, 2, 3, 3, 1> zwwy;
-		boolswizzle<4, Bool4, 2, 3, 3, 2> zwwz;
-		boolswizzle<4, Bool4, 2, 3, 3, 3> zwww;
+            Bool4(const Bool4 & xyzw);
 
-		boolswizzle<4, Bool4, 3, 0, 0, 0> wxxx;
-		boolswizzle<4, Bool4, 3, 0, 0, 1> wxxy;
-		boolswizzle<4, Bool4, 3, 0, 0, 2> wxxz;
-		boolswizzle<4, Bool4, 3, 0, 0, 3> wxxw;
-		boolswizzle<4, Bool4, 3, 0, 1, 0> wxyx;
-		boolswizzle<4, Bool4, 3, 0, 1, 1> wxyy;
-		boolswizzle<4, Bool4, 3, 0, 1, 2> wxyz;
-		boolswizzle<4, Bool4, 3, 0, 1, 3> wxyw;
-		boolswizzle<4, Bool4, 3, 0, 2, 0> wxzx;
-		boolswizzle<4, Bool4, 3, 0, 2, 1> wxzy;
-		boolswizzle<4, Bool4, 3, 0, 2, 2> wxzz;
-		boolswizzle<4, Bool4, 3, 0, 2, 3> wxzw;
-		boolswizzle<4, Bool4, 3, 0, 3, 0> wxwx;
-		boolswizzle<4, Bool4, 3, 0, 3, 1> wxwy;
-		boolswizzle<4, Bool4, 3, 0, 3, 2> wxwz;
-		boolswizzle<4, Bool4, 3, 0, 3, 3> wxww;
-		boolswizzle<4, Bool4, 3, 1, 0, 0> wyxx;
-		boolswizzle<4, Bool4, 3, 1, 0, 1> wyxy;
-		boolswizzle<4, Bool4, 3, 1, 0, 2> wyxz;
-		boolswizzle<4, Bool4, 3, 1, 0, 3> wyxw;
-		boolswizzle<4, Bool4, 3, 1, 1, 0> wyyx;
-		boolswizzle<4, Bool4, 3, 1, 1, 1> wyyy;
-		boolswizzle<4, Bool4, 3, 1, 1, 2> wyyz;
-		boolswizzle<4, Bool4, 3, 1, 1, 3> wyyw;
-		boolswizzle<4, Bool4, 3, 1, 2, 0> wyzx;
-		boolswizzle<4, Bool4, 3, 1, 2, 1> wyzy;
-		boolswizzle<4, Bool4, 3, 1, 2, 2> wyzz;
-		boolswizzle<4, Bool4, 3, 1, 2, 3> wyzw;
-		boolswizzle<4, Bool4, 3, 1, 3, 0> wywx;
-		boolswizzle<4, Bool4, 3, 1, 3, 1> wywy;
-		boolswizzle<4, Bool4, 3, 1, 3, 2> wywz;
-		boolswizzle<4, Bool4, 3, 1, 3, 3> wyww;
-		boolswizzle<4, Bool4, 3, 2, 0, 0> wzxx;
-		boolswizzle<4, Bool4, 3, 2, 0, 1> wzxy;
-		boolswizzle<4, Bool4, 3, 2, 0, 2> wzxz;
-		boolswizzle<4, Bool4, 3, 2, 0, 3> wzxw;
-		boolswizzle<4, Bool4, 3, 2, 1, 0> wzyx;
-		boolswizzle<4, Bool4, 3, 2, 1, 1> wzyy;
-		boolswizzle<4, Bool4, 3, 2, 1, 2> wzyz;
-		boolswizzle<4, Bool4, 3, 2, 1, 3> wzyw;
-		boolswizzle<4, Bool4, 3, 2, 2, 0> wzzx;
-		boolswizzle<4, Bool4, 3, 2, 2, 1> wzzy;
-		boolswizzle<4, Bool4, 3, 2, 2, 2> wzzz;
-		boolswizzle<4, Bool4, 3, 2, 2, 3> wzzw;
-		boolswizzle<4, Bool4, 3, 2, 3, 0> wzwx;
-		boolswizzle<4, Bool4, 3, 2, 3, 1> wzwy;
-		boolswizzle<4, Bool4, 3, 2, 3, 2> wzwz;
-		boolswizzle<4, Bool4, 3, 2, 3, 3> wzww;
-		boolswizzle<4, Bool4, 3, 3, 0, 0> wwxx;
-		boolswizzle<4, Bool4, 3, 3, 0, 1> wwxy;
-		boolswizzle<4, Bool4, 3, 3, 0, 2> wwxz;
-		boolswizzle<4, Bool4, 3, 3, 0, 3> wwxw;
-		boolswizzle<4, Bool4, 3, 3, 1, 0> wwyx;
-		boolswizzle<4, Bool4, 3, 3, 1, 1> wwyy;
-		boolswizzle<4, Bool4, 3, 3, 1, 2> wwyz;
-		boolswizzle<4, Bool4, 3, 3, 1, 3> wwyw;
-		boolswizzle<4, Bool4, 3, 3, 2, 0> wwzx;
-		boolswizzle<4, Bool4, 3, 3, 2, 1> wwzy;
-		boolswizzle<4, Bool4, 3, 3, 2, 2> wwzz;
-		boolswizzle<4, Bool4, 3, 3, 2, 3> wwzw;
-		boolswizzle<4, Bool4, 3, 3, 3, 0> wwwx;
-		boolswizzle<4, Bool4, 3, 3, 3, 1> wwwy;
-		boolswizzle<4, Bool4, 3, 3, 3, 2> wwwz;
-		boolswizzle<4, Bool4, 3, 3, 3, 3> wwww;
+            Bool4 & operator=(const Bool4 & rhs) noexcept;
 
+            Bool4 operator||(const Bool4 & rhs) const noexcept;
 
-	};
+            Bool4 operator&&(const Bool4 & rhs) const noexcept;
 
-	Bool4():x(false),y(false),z(false),w(false){}
+            Bool4 operator==(const Bool4 & rhs) const noexcept;
 
-	Bool4(bool b):x(b),y(b),z(b),w(b){}
+            Bool4 operator!=(const Bool4 & rhs) const noexcept;
 
-	Bool4(bool x, bool y, bool z, bool w):x(x),y(y),z(z),w(w){}
+            bool Any() const noexcept;
 
-	Bool4(const Bool2 & xy, bool z, bool w):x(xy.y),y(xy.y),z(z),w(w){}
+            bool All() const noexcept;
 
-	Bool4(bool x, const Bool2 & yz, bool w):x(x),y(yz.x),z(yz.y),w(w){}
+            Bool4 operator!() const noexcept;
 
-	Bool4(bool x, bool y, const Bool2 & zw):x(x),y(y),z(zw.x),w(zw.y){}
+            Bool4 & operator|=(const Bool4 & rhs) noexcept;
 
-	Bool4(const Bool2 & xy, const Bool2 & zw):x(xy.y),y(xy.y),z(zw.x),w(zw.y){}
+            Bool4 & operator&=(const Bool4 & rhs) noexcept;
 
-	Bool4(const Bool3 & xyz, bool w):x(xyz.x),y(xyz.y),z(xyz.z),w(w){}
+            static const Bool4 Zero;
+            static const Bool4 UnitX;
+            static const Bool4 UnitY;
+            static const Bool4 UnitZ;
+            static const Bool4 UnitW;
+            static const Bool4 One;
+        };
+    }
+}
 
-	Bool4(bool x, const Bool3 & yzw):x(x),y(yzw.x),z(yzw.y),w(yzw.z){}
-
-	Bool4& operator&=(const Bool4& o)
-	{
-		x = x && o.x;
-		y = y && o.y;
-		z = z && o.z;
-		w = w && o.w;
-		return *this;
-	}
-
-	Bool4& operator|=(const Bool4& o)
-	{
-		x = x || o.x;
-		y = y || o.y;
-		z = z || o.z;
-		w = w || o.w;
-		return *this;
-	}
-
-	Bool4 operator&	(const Bool4& o) const
-	{
-		return Bool4(x && o.x, y && o.y, z && o.z, w && o.w);
-	}
-
-	Bool4 operator&&(const Bool4& o) const
-	{
-		return Bool4(x && o.x, y && o.y, z && o.z, w && o.w);
-	}
-
-	Bool4 operator|	(const Bool4& o) const
-	{
-		return Bool4(x || o.x, y || o.y, z || o.z, w || o.w);
-	}
-
-	Bool4 operator||(const Bool4& o) const
-	{
-		return Bool4(x || o.x, y || o.y, z || o.z, w || o.w);
-	}
-
-	Bool4 operator==(const Bool4& o) const
-	{
-		return Bool4(x == o.x, y == o.y, z == o.z, w == o.w);
-	}
-
-	Bool4 operator!=(const Bool4& o) const
-	{
-		return Bool4(x != o.x, y != o.y, z != o.z, w == o.w);
-	}
-
-	Bool4 operator<=(const Bool4& o) const
-	{
-		return Bool4(x <= o.x, y <= o.y, z <= o.z, w <= o.w);
-	}
-
-	Bool4 operator>=(const Bool4& o) const
-	{
-		return Bool4(x >= o.x, y >= o.y, z >= o.z, w >= o.w);
-	}
-
-	Bool4 operator!() const
-	{
-		return Bool4(!x, !y, !z, !w);
-	}
-
-	bool operator[](unsigned int i) const
-	{
-		if(i < 0 || i > 3)
-			throw std::range_error("Bool4 index out of range.");
-		return v[i];
-	}
-
-	bool& operator[](unsigned int i)
-	{
-		if(i < 0 || i > 3)
-			throw std::range_error("Bool4 index out of range.");
-		return v[i];
-	}
-
-	bool any() const
-	{
-		return x || y || z || w;
-	}
-
-	bool all() const
-	{
-		return x && y && z && w;
-	}
-
-	static Bool4 random()
-	{
-		return Bool4(rand()%2==0, rand()%2==0, rand()%2==0, rand()%2==0);
-	}
-
-	static const Bool4 zero;
-	static const Bool4 xUnit;
-	static const Bool4 yUnit;
-	static const Bool4 zUnit;
-	static const Bool4 wUnit;
-	static const Bool4 one;
-
-};

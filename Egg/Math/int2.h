@@ -1,291 +1,142 @@
 #pragma once
 
-#include <math.h>
-#include <stdexcept>
+#include "Int2Swizzle.hpp"
+#include "Int3Swizzle.hpp"
+#include "Int4Swizzle.hpp"
+#include "Bool2.h"
+#include "Int3.h"
+#include "Int4.h"
 
+namespace Egg {
+    namespace Math {
 
-class Int3;
-class Int4;
+        class Int3;
+        class Int4;
+        class Bool2;
+        class Bool3;
+        class Bool4;
 
-class Int2
-{
-public:
-	union{
-		struct {
-			int x;
-			int y;
-		};
+        class Int2 {
+        public:
+            union {
+                struct {
+                    int x;
+                    int y;
+                };
 
-		int v[2];
+                Int2Swizzle<Int2, Bool2, 2, 0, 0> xx;
+                Int2Swizzle<Int2, Bool2, 2, 0, 1> xy;
+                Int2Swizzle<Int2, Bool2, 2, 1, 0> yx;
+                Int2Swizzle<Int2, Bool2, 2, 1, 1> yy;
 
-		intswizzle<2, Int2, Bool2, 0, 0> xx;
-		intswizzle<2, Int2, Bool2, 0, 1> xy;
-		intswizzle<2, Int2, Bool2, 1, 0> yx;
-		intswizzle<2, Int2, Bool2, 1, 1> yy;
+                Int3Swizzle<Int3, Bool3, 2, 0, 0, 0> xxx;
+                Int3Swizzle<Int3, Bool3, 2, 0, 0, 1> xxy;
+                Int3Swizzle<Int3, Bool3, 2, 0, 1, 0> xyx;
+                Int3Swizzle<Int3, Bool3, 2, 0, 1, 1> xyy;
+                Int3Swizzle<Int3, Bool3, 2, 1, 0, 0> yxx;
+                Int3Swizzle<Int3, Bool3, 2, 1, 0, 1> yxy;
+                Int3Swizzle<Int3, Bool3, 2, 1, 1, 0> yyx;
+                Int3Swizzle<Int3, Bool3, 2, 1, 1, 1> yyy;
 
-		intswizzle<2, Int3, Bool3, 0, 0, 0> xxx;
-		intswizzle<2, Int3, Bool3, 0, 0, 1> xxy;
-		intswizzle<2, Int3, Bool3, 0, 1, 0> xyx;
-		intswizzle<2, Int3, Bool3, 0, 1, 1> xyy;
-		intswizzle<2, Int3, Bool3, 1, 0, 0> yxx;
-		intswizzle<2, Int3, Bool3, 1, 0, 1> yxy;
-		intswizzle<2, Int3, Bool3, 1, 1, 0> yyx;
-		intswizzle<2, Int3, Bool3, 1, 1, 1> yyy;
+                Int4Swizzle<Int4, Bool4, 2, 0, 0, 0, 0> xxxx;
+                Int4Swizzle<Int4, Bool4, 2, 0, 0, 1, 0> xxxy;
+                Int4Swizzle<Int4, Bool4, 2, 0, 0, 0, 1> xxyx;
+                Int4Swizzle<Int4, Bool4, 2, 0, 0, 1, 1> xxyy;
+                Int4Swizzle<Int4, Bool4, 2, 0, 1, 0, 0> xyxx;
+                Int4Swizzle<Int4, Bool4, 2, 0, 1, 1, 0> xyxy;
+                Int4Swizzle<Int4, Bool4, 2, 0, 1, 0, 1> xyyx;
+                Int4Swizzle<Int4, Bool4, 2, 0, 1, 1, 1> xyyy;
+                Int4Swizzle<Int4, Bool4, 2, 1, 0, 0, 0> yxxx;
+                Int4Swizzle<Int4, Bool4, 2, 1, 0, 1, 0> yxxy;
+                Int4Swizzle<Int4, Bool4, 2, 1, 0, 0, 1> yxyx;
+                Int4Swizzle<Int4, Bool4, 2, 1, 0, 1, 1> yxyy;
+                Int4Swizzle<Int4, Bool4, 2, 1, 1, 0, 0> yyxx;
+                Int4Swizzle<Int4, Bool4, 2, 1, 1, 1, 0> yyxy;
+                Int4Swizzle<Int4, Bool4, 2, 1, 1, 0, 1> yyyx;
+                Int4Swizzle<Int4, Bool4, 2, 1, 1, 1, 1> yyyy;
+            };
 
-		intswizzle<2, Int4, Bool4, 0, 0, 0, 0> xxxx;
-		intswizzle<2, Int4, Bool4, 0, 0, 0, 1> xxxy;
-		intswizzle<2, Int4, Bool4, 0, 0, 1, 0> xxyx;
-		intswizzle<2, Int4, Bool4, 0, 0, 1, 1> xxyy;
-		intswizzle<2, Int4, Bool4, 0, 1, 0, 0> xyxx;
-		intswizzle<2, Int4, Bool4, 0, 1, 0, 1> xyxy;
-		intswizzle<2, Int4, Bool4, 0, 1, 1, 0> xyyx;
-		intswizzle<2, Int4, Bool4, 0, 1, 1, 1> xyyy;
-		intswizzle<2, Int4, Bool4, 1, 0, 0, 0> yxxx;
-		intswizzle<2, Int4, Bool4, 1, 0, 0, 1> yxxy;
-		intswizzle<2, Int4, Bool4, 1, 0, 1, 0> yxyx;
-		intswizzle<2, Int4, Bool4, 1, 0, 1, 1> yxyy;
-		intswizzle<2, Int4, Bool4, 1, 1, 0, 0> yyxx;
-		intswizzle<2, Int4, Bool4, 1, 1, 0, 1> yyxy;
-		intswizzle<2, Int4, Bool4, 1, 1, 1, 0> yyyx;
-		intswizzle<2, Int4, Bool4, 1, 1, 1, 1> yyyy;
+            Int2(int x, int y);
 
-	};
+            Int2(const Int2 & xy);
 
-	Int2():x(0),y(0){}
+            Int2 & operator=(const Int2 & rhs) noexcept;
 
-	Int2(int i):x(i),y(i){}
+            Int2 & operator+=(const Int2 & rhs) noexcept;
 
-	Int2(int x, int y):x(x),y(y){}
+            Int2 & operator-=(const Int2 & rhs) noexcept;
 
-	Int2(int x, int y, int z, int w):x(x),y(y){z; w;}
+            Int2 & operator/=(const Int2 & rhs) noexcept;
 
-	Int2(Bool2 b):x(b.x),y(b.y){}
+            Int2 & operator*=(const Int2 & rhs) noexcept;
 
-	Int2& operator+=(const Int2& o)
-	{
-		x += o.x;
-		y += o.y;
-		return *this;
-	}
+            Int2 & operator%=(const Int2 & rhs) noexcept;
 
-	Int2& operator-=(const Int2& o)
-	{
-		x -= o.x;
-		y -= o.y;
-		return *this;
-	}
+            Int2 & operator|=(const Int2 & rhs) noexcept;
 
-	Int2& operator*=(const Int2& o)
-	{
-		x *= o.x;
-		y *= o.y;
-		return *this;
-	}
+            Int2 & operator&=(const Int2 & rhs) noexcept;
 
-	Int2& operator/=(const Int2& o)
-	{
-		x /= o.x;
-		y /= o.y;
-		return *this;
-	}
+            Int2 & operator^=(const Int2 & rhs) noexcept;
 
-	Int2& operator%=(const Int2& o)
-	{
-		x %= o.x;
-		y %= o.y;
-		return *this;
-	}
+            Int2 & operator<<=(const Int2 & rhs) noexcept;
 
-	Int2& operator>>=(const Int2& o)
-	{
-		x >>= o.x;
-		y >>= o.y;
-		return *this;
-	}
+            Int2 & operator>>=(const Int2 & rhs) noexcept;
 
-	Int2& operator<<=(const Int2& o)
-	{
-		x <<= o.x;
-		y <<= o.y;
-		return *this;
-	}
+            Int2 operator*(const Int2 & rhs) const noexcept;
 
-	Int2& operator&=(const Int2& o)
-	{
-		x &= o.x;
-		y &= o.y;
-		return *this;
-	}
+            Int2 operator/(const Int2 & rhs) const noexcept;
 
-	Int2& operator|=(const Int2& o)
-	{
-		x |= o.x;
-		y |= o.y;
-		return *this;
-	}
+            Int2 operator+(const Int2 & rhs) const noexcept;
 
-	Int2 operator&(const Int2& o) const
-	{
-		return Int2(x & o.x, y & o.y);
-	}
+            Int2 operator-(const Int2 & rhs) const noexcept;
 
-	Int2 operator&&(const Int2& o) const
-	{
-		return Int2(x && o.x, y && o.y);
-	}
+            Int2 operator%(const Int2 & rhs) const noexcept;
 
-	Int2 operator|	(const Int2& o) const
-	{
-		return Int2(x | o.x, y | o.y);
-	}
+            Int2 operator|(const Int2 & rhs) const noexcept;
 
-	Int2 operator||(const Int2& o) const
-	{
-		return Int2(x || o.x, y || o.y);
-	}
+            Int2 operator&(const Int2 & rhs) const noexcept;
 
-	Bool2 operator==(const Int2& o) const
-	{
-		return Bool2(x == o.x, y == o.y);
-	}
+            Int2 operator^(const Int2 & rhs) const noexcept;
 
-	Bool2 operator!=(const Int2& o) const
-	{
-		return Bool2(x != o.x, y != o.y);
-	}
+            Int2 operator<<(const Int2 & rhs) const noexcept;
 
-	Bool2 operator<(const Int2& o) const
-	{
-		return Bool2(x < o.x, y < o.y);
-	}
+            Int2 operator>>(const Int2 & rhs) const noexcept;
 
-	Bool2 operator>(const Int2& o) const
-	{
-		return Bool2(x > o.x, y > o.y);
-	}
+            Int2 operator||(const Int2 & rhs) const noexcept;
 
-	Bool2 operator<=(const Int2& o) const
-	{
-		return Bool2(x <= o.x, y <= o.y);
-	}
+            Int2 operator&&(const Int2 & rhs) const noexcept;
 
-	Bool2 operator>=(const Int2& o) const
-	{
-		return Bool2(x >= o.x, y >= o.y);
-	}
+            Bool2 operator<(const Int2 & rhs) const noexcept;
 
-	Int2 operator<<(const Int2& o) const
-	{
-		return Int2(x << o.x, y << o.y);
-	}
+            Bool2 operator>(const Int2 & rhs) const noexcept;
 
-	Int2 operator>>(const Int2& o) const
-	{
-		return Int2(x >> o.x, y >> o.y);
-	}
+            Bool2 operator!=(const Int2 & rhs) const noexcept;
 
-	Int2 operator+(const Int2& o) const
-	{
-		return Int2(x + o.x, y + o.y);
-	}
+            Bool2 operator==(const Int2 & rhs) const noexcept;
 
-	Int2 operator-(const Int2& o) const
-	{
-		return Int2(x - o.x, y - o.y);
-	}
+            Bool2 operator>=(const Int2 & rhs) const noexcept;
 
-	Int2 operator*(const Int2& o) const
-	{
-		return Int2(x * o.x, y * o.y);
-	}
+            Bool2 operator<=(const Int2 & rhs) const noexcept;
 
-	Int2 operator/(const Int2& o) const
-	{
-		return Int2(x / o.x, y / o.y);
-	}
+            Int2 operator~() const noexcept;
 
-	Int2 operator%(const Int2& o) const
-	{
-		return Int2(x % o.x, y % o.y);
-	}
+            Int2 operator!() const noexcept;
 
-	Int2 operator+() const
-	{
-		return Int2(+x, +y);
-	}
+            Int2 operator++() noexcept;
 
-	Int2 operator-() const
-	{
-		return Int2(-x, -y);
-	}
+            Int2 operator++(int) noexcept;
 
-	Int2 operator!() const
-	{
-		return Int2(!x, !y);
-	}
+            Int2 operator--() noexcept;
 
-	Int2 operator~() const
-	{
-		return Int2(~x, ~y);
-	}
+            Int2 operator--(int) noexcept;
 
-	Int2 operator++()
-	{
-		return Int2(++x, ++y);
-	}
+            Int2 operator-() const noexcept;
 
-	Int2 operator--()
-	{
-		return Int2(--x, --y);
-	}
+            static const Int2 One;
+            static const Int2 Zero;
+            static const Int2 UnitX;
+            static const Int2 UnitY;
+        };
+    }
+}
 
-
-	Int2 operator++(int)
-	{
-		return Int2(x++, y++);
-	}
-	
-	Int2 operator--(int)
-	{
-		return Int2(x++, y++);
-	}
-
-
-	int operator[](unsigned int i) const
-	{
-		if(i < 0 || i > 1)
-			throw std::range_error("Int2 index out of range.");
-		return v[i];
-	}
-
-	int& operator[](unsigned int i)
-	{
-		if(i < 0 || i > 1)
-			throw std::range_error("Int2 index out of range.");
-		return v[i];
-	}
-
-	Int2 max(const Int2& o) const
-	{
-		return Int2( (x>o.x)?x:o.x, (y>o.y)?y:o.y );
-	}
-
-	Int2 min(const Int2& o) const
-	{
-		return Int2( (x<o.x)?x:o.x, (y<o.y)?y:o.y );
-	}
-
-	static Int2 random(int lower=0, int upper=6)
-	{
-		int range = upper - lower + 1;
-		return Int2(
-			rand() % range + lower,
-			rand() % range + lower);
-	}
-
-	static const Int2 zero;
-	static const Int2 xUnit;
-	static const Int2 yUnit;
-	static const Int2 one;
-
-};

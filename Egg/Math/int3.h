@@ -1,395 +1,234 @@
 #pragma once
 
-#include <math.h>
+#include "Int2.h"
+#include "Bool3.h"
+#include "Int4.h"
 
-class Int2;
-class Int4;
+namespace Egg {
+    namespace Math {
 
-class Int3
-{
-public:
-	union{
-		struct {
-			int x;
-			int y;
-			int z;
-		};
+        class Int2;
+        class Int4;
+        class Bool2;
+        class Bool3;
+        class Bool4;
 
-		int v[3];
+        class Int3 {
+        public:
+            union {
+                struct {
+                    int x;
+                    int y;
+                    int z;
+                };
 
-		intswizzle<3, Int2, Bool2, 0, 0> xx;
-		intswizzle<3, Int2, Bool2, 0, 1> xy;
-		intswizzle<3, Int2, Bool2, 0, 2> xz;
-		intswizzle<3, Int2, Bool2, 1, 0> yx;
-		intswizzle<3, Int2, Bool2, 1, 1> yy;
-		intswizzle<3, Int2, Bool2, 1, 2> yz;
-		intswizzle<3, Int2, Bool2, 2, 0> zx;
-		intswizzle<3, Int2, Bool2, 2, 1> zy;
-		intswizzle<3, Int2, Bool2, 2, 2> zz;
+                Int2Swizzle<Int2, Bool2, 3, 0, 0> xx;
+                Int2Swizzle<Int2, Bool2, 3, 0, 1> xy;
+                Int2Swizzle<Int2, Bool2, 3, 0, 2> xz;
+                Int2Swizzle<Int2, Bool2, 3, 1, 0> yx;
+                Int2Swizzle<Int2, Bool2, 3, 1, 1> yy;
+                Int2Swizzle<Int2, Bool2, 3, 1, 2> yz;
+                Int2Swizzle<Int2, Bool2, 3, 2, 0> zx;
+                Int2Swizzle<Int2, Bool2, 3, 2, 1> zy;
+                Int2Swizzle<Int2, Bool2, 3, 2, 2> zz;
 
-		intswizzle<3, Int3, Bool3, 0, 0, 0> xxx;
-		intswizzle<3, Int3, Bool3, 0, 0, 1> xxy;
-		intswizzle<3, Int3, Bool3, 0, 0, 2> xxz;
-		intswizzle<3, Int3, Bool3, 0, 1, 0> xyx;
-		intswizzle<3, Int3, Bool3, 0, 1, 1> xyy;
-		intswizzle<3, Int3, Bool3, 0, 1, 2> xyz;
-		intswizzle<3, Int3, Bool3, 0, 2, 0> xzx;
-		intswizzle<3, Int3, Bool3, 0, 2, 1> xzy;
-		intswizzle<3, Int3, Bool3, 0, 2, 2> xzz;
-		intswizzle<3, Int3, Bool3, 1, 0, 0> yxx;
-		intswizzle<3, Int3, Bool3, 1, 0, 1> yxy;
-		intswizzle<3, Int3, Bool3, 1, 0, 2> yxz;
-		intswizzle<3, Int3, Bool3, 1, 1, 0> yyx;
-		intswizzle<3, Int3, Bool3, 1, 1, 1> yyy;
-		intswizzle<3, Int3, Bool3, 1, 1, 2> yyz;
-		intswizzle<3, Int3, Bool3, 1, 2, 0> yzx;
-		intswizzle<3, Int3, Bool3, 1, 2, 1> yzy;
-		intswizzle<3, Int3, Bool3, 1, 2, 2> yzz;
-		intswizzle<3, Int3, Bool3, 2, 0, 0> zxx;
-		intswizzle<3, Int3, Bool3, 2, 0, 1> zxy;
-		intswizzle<3, Int3, Bool3, 2, 0, 2> zxz;
-		intswizzle<3, Int3, Bool3, 2, 1, 0> zyx;
-		intswizzle<3, Int3, Bool3, 2, 1, 1> zyy;
-		intswizzle<3, Int3, Bool3, 2, 1, 2> zyz;
-		intswizzle<3, Int3, Bool3, 2, 2, 0> zzx;
-		intswizzle<3, Int3, Bool3, 2, 2, 1> zzy;
-		intswizzle<3, Int3, Bool3, 2, 2, 2> zzz;
+                Int3Swizzle<Int3, Bool3, 3, 0, 0, 0> xxx;
+                Int3Swizzle<Int3, Bool3, 3, 0, 0, 1> xxy;
+                Int3Swizzle<Int3, Bool3, 3, 0, 0, 2> xxz;
+                Int3Swizzle<Int3, Bool3, 3, 0, 1, 0> xyx;
+                Int3Swizzle<Int3, Bool3, 3, 0, 1, 1> xyy;
+                Int3Swizzle<Int3, Bool3, 3, 0, 1, 2> xyz;
+                Int3Swizzle<Int3, Bool3, 3, 0, 2, 0> xzx;
+                Int3Swizzle<Int3, Bool3, 3, 0, 2, 1> xzy;
+                Int3Swizzle<Int3, Bool3, 3, 0, 2, 2> xzz;
+                Int3Swizzle<Int3, Bool3, 3, 1, 0, 0> yxx;
+                Int3Swizzle<Int3, Bool3, 3, 1, 0, 1> yxy;
+                Int3Swizzle<Int3, Bool3, 3, 1, 0, 2> yxz;
+                Int3Swizzle<Int3, Bool3, 3, 1, 1, 0> yyx;
+                Int3Swizzle<Int3, Bool3, 3, 1, 1, 1> yyy;
+                Int3Swizzle<Int3, Bool3, 3, 1, 1, 2> yyz;
+                Int3Swizzle<Int3, Bool3, 3, 1, 2, 0> yzx;
+                Int3Swizzle<Int3, Bool3, 3, 1, 2, 1> yzy;
+                Int3Swizzle<Int3, Bool3, 3, 1, 2, 2> yzz;
+                Int3Swizzle<Int3, Bool3, 3, 2, 0, 0> zxx;
+                Int3Swizzle<Int3, Bool3, 3, 2, 0, 1> zxy;
+                Int3Swizzle<Int3, Bool3, 3, 2, 0, 2> zxz;
+                Int3Swizzle<Int3, Bool3, 3, 2, 1, 0> zyx;
+                Int3Swizzle<Int3, Bool3, 3, 2, 1, 1> zyy;
+                Int3Swizzle<Int3, Bool3, 3, 2, 1, 2> zyz;
+                Int3Swizzle<Int3, Bool3, 3, 2, 2, 0> zzx;
+                Int3Swizzle<Int3, Bool3, 3, 2, 2, 1> zzy;
+                Int3Swizzle<Int3, Bool3, 3, 2, 2, 2> zzz;
 
-		intswizzle<3, Int4, Bool4, 0, 0, 0, 0> xxxx;
-		intswizzle<3, Int4, Bool4, 0, 0, 0, 1> xxxy;
-		intswizzle<3, Int4, Bool4, 0, 0, 0, 2> xxxz;
-		intswizzle<3, Int4, Bool4, 0, 0, 1, 0> xxyx;
-		intswizzle<3, Int4, Bool4, 0, 0, 1, 1> xxyy;
-		intswizzle<3, Int4, Bool4, 0, 0, 1, 2> xxyz;
-		intswizzle<3, Int4, Bool4, 0, 0, 2, 0> xxzx;
-		intswizzle<3, Int4, Bool4, 0, 0, 2, 1> xxzy;
-		intswizzle<3, Int4, Bool4, 0, 0, 2, 2> xxzz;
-		intswizzle<3, Int4, Bool4, 0, 1, 0, 0> xyxx;
-		intswizzle<3, Int4, Bool4, 0, 1, 0, 1> xyxy;
-		intswizzle<3, Int4, Bool4, 0, 1, 0, 2> xyxz;
-		intswizzle<3, Int4, Bool4, 0, 1, 1, 0> xyyx;
-		intswizzle<3, Int4, Bool4, 0, 1, 1, 1> xyyy;
-		intswizzle<3, Int4, Bool4, 0, 1, 1, 2> xyyz;
-		intswizzle<3, Int4, Bool4, 0, 1, 2, 0> xyzx;
-		intswizzle<3, Int4, Bool4, 0, 1, 2, 1> xyzy;
-		intswizzle<3, Int4, Bool4, 0, 1, 2, 2> xyzz;
-		intswizzle<3, Int4, Bool4, 0, 2, 0, 0> xzxx;
-		intswizzle<3, Int4, Bool4, 0, 2, 0, 1> xzxy;
-		intswizzle<3, Int4, Bool4, 0, 2, 0, 2> xzxz;
-		intswizzle<3, Int4, Bool4, 0, 2, 1, 0> xzyx;
-		intswizzle<3, Int4, Bool4, 0, 2, 1, 1> xzyy;
-		intswizzle<3, Int4, Bool4, 0, 2, 1, 2> xzyz;
-		intswizzle<3, Int4, Bool4, 0, 2, 2, 0> xzzx;
-		intswizzle<3, Int4, Bool4, 0, 2, 2, 1> xzzy;
-		intswizzle<3, Int4, Bool4, 0, 2, 2, 2> xzzz;
+                Int4Swizzle<Int4, Bool4, 3, 0, 0, 0, 0> xxxx;
+                Int4Swizzle<Int4, Bool4, 3, 0, 0, 1, 0> xxxy;
+                Int4Swizzle<Int4, Bool4, 3, 0, 0, 2, 0> xxxz;
+                Int4Swizzle<Int4, Bool4, 3, 0, 0, 0, 1> xxyx;
+                Int4Swizzle<Int4, Bool4, 3, 0, 0, 1, 1> xxyy;
+                Int4Swizzle<Int4, Bool4, 3, 0, 0, 2, 1> xxyz;
+                Int4Swizzle<Int4, Bool4, 3, 0, 0, 0, 2> xxzx;
+                Int4Swizzle<Int4, Bool4, 3, 0, 0, 1, 2> xxzy;
+                Int4Swizzle<Int4, Bool4, 3, 0, 0, 2, 2> xxzz;
+                Int4Swizzle<Int4, Bool4, 3, 0, 1, 0, 0> xyxx;
+                Int4Swizzle<Int4, Bool4, 3, 0, 1, 1, 0> xyxy;
+                Int4Swizzle<Int4, Bool4, 3, 0, 1, 2, 0> xyxz;
+                Int4Swizzle<Int4, Bool4, 3, 0, 1, 0, 1> xyyx;
+                Int4Swizzle<Int4, Bool4, 3, 0, 1, 1, 1> xyyy;
+                Int4Swizzle<Int4, Bool4, 3, 0, 1, 2, 1> xyyz;
+                Int4Swizzle<Int4, Bool4, 3, 0, 1, 0, 2> xyzx;
+                Int4Swizzle<Int4, Bool4, 3, 0, 1, 1, 2> xyzy;
+                Int4Swizzle<Int4, Bool4, 3, 0, 1, 2, 2> xyzz;
+                Int4Swizzle<Int4, Bool4, 3, 0, 2, 0, 0> xzxx;
+                Int4Swizzle<Int4, Bool4, 3, 0, 2, 1, 0> xzxy;
+                Int4Swizzle<Int4, Bool4, 3, 0, 2, 2, 0> xzxz;
+                Int4Swizzle<Int4, Bool4, 3, 0, 2, 0, 1> xzyx;
+                Int4Swizzle<Int4, Bool4, 3, 0, 2, 1, 1> xzyy;
+                Int4Swizzle<Int4, Bool4, 3, 0, 2, 2, 1> xzyz;
+                Int4Swizzle<Int4, Bool4, 3, 0, 2, 0, 2> xzzx;
+                Int4Swizzle<Int4, Bool4, 3, 0, 2, 1, 2> xzzy;
+                Int4Swizzle<Int4, Bool4, 3, 0, 2, 2, 2> xzzz;
+                Int4Swizzle<Int4, Bool4, 3, 1, 0, 0, 0> yxxx;
+                Int4Swizzle<Int4, Bool4, 3, 1, 0, 1, 0> yxxy;
+                Int4Swizzle<Int4, Bool4, 3, 1, 0, 2, 0> yxxz;
+                Int4Swizzle<Int4, Bool4, 3, 1, 0, 0, 1> yxyx;
+                Int4Swizzle<Int4, Bool4, 3, 1, 0, 1, 1> yxyy;
+                Int4Swizzle<Int4, Bool4, 3, 1, 0, 2, 1> yxyz;
+                Int4Swizzle<Int4, Bool4, 3, 1, 0, 0, 2> yxzx;
+                Int4Swizzle<Int4, Bool4, 3, 1, 0, 1, 2> yxzy;
+                Int4Swizzle<Int4, Bool4, 3, 1, 0, 2, 2> yxzz;
+                Int4Swizzle<Int4, Bool4, 3, 1, 1, 0, 0> yyxx;
+                Int4Swizzle<Int4, Bool4, 3, 1, 1, 1, 0> yyxy;
+                Int4Swizzle<Int4, Bool4, 3, 1, 1, 2, 0> yyxz;
+                Int4Swizzle<Int4, Bool4, 3, 1, 1, 0, 1> yyyx;
+                Int4Swizzle<Int4, Bool4, 3, 1, 1, 1, 1> yyyy;
+                Int4Swizzle<Int4, Bool4, 3, 1, 1, 2, 1> yyyz;
+                Int4Swizzle<Int4, Bool4, 3, 1, 1, 0, 2> yyzx;
+                Int4Swizzle<Int4, Bool4, 3, 1, 1, 1, 2> yyzy;
+                Int4Swizzle<Int4, Bool4, 3, 1, 1, 2, 2> yyzz;
+                Int4Swizzle<Int4, Bool4, 3, 1, 2, 0, 0> yzxx;
+                Int4Swizzle<Int4, Bool4, 3, 1, 2, 1, 0> yzxy;
+                Int4Swizzle<Int4, Bool4, 3, 1, 2, 2, 0> yzxz;
+                Int4Swizzle<Int4, Bool4, 3, 1, 2, 0, 1> yzyx;
+                Int4Swizzle<Int4, Bool4, 3, 1, 2, 1, 1> yzyy;
+                Int4Swizzle<Int4, Bool4, 3, 1, 2, 2, 1> yzyz;
+                Int4Swizzle<Int4, Bool4, 3, 1, 2, 0, 2> yzzx;
+                Int4Swizzle<Int4, Bool4, 3, 1, 2, 1, 2> yzzy;
+                Int4Swizzle<Int4, Bool4, 3, 1, 2, 2, 2> yzzz;
+                Int4Swizzle<Int4, Bool4, 3, 2, 0, 0, 0> zxxx;
+                Int4Swizzle<Int4, Bool4, 3, 2, 0, 1, 0> zxxy;
+                Int4Swizzle<Int4, Bool4, 3, 2, 0, 2, 0> zxxz;
+                Int4Swizzle<Int4, Bool4, 3, 2, 0, 0, 1> zxyx;
+                Int4Swizzle<Int4, Bool4, 3, 2, 0, 1, 1> zxyy;
+                Int4Swizzle<Int4, Bool4, 3, 2, 0, 2, 1> zxyz;
+                Int4Swizzle<Int4, Bool4, 3, 2, 0, 0, 2> zxzx;
+                Int4Swizzle<Int4, Bool4, 3, 2, 0, 1, 2> zxzy;
+                Int4Swizzle<Int4, Bool4, 3, 2, 0, 2, 2> zxzz;
+                Int4Swizzle<Int4, Bool4, 3, 2, 1, 0, 0> zyxx;
+                Int4Swizzle<Int4, Bool4, 3, 2, 1, 1, 0> zyxy;
+                Int4Swizzle<Int4, Bool4, 3, 2, 1, 2, 0> zyxz;
+                Int4Swizzle<Int4, Bool4, 3, 2, 1, 0, 1> zyyx;
+                Int4Swizzle<Int4, Bool4, 3, 2, 1, 1, 1> zyyy;
+                Int4Swizzle<Int4, Bool4, 3, 2, 1, 2, 1> zyyz;
+                Int4Swizzle<Int4, Bool4, 3, 2, 1, 0, 2> zyzx;
+                Int4Swizzle<Int4, Bool4, 3, 2, 1, 1, 2> zyzy;
+                Int4Swizzle<Int4, Bool4, 3, 2, 1, 2, 2> zyzz;
+                Int4Swizzle<Int4, Bool4, 3, 2, 2, 0, 0> zzxx;
+                Int4Swizzle<Int4, Bool4, 3, 2, 2, 1, 0> zzxy;
+                Int4Swizzle<Int4, Bool4, 3, 2, 2, 2, 0> zzxz;
+                Int4Swizzle<Int4, Bool4, 3, 2, 2, 0, 1> zzyx;
+                Int4Swizzle<Int4, Bool4, 3, 2, 2, 1, 1> zzyy;
+                Int4Swizzle<Int4, Bool4, 3, 2, 2, 2, 1> zzyz;
+                Int4Swizzle<Int4, Bool4, 3, 2, 2, 0, 2> zzzx;
+                Int4Swizzle<Int4, Bool4, 3, 2, 2, 1, 2> zzzy;
+                Int4Swizzle<Int4, Bool4, 3, 2, 2, 2, 2> zzzz;
+            };
 
-		intswizzle<3, Int4, Bool4, 1, 0, 0, 0> yxxx;
-		intswizzle<3, Int4, Bool4, 1, 0, 0, 1> yxxy;
-		intswizzle<3, Int4, Bool4, 1, 0, 0, 2> yxxz;
-		intswizzle<3, Int4, Bool4, 1, 0, 1, 0> yxyx;
-		intswizzle<3, Int4, Bool4, 1, 0, 1, 1> yxyy;
-		intswizzle<3, Int4, Bool4, 1, 0, 1, 2> yxyz;
-		intswizzle<3, Int4, Bool4, 1, 0, 2, 0> yxzx;
-		intswizzle<3, Int4, Bool4, 1, 0, 2, 1> yxzy;
-		intswizzle<3, Int4, Bool4, 1, 0, 2, 2> yxzz;
-		intswizzle<3, Int4, Bool4, 1, 1, 0, 0> yyxx;
-		intswizzle<3, Int4, Bool4, 1, 1, 0, 1> yyxy;
-		intswizzle<3, Int4, Bool4, 1, 1, 0, 2> yyxz;
-		intswizzle<3, Int4, Bool4, 1, 1, 1, 0> yyyx;
-		intswizzle<3, Int4, Bool4, 1, 1, 1, 1> yyyy;
-		intswizzle<3, Int4, Bool4, 1, 1, 1, 2> yyyz;
-		intswizzle<3, Int4, Bool4, 1, 1, 2, 0> yyzx;
-		intswizzle<3, Int4, Bool4, 1, 1, 2, 1> yyzy;
-		intswizzle<3, Int4, Bool4, 1, 1, 2, 2> yyzz;
-		intswizzle<3, Int4, Bool4, 1, 2, 0, 0> yzxx;
-		intswizzle<3, Int4, Bool4, 1, 2, 0, 1> yzxy;
-		intswizzle<3, Int4, Bool4, 1, 2, 0, 2> yzxz;
-		intswizzle<3, Int4, Bool4, 1, 2, 1, 0> yzyx;
-		intswizzle<3, Int4, Bool4, 1, 2, 1, 1> yzyy;
-		intswizzle<3, Int4, Bool4, 1, 2, 1, 2> yzyz;
-		intswizzle<3, Int4, Bool4, 1, 2, 2, 0> yzzx;
-		intswizzle<3, Int4, Bool4, 1, 2, 2, 1> yzzy;
-		intswizzle<3, Int4, Bool4, 1, 2, 2, 2> yzzz;
+            Int3(int x, int y, int z);
 
-		intswizzle<3, Int4, Bool4, 2, 0, 0, 0> zxxx;
-		intswizzle<3, Int4, Bool4, 2, 0, 0, 1> zxxy;
-		intswizzle<3, Int4, Bool4, 2, 0, 0, 2> zxxz;
-		intswizzle<3, Int4, Bool4, 2, 0, 1, 0> zxyx;
-		intswizzle<3, Int4, Bool4, 2, 0, 1, 1> zxyy;
-		intswizzle<3, Int4, Bool4, 2, 0, 1, 2> zxyz;
-		intswizzle<3, Int4, Bool4, 2, 0, 2, 0> zxzx;
-		intswizzle<3, Int4, Bool4, 2, 0, 2, 1> zxzy;
-		intswizzle<3, Int4, Bool4, 2, 0, 2, 2> zxzz;
-		intswizzle<3, Int4, Bool4, 2, 1, 0, 0> zyxx;
-		intswizzle<3, Int4, Bool4, 2, 1, 0, 1> zyxy;
-		intswizzle<3, Int4, Bool4, 2, 1, 0, 2> zyxz;
-		intswizzle<3, Int4, Bool4, 2, 1, 1, 0> zyyx;
-		intswizzle<3, Int4, Bool4, 2, 1, 1, 1> zyyy;
-		intswizzle<3, Int4, Bool4, 2, 1, 1, 2> zyyz;
-		intswizzle<3, Int4, Bool4, 2, 1, 2, 0> zyzx;
-		intswizzle<3, Int4, Bool4, 2, 1, 2, 1> zyzy;
-		intswizzle<3, Int4, Bool4, 2, 1, 2, 2> zyzz;
-		intswizzle<3, Int4, Bool4, 2, 2, 0, 0> zzxx;
-		intswizzle<3, Int4, Bool4, 2, 2, 0, 1> zzxy;
-		intswizzle<3, Int4, Bool4, 2, 2, 0, 2> zzxz;
-		intswizzle<3, Int4, Bool4, 2, 2, 1, 0> zzyx;
-		intswizzle<3, Int4, Bool4, 2, 2, 1, 1> zzyy;
-		intswizzle<3, Int4, Bool4, 2, 2, 1, 2> zzyz;
-		intswizzle<3, Int4, Bool4, 2, 2, 2, 0> zzzx;
-		intswizzle<3, Int4, Bool4, 2, 2, 2, 1> zzzy;
-		intswizzle<3, Int4, Bool4, 2, 2, 2, 2> zzzz;
+            Int3(int x, const Int2 & yz);
 
-	};
+            Int3(const Int2 & xy, int z);
 
-	Int3():x(0),y(0),z(0){}
+            Int3(const Int3 & xyz);
 
-	Int3(int i):x(i),y(i),z(i){}
+            Int3 & operator=(const Int3 & rhs) noexcept;
 
-	Int3(int x, int y, int z):x(x),y(y),z(z){}
+            Int3 & operator+=(const Int3 & rhs) noexcept;
 
-	Int3(int x, int y, int z, int w):x(x),y(y),z(z){w;}
+            Int3 & operator-=(const Int3 & rhs) noexcept;
 
-	Int3(int x, Int2 yz):x(x),y(yz.x),z(yz.y){}
+            Int3 & operator/=(const Int3 & rhs) noexcept;
 
-	Int3(Int2 xy, int z):x(xy.x),y(xy.y),z(z){}
+            Int3 & operator*=(const Int3 & rhs) noexcept;
 
-	Int3(Bool3 b):x(b.x),y(b.y),z(b.z){}
+            Int3 & operator%=(const Int3 & rhs) noexcept;
 
-	Int3& operator+=(const Int3& o)
-	{
-		x += o.x;
-		y += o.y;
-		z += o.z;
-		return *this;
-	}
+            Int3 & operator|=(const Int3 & rhs) noexcept;
 
-	Int3& operator-=(const Int3& o)
-	{
-		x -= o.x;
-		y -= o.y;
-		z -= o.z;
-		return *this;
-	}
+            Int3 & operator&=(const Int3 & rhs) noexcept;
 
-	Int3& operator*=(const Int3& o)
-	{
-		x *= o.x;
-		y *= o.y;
-		z *= o.z;
-		return *this;
-	}
+            Int3 & operator^=(const Int3 & rhs) noexcept;
 
-	Int3& operator/=(const Int3& o)
-	{
-		x /= o.x;
-		y /= o.y;
-		z /= o.z;
-		return *this;
-	}
+            Int3 & operator<<=(const Int3 & rhs) noexcept;
 
-	Int3& operator%=(const Int3& o)
-	{
-		x %= o.x;
-		y %= o.y;
-		z %= o.z;
-		return *this;
-	}
+            Int3 & operator>>=(const Int3 & rhs) noexcept;
 
-	Int3& operator>>=(const Int3& o)
-	{
-		x >>= o.x;
-		y >>= o.y;
-		z >>= o.z;
-		return *this;
-	}
+            Int3 operator*(const Int3 & rhs) const noexcept;
 
-	Int3& operator<<=(const Int3& o)
-	{
-		x <<= o.x;
-		y <<= o.y;
-		z <<= o.z;
-		return *this;
-	}
+            Int3 operator/(const Int3 & rhs) const noexcept;
 
-	Int3& operator&=(const Int3& o)
-	{
-		x &= o.x;
-		y &= o.y;
-		z &= o.z;
-		return *this;
-	}
+            Int3 operator+(const Int3 & rhs) const noexcept;
 
-	Int3& operator|=(const Int3& o)
-	{
-		x |= o.x;
-		y |= o.y;
-		z |= o.z;
-		return *this;
-	}
+            Int3 operator-(const Int3 & rhs) const noexcept;
 
-	Int3 operator&(const Int3& o) const
-	{
-		return Int3(x & o.x, y & o.y, z & o.z);
-	}
+            Int3 operator%(const Int3 & rhs) const noexcept;
 
-	Int3 operator&&(const Int3& o) const
-	{
-		return Int3(x && o.x, y && o.y, z && o.z);
-	}
+            Int3 operator|(const Int3 & rhs) const noexcept;
 
-	Int3 operator|	(const Int3& o) const
-	{
-		return Int3(x | o.x, y | o.y, z | o.z);
-	}
+            Int3 operator&(const Int3 & rhs) const noexcept;
 
-	Int3 operator||(const Int3& o) const
-	{
-		return Int3(x || o.x, y || o.y, z || o.z);
-	}
+            Int3 operator^(const Int3 & rhs) const noexcept;
 
-	Bool3 operator==(const Int3& o) const
-	{
-		return Bool3(x == o.x, y == o.y, z == o.z);
-	}
+            Int3 operator<<(const Int3 & rhs) const noexcept;
 
-	Bool3 operator!=(const Int3& o) const
-	{
-		return Bool3(x != o.x, y != o.y, z != o.z);
-	}
+            Int3 operator>>(const Int3 & rhs) const noexcept;
 
-	Bool3 operator<(const Int3& o) const
-	{
-		return Bool3(x < o.x, y < o.y, z < o.z);
-	}
+            Int3 operator||(const Int3 & rhs) const noexcept;
 
-	Bool3 operator>(const Int3& o) const
-	{
-		return Bool3(x > o.x, y > o.y, z > o.z);
-	}
+            Int3 operator&&(const Int3 & rhs) const noexcept;
 
-	Bool3 operator<=(const Int3& o) const
-	{
-		return Bool3(x <= o.x, y <= o.y, z <= o.z);
-	}
+            Bool3 operator<(const Int3 & rhs) const noexcept;
 
-	Bool3 operator>=(const Int3& o) const
-	{
-		return Bool3(x >= o.x, y >= o.y, z >= o.z);
-	}
+            Bool3 operator>(const Int3 & rhs) const noexcept;
 
-	Int3 operator<<(const Int3& o) const
-	{
-		return Int3(x << o.x, y << o.y, z << o.z);
-	}
+            Bool3 operator!=(const Int3 & rhs) const noexcept;
 
-	Int3 operator>>(const Int3& o) const
-	{
-		return Int3(x >> o.x, y >> o.y, z >> o.z);
-	}
+            Bool3 operator==(const Int3 & rhs) const noexcept;
 
-	Int3 operator+(const Int3& o) const
-	{
-		return Int3(x + o.x, y + o.y, z + o.z);
-	}
+            Bool3 operator>=(const Int3 & rhs) const noexcept;
 
-	Int3 operator-(const Int3& o) const
-	{
-		return Int3(x - o.x, y - o.y, z - o.z);
-	}
+            Bool3 operator<=(const Int3 & rhs) const noexcept;
 
-	Int3 operator*(const Int3& o) const
-	{
-		return Int3(x * o.x, y * o.y, z * o.z);
-	}
+            Int3 operator~() const noexcept;
 
-	Int3 operator/(const Int3& o) const
-	{
-		return Int3(x / o.x, y / o.y, z / o.z);
-	}
+            Int3 operator!() const noexcept;
 
-	Int3 operator%(const Int3& o) const
-	{
-		return Int3(x % o.x, y % o.y, z % o.z);
-	}
+            Int3 operator++() noexcept;
 
-	Int3 operator+() const
-	{
-		return Int3(+x, +y, +z);
-	}
+            Int3 operator++(int) noexcept;
 
-	Int3 operator-() const
-	{
-		return Int3(-x, -y, -z);
-	}
+            Int3 operator--() noexcept;
 
-	Int3 operator!() const
-	{
-		return Int3(!x, !y, !z);
-	}
+            Int3 operator--(int) noexcept;
 
-	Int3 operator~() const
-	{
-		return Int3(~x, ~y, ~z);
-	}
+            Int3 operator-() const noexcept;
 
-	Int3 operator++()
-	{
-		return Int3(++x, ++y, ++z);
-	}
+            static const Int3 One;
+            static const Int3 Zero;
+            static const Int3 UnitX;
+            static const Int3 UnitY;
+            static const Int3 UnitZ;
+        };
+    }
+}
 
-	Int3 operator--()
-	{
-		return Int3(--x, --y, --z);
-	}
-
-
-	Int3 operator++(int)
-	{
-		return Int3(x++, y++, z++);
-	}
-	
-	Int3 operator--(int)
-	{
-		return Int3(x++, y++, z++);
-	}
-
-
-	int operator[](unsigned int i) const
-	{
-		if(i < 0 || i > 2)
-			throw std::range_error("Int3 index out of range.");
-		return v[i];
-	}
-
-	int& operator[](unsigned int i)
-	{
-		if(i < 0 || i > 2)
-			throw std::range_error("Int3 index out of range.");
-		return v[i];
-	}
-
-	Int3 max(const Int3& o) const
-	{
-		return Int3( (x>o.x)?x:o.x, (y>o.y)?y:o.y, (z>o.z)?z:o.z );
-	}
-
-	Int3 min(const Int3& o) const
-	{
-		return Int3( (x<o.x)?x:o.x, (y<o.y)?y:o.y, (z<o.z)?z:o.z );
-	}
-
-	static Int3 random(int lower=0, int upper=6)
-	{
-		int range = upper - lower + 1;
-		return Int3(
-			rand() % range + lower,
-			rand() % range + lower,
-			rand() % range + lower);
-	}
-
-	static const Int3 zero;
-	static const Int3 xUnit;
-	static const Int3 yUnit;
-	static const Int3 zUnit;
-	static const Int3 one;
-};
