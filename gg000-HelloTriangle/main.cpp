@@ -94,7 +94,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	debugController->EnableDebugLayer();
 
 	DX_API("Failed to create DXGI factory")
-		CreateDXGIFactory1(IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
+		CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory));
 
 	std::vector<com_ptr<IDXGIAdapter1>> adapters;
 	GetAdapters(dxgiFactory.Get(), adapters);
@@ -147,7 +147,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	DX_API("Failed to cast swap chain")
 		tempSwapChain.As(&swapChain);
 
-	DX_API("Failed to make window association") // disable ALT+Enter shortcut to full screen mode
+	DX_API("Failed to make window association")
 		dxgiFactory->MakeWindowAssociation(windowHandle, DXGI_MWA_NO_ALT_ENTER);
 
 

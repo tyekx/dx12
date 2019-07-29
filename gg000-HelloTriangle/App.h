@@ -47,12 +47,10 @@ protected:
 	com_ptr<ID3D12Device> device;
 	com_ptr<ID3D12CommandQueue> commandQueue;
 	com_ptr<ID3D12RootSignature> rootSignature;
-	com_ptr<ID3D12DescriptorHeap> rtvDescriptorHeap;
 	com_ptr<ID3D12CommandAllocator> commandAllocator;
-	com_ptr<ID3D12Resource> renderTargets[BACKBUFFER_DEPTH];
-
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
+	com_ptr<ID3D12DescriptorHeap> rtvDescriptorHeap;
 	unsigned int rtvDescriptorHandleIncrementSize;
+	com_ptr<ID3D12Resource> renderTargets[BACKBUFFER_DEPTH];
 
 	// Graphics Pipeline State Object
 	com_ptr<ID3DBlob> vsByteCode;
@@ -310,7 +308,8 @@ public:
 		DX_API("Failed to create render target view descriptor heap")
 			device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(rtvDescriptorHeap.GetAddressOf()));
 
-		rtvHandle = rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 		rtvDescriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 		// Create Render Target Views
