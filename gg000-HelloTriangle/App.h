@@ -7,19 +7,16 @@ const char * vertexShaderCode = R"(
 //Input Assembler Output Structure
 struct IAOS {
 	float3 position : POSITION;
-	float3 color : COLOR;
 };
 
 //Vertex Shader Output Structure
 struct VSOS {
 	float4 position : SV_Position;
-	float3 color : COLOR;
 };
 
 VSOS vs_main(IAOS iaos) {
 	VSOS vsos;
 	vsos.position = float4(iaos.position.xy, 0.1f, 1.0f);
-	vsos.color = iaos.color;
 	return vsos;
 }
 )";
@@ -28,11 +25,10 @@ const char * pixelShaderCode = R"(
 //Vertex Shader Output Structure
 struct VSOS {
 	float4 position : SV_Position;
-	float3 color : COLOR;
 };
 
 float4 ps_main(VSOS vsos) : SV_Target {
-	return float4(vsos.color, 1.0f);
+	return float4(0.1f, 0.2f, 0.8f, 1.0f);
 }
 )";
 
@@ -46,17 +42,18 @@ protected:
 	com_ptr<IDXGISwapChain3> swapChain;
 	com_ptr<ID3D12Device> device;
 	com_ptr<ID3D12CommandQueue> commandQueue;
-	com_ptr<ID3D12RootSignature> rootSignature;
-	com_ptr<ID3D12CommandAllocator> commandAllocator;
 	com_ptr<ID3D12DescriptorHeap> rtvDescriptorHeap;
 	unsigned int rtvDescriptorHandleIncrementSize;
 	com_ptr<ID3D12Resource> renderTargets[BACKBUFFER_DEPTH];
 
+	com_ptr<ID3D12CommandAllocator> commandAllocator;
+	com_ptr<ID3D12GraphicsCommandList> commandList;
+
 	// Graphics Pipeline State Object
 	com_ptr<ID3DBlob> vsByteCode;
 	com_ptr<ID3DBlob> psByteCode;
+	com_ptr<ID3D12RootSignature> rootSignature;
 	com_ptr<ID3D12PipelineState> gpso;
-	com_ptr<ID3D12GraphicsCommandList> commandList{ nullptr };
 
 	// Sync objects
 	com_ptr<ID3D12Fence> fence;
@@ -82,7 +79,7 @@ protected:
 		CD3DX12_CPU_DESCRIPTOR_HANDLE rHandle(rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), frameIndex, rtvDescriptorHandleIncrementSize);
 		commandList->OMSetRenderTargets(1, &rHandle, FALSE, nullptr);
 
-		const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+		const float clearColor[] = { 0.0f, 0.1f, 0.2f, 1.0f };
 		commandList->ClearRenderTargetView(rHandle, clearColor, 0, nullptr);
 
 		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -130,13 +127,12 @@ public:
 	virtual void LoadAssets() {
 		struct Vertex {
 			float pos[3];
-			float color[3];
 		};
 
 		Vertex triangleVertices[] = {
-			{ {  0.0f   ,  0.85f  , 0.0f }, { 1.0f, 0.0f, 0.0f } },
-			{ {  0.7071f, -0.8571f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
-			{ { -0.7071f, -0.8571f, 0.0f }, { 0.0f, 0.0f, 1.0f } }
+			{ {  0.0f   ,  0.85f  , 0.0f } },
+			{ {  0.7071f, -0.8571f, 0.0f } },
+			{ { -0.7071f, -0.8571f, 0.0f } }
 		};
 
 		unsigned int vertexBufferSize = sizeof(triangleVertices);
@@ -184,15 +180,13 @@ public:
 
 		// Create Command Allocator
 
-		DX_API("Failed to create command allocator")
-			device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(commandAllocator.GetAddressOf()));
+
 
 
 		// Input Layout
 
 		D3D12_INPUT_ELEMENT_DESC inputDesc[] = {
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-			{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 		};
 
 		D3D12_INPUT_LAYOUT_DESC inputLayout;
@@ -202,30 +196,20 @@ public:
 		// Vertex / Pixel Shaders
 
 		com_ptr<ID3DBlob> vsError;
+		com_ptr<ID3DBlob> psError;
+
 		HRESULT cRes = D3DCompile(vertexShaderCode, strlen(vertexShaderCode), "basic vertex shader", nullptr, nullptr, "vs_main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, vsByteCode.GetAddressOf(), vsError.GetAddressOf());
 
-		if(cRes != S_OK) {
-			char * ptr = reinterpret_cast<char*>(vsError->GetBufferPointer());
-			std::string err = "Failed to compile vertex shader: " + std::string{ ptr };
-			DX_API(err.c_str()) cRes;
-		}
-		com_ptr<ID3DBlob> psError;
+		ASSERT(SUCCEEDED(cRes), BlobAsString(vsError));
 
 		cRes = D3DCompile(pixelShaderCode, strlen(pixelShaderCode), "basic pixel shader", nullptr, nullptr, "ps_main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, psByteCode.GetAddressOf(), psError.GetAddressOf());
 
-		if(cRes != S_OK) {
-			char * ptr = reinterpret_cast<char*>(psError->GetBufferPointer());
-			std::string err = "Failed to compile pixel shader: " + std::string{ ptr };
-			DX_API(err.c_str()) cRes;
-		}
+		ASSERT(SUCCEEDED(cRes), BlobAsString(psError));
 
-		// Root Signature + Input Layout + VS + PS = pipeline state
+		// Create GPSO
 
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gpsoDesc;
 		ZeroMemory(&gpsoDesc, sizeof(gpsoDesc));
-		gpsoDesc.pRootSignature = rootSignature.Get();
-		gpsoDesc.InputLayout = inputLayout;
-
 		gpsoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		gpsoDesc.NumRenderTargets = 1;
 		gpsoDesc.DepthStencilState.StencilEnable = FALSE;
@@ -234,21 +218,26 @@ public:
 		gpsoDesc.SampleDesc.Count = 1;
 		gpsoDesc.SampleDesc.Quality = 0;
 		gpsoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-
 		gpsoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 		gpsoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-
+		gpsoDesc.pRootSignature = rootSignature.Get();
+		gpsoDesc.InputLayout = inputLayout;
 		gpsoDesc.VS = CD3DX12_SHADER_BYTECODE(vsByteCode.Get());
-
 		gpsoDesc.PS = CD3DX12_SHADER_BYTECODE(psByteCode.Get());
 
 		DX_API("Failed to initialize GPSO")
 			device->CreateGraphicsPipelineState(&gpsoDesc, IID_PPV_ARGS(gpso.GetAddressOf()));
 
+		DX_API("Failed to create command allocator")
+			device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(commandAllocator.GetAddressOf()));
+
 		// Create Graphics Command List, set the newly created GPSO as its initial state
 
 		DX_API("Failed to greate graphics command list")
 			device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator.Get(), gpso.Get(), IID_PPV_ARGS(commandList.GetAddressOf()));
+
+		DX_API("Failed to close command list")
+			commandList->Close();
 
 		// Create Sync Objects, fenceEvent is WinAPI, not DirectX
 
@@ -260,8 +249,6 @@ public:
 		if(fenceEvent == NULL) {
 			DX_API("Failed to create windows event") HRESULT_FROM_WIN32(GetLastError());
 		}
-
-		commandList->Close();
 
 		WaitForPreviousFrame();
 	}

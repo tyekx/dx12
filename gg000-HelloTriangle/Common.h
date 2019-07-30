@@ -15,6 +15,10 @@ using com_ptr = Microsoft::WRL::ComPtr<T>;
 
 #define ASSERT(trueMeansOk, msgOnFail) if(!trueMeansOk) { MessageBoxA(NULL, msgOnFail, "Assertion failed!", MB_ICONSTOP | MB_OK); exit(-1); }
 
+const char * BlobAsString(com_ptr<ID3DBlob> blob) {
+	return reinterpret_cast<const char *>(blob->GetBufferPointer());
+}
+
 class HResultTester {
 public:
 	const char * Message;
