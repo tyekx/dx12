@@ -16,7 +16,7 @@ struct VSOS {
 
 VSOS vs_main(IAOS iaos) {
 	VSOS vsos;
-	vsos.position = float4(iaos.position.xy, 0.1f, 1.0f);
+	vsos.position = float4(iaos.position.xy * float2(0.5f, 1.0f), 0.1f, 1.0f) + float4(0.5f, 0.0f, 0.0f, 0.0f);
 	return vsos;
 }
 )";
@@ -29,6 +29,38 @@ struct VSOS {
 
 float4 ps_main(VSOS vsos) : SV_Target {
 	return float4(0.1f, 0.2f, 0.8f, 1.0f);
+}
+)";
+const char * vertexShaderCode2 = R"(
+//Input Assembler Output Structure
+struct IAOS {
+	float3 position : POSITION;
+	float3 color : COLOR;
+};
+
+//Vertex Shader Output Structure
+struct VSOS {
+	float4 position : SV_Position;
+	float3 color : COLOR;
+};
+
+VSOS vs_main(IAOS iaos) {
+	VSOS vsos;
+	vsos.position = float4(iaos.position.xy * float2(0.5f, 1.0f), 0.1f, 1.0f) + float4(-0.5f, 0.0f, 0.0f, 0.0f);
+	vsos.color = iaos.color;
+	return vsos;
+}
+)";
+
+const char * pixelShaderCode2 = R"(
+//Vertex Shader Output Structure
+struct VSOS {
+	float4 position : SV_Position;
+	float3 color : COLOR;
+};
+
+float4 ps_main(VSOS vsos) : SV_Target {
+	return float4(vsos.color, 1.0f);
 }
 )";
 
@@ -52,8 +84,11 @@ protected:
 	// Graphics Pipeline State Object
 	com_ptr<ID3DBlob> vsByteCode;
 	com_ptr<ID3DBlob> psByteCode;
+	com_ptr<ID3DBlob> vsByteCode2;
+	com_ptr<ID3DBlob> psByteCode2;
 	com_ptr<ID3D12RootSignature> rootSignature;
 	com_ptr<ID3D12PipelineState> gpso;
+	com_ptr<ID3D12PipelineState> gpso2;
 
 	// Sync objects
 	com_ptr<ID3D12Fence> fence;
@@ -70,6 +105,7 @@ protected:
 		commandAllocator->Reset();
 		commandList->Reset(commandAllocator.Get(), gpso.Get());
 
+
 		commandList->SetGraphicsRootSignature(rootSignature.Get());
 		commandList->RSSetViewports(1, &viewPort);
 		commandList->RSSetScissorRects(1, &scissorRect);
@@ -81,6 +117,12 @@ protected:
 
 		const float clearColor[] = { 0.0f, 0.1f, 0.2f, 1.0f };
 		commandList->ClearRenderTargetView(rHandle, clearColor, 0, nullptr);
+
+		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
+		commandList->DrawInstanced(3, 1, 0, 0);
+
+		commandList->SetPipelineState(gpso2.Get());
 
 		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
@@ -127,12 +169,13 @@ public:
 	virtual void LoadAssets() {
 		struct Vertex {
 			float pos[3];
+			float color[3];
 		};
 
 		Vertex triangleVertices[] = {
-			{ {  0.0f   ,  0.85f  , 0.0f } },
-			{ {  0.7071f, -0.8571f, 0.0f } },
-			{ { -0.7071f, -0.8571f, 0.0f } }
+			{ {  0.0f   ,  0.85f  , 0.0f }, { 1.0f, 0.0f, 0.0f } },
+			{ {  0.7071f, -0.8571f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
+			{ { -0.7071f, -0.8571f, 0.0f }, { 0.0f, 0.0f, 1.0f } }
 		};
 
 		unsigned int vertexBufferSize = sizeof(triangleVertices);
@@ -193,6 +236,18 @@ public:
 		inputLayout.NumElements = _countof(inputDesc);
 		inputLayout.pInputElementDescs = inputDesc;
 
+
+		// Input Layout
+
+		D3D12_INPUT_ELEMENT_DESC inputDesc2[] = {
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+			{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+		};
+
+		D3D12_INPUT_LAYOUT_DESC inputLayout2;
+		inputLayout2.NumElements = _countof(inputDesc2);
+		inputLayout2.pInputElementDescs = inputDesc2;
+
 		// Vertex / Pixel Shaders
 
 		com_ptr<ID3DBlob> vsError;
@@ -203,6 +258,14 @@ public:
 		ASSERT(SUCCEEDED(cRes), BlobAsString(vsError));
 
 		cRes = D3DCompile(pixelShaderCode, strlen(pixelShaderCode), "basic pixel shader", nullptr, nullptr, "ps_main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, psByteCode.GetAddressOf(), psError.GetAddressOf());
+
+		ASSERT(SUCCEEDED(cRes), BlobAsString(psError));
+
+		cRes = D3DCompile(vertexShaderCode2, strlen(vertexShaderCode2), "basic vertex shader 2", nullptr, nullptr, "vs_main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, vsByteCode2.GetAddressOf(), vsError.GetAddressOf());
+
+		ASSERT(SUCCEEDED(cRes), BlobAsString(vsError));
+
+		cRes = D3DCompile(pixelShaderCode2, strlen(pixelShaderCode2), "basic pixel shader 2", nullptr, nullptr, "ps_main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, psByteCode2.GetAddressOf(), psError.GetAddressOf());
 
 		ASSERT(SUCCEEDED(cRes), BlobAsString(psError));
 
@@ -227,6 +290,13 @@ public:
 
 		DX_API("Failed to initialize GPSO")
 			device->CreateGraphicsPipelineState(&gpsoDesc, IID_PPV_ARGS(gpso.GetAddressOf()));
+
+		gpsoDesc.VS = CD3DX12_SHADER_BYTECODE(vsByteCode2.Get());
+		gpsoDesc.PS = CD3DX12_SHADER_BYTECODE(psByteCode2.Get());
+		gpsoDesc.InputLayout = inputLayout2;
+
+		DX_API("Failed to initialize 2nd GPSO")
+			device->CreateGraphicsPipelineState(&gpsoDesc, IID_PPV_ARGS(gpso2.GetAddressOf()));
 
 		DX_API("Failed to create command allocator")
 			device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(commandAllocator.GetAddressOf()));
@@ -261,8 +331,11 @@ public:
 		commandList.Reset();
 		vsByteCode.Reset();
 		psByteCode.Reset();
+		vsByteCode2.Reset();
+		psByteCode2.Reset();
 		rootSignature.Reset();
 		gpso.Reset();
+		gpso2.Reset();
 		fence.Reset();
 		commandAllocator.Reset();
 	}
