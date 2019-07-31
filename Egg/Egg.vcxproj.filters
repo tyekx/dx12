@@ -19,6 +19,9 @@
     <Filter Include="Math">
       <UniqueIdentifier>{c76fb140-ceaa-4268-b77f-2406ec79c7ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Mesh">
+      <UniqueIdentifier>{3975ca39-e5c6-4edb-ad6d-5072b939714f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utility.h">
@@ -128,6 +131,12 @@
     </ClInclude>
     <ClInclude Include="Math\UInt4Swizzle.hpp">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh\Shaded.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh\Material.h">
+      <Filter>Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
