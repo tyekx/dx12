@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gg000-HelloTriangle", "gg000-HelloTriangle\gg000-HelloTriangle.vcxproj", "{226FA8CD-44EA-46B9-83A4-79EECED4CF3D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gg001-Libraries", "gg001-Libraries\gg001-Libraries.vcxproj", "{96607F87-0577-4DB9-8BD7-066E92F2EC0F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Egg", "Egg\Egg.vcxproj", "{C235BD63-6E30-4F13-A0FF-C5D5FCA38558}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -12,6 +16,10 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{226FA8CD-44EA-46B9-83A4-79EECED4CF3D}.Debug|x64.ActiveCfg = Debug|x64
 		{226FA8CD-44EA-46B9-83A4-79EECED4CF3D}.Debug|x64.Build.0 = Debug|x64
+		{96607F87-0577-4DB9-8BD7-066E92F2EC0F}.Debug|x64.ActiveCfg = Debug|x64
+		{96607F87-0577-4DB9-8BD7-066E92F2EC0F}.Debug|x64.Build.0 = Debug|x64
+		{C235BD63-6E30-4F13-A0FF-C5D5FCA38558}.Debug|x64.ActiveCfg = Debug|x64
+		{C235BD63-6E30-4F13-A0FF-C5D5FCA38558}.Debug|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
