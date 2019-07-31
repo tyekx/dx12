@@ -5,11 +5,17 @@ App * app;
 LRESULT CALLBACK WindowProcess(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam) {
 	switch(message) {
 	case WM_DESTROY:
+		app->Destroy();
 		PostQuitMessage(0);
+		break;
+	case WM_SIZE:
+		int width = HIWORD(lParam);
+		int height = LOWORD(lParam);
+		app->Resize(width, height);
 		break;
 	}
 
-	return DefWindowProc(windowHandle, message, wParam, lParam);
+	return DefWindowProcW(windowHandle, message, wParam, lParam);
 }
 
 HWND InitWindow(HINSTANCE hInstance) {

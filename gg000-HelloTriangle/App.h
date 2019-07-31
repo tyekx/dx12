@@ -118,7 +118,7 @@ public:
 		commandQueue->ExecuteCommandLists(_countof(cLists), cLists);
 
 		DX_API("Failed to present swap chain")
-			swapChain->Present(1, 0);
+			swapChain->Present(0, 0);
 
 		// Sync
 		WaitForPreviousFrame();
@@ -265,9 +265,6 @@ public:
 		gpso.Reset();
 		fence.Reset();
 		commandAllocator.Reset();
-		commandQueue.Reset();
-		swapChain.Reset();
-		device.Reset();
 	}
 
 	virtual void CreateSwapChainResources() {
@@ -335,6 +332,9 @@ public:
 		ReleaseSwapChainResources();
 		ReleaseResources();
 		ReleaseAssets();
+		commandQueue.Reset();
+		swapChain.Reset();
+		device.Reset();
 	}
 
 	virtual void SetCommandQueue(com_ptr<ID3D12CommandQueue> cQueue) {
