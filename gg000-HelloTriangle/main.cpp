@@ -170,5 +170,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		}
 	}
 
+	delete app;
+
 	return 0;
 }
