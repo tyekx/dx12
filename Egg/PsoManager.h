@@ -145,7 +145,25 @@ namespace Egg {
 	public:
 		PsoManager(com_ptr<ID3D12Device> dev) : device{ dev } { }
 
-		com_ptr<ID3D12PipelineState> Add(ID3D12RootSignature * rootSignature, const D3D12_INPUT_LAYOUT_DESC & inputLayout, const D3D12_SHADER_BYTECODE & vertexShader, const D3D12_SHADER_BYTECODE & pixelShader ) {
+		com_ptr<ID3D12PipelineState> Get(const D3D12_GRAPHICS_PIPELINE_STATE_DESC & gpsoDesc) {
+			int indexOf = Exists(gpsoDesc);
+
+			if(indexOf == -1) {
+				com_ptr<ID3D12PipelineState> pso{ nullptr };
+
+				DX_API("PSOManager: Failed to create GPSO")
+					device->CreateGraphicsPipelineState(&gpsoDesc, IID_PPV_ARGS(pso.GetAddressOf()));
+
+				gpsos.push_back(pso);
+				gpsoDescs.push_back(gpsoDesc);
+
+				return pso;
+			} else {
+				return gpsos[indexOf];
+			}
+		}
+
+		com_ptr<ID3D12PipelineState> Get(ID3D12RootSignature * rootSignature, const D3D12_INPUT_LAYOUT_DESC & inputLayout, const D3D12_SHADER_BYTECODE & vertexShader, const D3D12_SHADER_BYTECODE & pixelShader ) {
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC gpsoDesc;
 			ZeroMemory(&gpsoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 			gpsoDesc.pRootSignature = rootSignature;
@@ -163,21 +181,7 @@ namespace Egg {
 			gpsoDesc.VS = vertexShader;
 			gpsoDesc.PS = pixelShader;
 
-			int indexOf = Exists(gpsoDesc);
-
-			if(indexOf == -1) {
-				com_ptr<ID3D12PipelineState> pso{ nullptr };
-				
-				DX_API("PSOManager: Failed to create GPSO")
-					device->CreateGraphicsPipelineState(&gpsoDesc, IID_PPV_ARGS(pso.GetAddressOf()));
-
-				gpsos.push_back(pso);
-				gpsoDescs.push_back(gpsoDesc);
-
-				return pso;
-			} else {
-				return gpsos[indexOf];
-			}
+			return Get(gpsoDesc);
 		}
 	};
 

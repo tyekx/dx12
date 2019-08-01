@@ -138,6 +138,9 @@
     <ClInclude Include="Mesh\Material.h">
       <Filter>Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh\Geometry.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utility.cpp">
@@ -210,7 +213,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Shaders\DefaultRootSignature.hlsl">
+    <Text Include="Shaders\RootSignatures.hlsli">
       <Filter>Shaders</Filter>
     </Text>
   </ItemGroup>

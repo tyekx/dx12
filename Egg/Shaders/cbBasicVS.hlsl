@@ -1,4 +1,4 @@
-#include "DefaultRootSignature.hlsl"
+#include "RootSignatures.hlsli"
 
 struct IAOutput {
 	float3 position : POSITION;
@@ -11,11 +11,11 @@ struct VSOutput {
 	float3 color : COLOR;
 };
 
-cbuffer ModelCb : register(b0) {
+cbuffer MiertNemJo : register(b0) {
 	float4x4 modelMat;
 }
 
-[RootSignature(RootSignatureTest)]
+[RootSignature(RootSig1)]
 VSOutput main(IAOutput iao) {
 	VSOutput vso;
 	vso.position = mul(modelMat, float4(iao.position, 1.0f));

@@ -1,11 +1,12 @@
 #include "HelloTriangleApp.h"
 #include <Egg/Utility.h>
 #include <chrono>
+#include <type_traits>
 #include <Egg/Math/Math.h>
  
 using namespace Egg::Math;
 
-__declspec(align(16)) struct ConstantBufferData {
+__declspec(align(16)) struct PerObjectCb {
 	Float4x4 modelTransform;
 };
 
@@ -15,25 +16,94 @@ struct PNT_Vertex {
 	Float2 tex;
 };
 
+template<typename T>
+class ConstantBuffer {
+	UINT8 * mappedPtr;
+	com_ptr<ID3D12Resource> constantBuffer;
+	T data;
+public:
+	using Type = T;
+
+	ConstantBuffer() : mappedPtr{ nullptr }, constantBuffer{ nullptr } {
+		static_assert(__alignof(T) % 16 == 0, "ConstantBuffer type must be aligned to 16 bytes, otherwise you'll get funny glitches, use __declspec(align(16)) before your class specification");
+		static_assert(!std::is_polymorphic<T>::value, "Polymorphic classes are strongly discouraged as constant buffers (the Vtable will offset the layout, remove any virtual keywords)");
+	}
+
+	~ConstantBuffer() {
+		ReleaseResources();
+	}
+
+	void CreateResources(ID3D12Device * device) {
+		DX_API("Failed to create constant buffer resource")
+			device->CreateCommittedResource(
+				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+				D3D12_HEAP_FLAG_NONE,
+				&CD3DX12_RESOURCE_DESC::Buffer(Egg::Utility::Align256(sizeof(T))),
+				D3D12_RESOURCE_STATE_GENERIC_READ,
+				nullptr,
+				IID_PPV_ARGS(constantBuffer.GetAddressOf()));
+
+		CD3DX12_RANGE rr(0, 0);
+		DX_API("Failed to map constant buffer")
+			constantBuffer->Map(0, &rr, reinterpret_cast<void**>(&mappedPtr));
+	}
+
+	D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() const {
+		return constantBuffer->GetGPUVirtualAddress();
+	}
+
+	void ReleaseResources() {
+		if(constantBuffer != nullptr) {
+			constantBuffer->Unmap(0, nullptr);
+			constantBuffer.Reset();
+		}
+		mappedPtr = nullptr;
+	}
+
+	void Upload() {
+		memcpy(mappedPtr, &data, sizeof(T));
+	}
+
+	void Bind(ID3D12GraphicsCommandList * commandList) {
+		Upload();
+		commandList->SetGraphicsRootConstantBufferView(0, constantBuffer->GetGPUVirtualAddress());
+	}
+
+	T & operator=(const T & rhs) {
+		data = rhs;
+		return data;
+	}
+
+	T * operator->() {
+		return &data;
+	}
+};
+
 class Box {
 public:
-	com_ptr<ID3D12Resource> vertexBuffer;
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
-	com_ptr<ID3D12Resource> constantBuffer;
-	UINT8 * cbDataBegin;
-	Float4x4 modelMatrix;
+	Egg::Mesh::Shaded::P shadedBox;
+	ConstantBuffer<PerObjectCb> cb;
 	Float4x4 translation;
 	Float4x4 rotation;
 	Float4x4 scale;
 	float speed;
 
+
 	void Update(double T) {
 		rotation = Float4x4::rotation(Float3{1.0f, 1.0f, 1.0f}, ((float)T) * speed);
-		modelMatrix = scale * rotation * translation;
-		memcpy(cbDataBegin, &modelMatrix, sizeof(Float4x4));
+		cb->modelTransform = scale * rotation * translation;
 	}
 
-	void Init(ID3D12Device * dev) {
+	void Draw(ID3D12GraphicsCommandList * commandList) {
+		shadedBox->SetPipelineState(commandList);
+		//cb.Bind(commandList);
+		shadedBox->BindConstantBuffer(commandList, cb, "MiertNemJo");
+		shadedBox->Draw(commandList);
+	}
+
+	void CreateResources(ID3D12Device * device, Egg::PsoManager * psoManager) {
+		cb.CreateResources(device);
+
 		PNT_Vertex vertices[] = {
 			{ { -0.4f, -0.4f, -0.4f }, { 0.0f, 0.0f, -1.0f }, { 0.0f, 0.0f } },
 			{ { -0.4f,  0.4f, -0.4f }, { 0.0f, 0.0f, -1.0f }, { 0.0f, 1.0f } },
@@ -80,38 +150,23 @@ public:
 
 		unsigned int vertexBufferSize = sizeof(vertices);
 
-		DX_API("Failed to create commited resource")
-			dev->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-											D3D12_HEAP_FLAG_NONE,
-											&CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
-											D3D12_RESOURCE_STATE_GENERIC_READ,
-											nullptr,
-											IID_PPV_ARGS(vertexBuffer.GetAddressOf()));
+		// Vertex / Pixel Shaders
 
-		vertexBuffer->SetName(L"Vertex Buffer");
+		com_ptr<ID3DBlob> vertexShader = Shader::LoadCso("Shaders/cbBasicVS.cso");
+		com_ptr<ID3DBlob> pixelShader = Shader::LoadCso("Shaders/DefaultPS.cso");
+		com_ptr<ID3D12RootSignature> rootSig = Shader::LoadRootSignature(device, vertexShader.Get());
 
-		UINT8 * vertexDataBegin;
-		CD3DX12_RANGE readRange(0, 0); // CPU read is not mapped
-		vertexBuffer->Map(0, &readRange, reinterpret_cast<void**>(&vertexDataBegin));
-		memcpy(vertexDataBegin, vertices, vertexBufferSize);
-		vertexBuffer->Unmap(0, nullptr);
+		Egg::Mesh::Geometry::P geometry = Egg::Mesh::VertexStreamGeometry::Create(device, reinterpret_cast<void*>(vertices), vertexBufferSize, sizeof(PNT_Vertex));
+		geometry->AddInputElement({ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
+		geometry->AddInputElement({ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
+		geometry->AddInputElement({ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
 
-		vertexBufferView.BufferLocation = vertexBuffer->GetGPUVirtualAddress();
-		vertexBufferView.StrideInBytes = sizeof(PNT_Vertex);
-		vertexBufferView.SizeInBytes = vertexBufferSize;
+		Egg::Mesh::Material::P material = Egg::Mesh::Material::Create();
+		material->SetRootSignature(rootSig);
+		material->SetVertexShader(vertexShader);
+		material->SetPixelShader(pixelShader);
 
-		DX_API("Failed to create constant buffer resource")
-			dev->CreateCommittedResource(
-				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-				D3D12_HEAP_FLAG_NONE,
-				&CD3DX12_RESOURCE_DESC::Buffer(256),
-				D3D12_RESOURCE_STATE_GENERIC_READ,
-				nullptr,
-				IID_PPV_ARGS(constantBuffer.GetAddressOf()));
-
-		CD3DX12_RANGE rr(0, 0);
-		DX_API("Failed to map constant buffer")
-			constantBuffer->Map(0, &rr, reinterpret_cast<void**>(&cbDataBegin));
+		shadedBox = Egg::Mesh::Shaded::Create(psoManager, material, geometry);
 	}
 
 };
@@ -119,8 +174,6 @@ public:
 
 class HelloConstantBufferApp : public HelloTriangleApp {
 protected:
-	com_ptr<ID3D12RootSignature> cbRootSignature;
-	com_ptr<ID3D12PipelineState> cbPso;
 	Box boxes[8];
 public:
 	virtual void Update(double T, double dt) override {
@@ -131,9 +184,8 @@ public:
 
 	void PopulateCommandList() {
 		commandAllocator->Reset();
-		commandList->Reset(commandAllocator.Get(), cbPso.Get());
+		commandList->Reset(commandAllocator.Get(), nullptr);
 
-		commandList->SetGraphicsRootSignature(cbRootSignature.Get());
 		commandList->RSSetViewports(1, &viewPort);
 		commandList->RSSetScissorRects(1, &scissorRect);
 
@@ -146,11 +198,7 @@ public:
 		commandList->ClearRenderTargetView(rHandle, clearColor, 0, nullptr);
 
 		for(int i = 0; i < 8; ++i) {
-			commandList->SetGraphicsRootConstantBufferView(0, boxes[i].constantBuffer->GetGPUVirtualAddress());
-
-			commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			commandList->IASetVertexBuffers(0, 1, &boxes[i].vertexBufferView);
-			commandList->DrawInstanced(36, 1, 0, 0);
+			boxes[i].Draw(commandList.Get());
 		}
 
 		commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
@@ -172,65 +220,15 @@ public:
 		WaitForPreviousFrame();
 	}
 
-	virtual void CreateResources() override {
-		HelloTriangleApp::CreateResources();
-
-		/*
-
-		CD3DX12_ROOT_PARAMETER rsRootParams[1];
-		rsRootParams[0].InitAsConstantBufferView(0);
-
-		// Create Root Signature
-
-		D3D12_ROOT_SIGNATURE_DESC rootDesc = { 0 };
-		rootDesc.NumParameters = _countof(rsRootParams);
-		rootDesc.pParameters = rsRootParams;
-		rootDesc.NumStaticSamplers = 0;
-		rootDesc.pStaticSamplers = nullptr;
-		rootDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-
-		com_ptr<ID3DBlob> signature;
-		com_ptr<ID3DBlob> error;
-		DX_API("Failed to serialize root signature")
-			D3D12SerializeRootSignature(&rootDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, signature.GetAddressOf(), error.GetAddressOf());
-			*/
-		
-
-		// Input Layout
-
-		D3D12_INPUT_ELEMENT_DESC inputDesc[] = {
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
-		};
-
-		D3D12_INPUT_LAYOUT_DESC inputLayout;
-		inputLayout.NumElements = _countof(inputDesc);
-		inputLayout.pInputElementDescs = inputDesc;
-
-		// Vertex / Pixel Shaders
-
-		Shader vertexShader = Shader::LoadCSO("Shaders/cbBasicVS.cso");
-		Shader pixelShader = Shader::LoadCSO("Shaders/DefaultPS.cso");
-
-		DX_API("Failed to create root signature")
-			device->CreateRootSignature(0, pixelShader.GetByteCode().pShaderBytecode, pixelShader.GetByteCode().BytecodeLength, IID_PPV_ARGS(cbRootSignature.GetAddressOf()));
-
-		cbPso = psoManager->Add(cbRootSignature.Get(), inputLayout, vertexShader.GetByteCode(), pixelShader.GetByteCode());
-		
+	virtual void LoadAssets() override {
 		for(int i = 0; i < 8; ++i) {
-			boxes[i].Init(device.Get());
+			boxes[i].CreateResources(device.Get(), psoManager.get());
 			boxes[i].scale = Float4x4::scaling(Float3{ 0.2f, 0.2f, 0.2f });
 			boxes[i].translation = Float4x4::translation(Float3{ i * 0.25f - 0.9f, 0.0f, 0.8f });
 			boxes[i].speed = 0.5f + i * 0.2f;
 		}
 	}
 
-
-	virtual void ReleaseResources() override {
-
-		HelloTriangleApp::ReleaseResources();
-	}
 };
 
 Egg::App * app;

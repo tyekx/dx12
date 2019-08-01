@@ -15,6 +15,7 @@ using com_ptr = Microsoft::WRL::ComPtr<T>;
 
 #define GG_CLASS(T) GG_DECL(T) \
 class T : public Egg::Shared<T>, public std::enable_shared_from_this<T> {
+
 #define GG_SUBCLASS(T, BASE) GG_DECL(T) \
 class T : public BASE, public Egg::Shared<T> {\
 public:\
@@ -22,7 +23,9 @@ public:\
 	using Egg::Shared<T>::GetShared;\
 	using Egg::Shared<T>::P;\
 private:
+
 #define GG_ENDCLASS };
+
 #define GG_DECL(T) class T;\
 using T##P = std::shared_ptr<T>;\
 using T##W = std::weak_ptr<T>;

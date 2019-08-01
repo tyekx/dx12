@@ -4,29 +4,23 @@
 #include <Egg/Shader.h>
 #include <Egg/PsoManager.h>
 #include <memory>
+#include <Egg/Mesh/Shaded.h>
 
 using namespace Egg;
 
 class HelloTriangleApp : public App {
 protected:
-	com_ptr<ID3D12RootSignature> rootSignature;
 	com_ptr<ID3D12CommandAllocator> commandAllocator;
-
-	// Graphics Pipeline State Object
-	com_ptr<ID3D12PipelineState> basicPso;
 	com_ptr<ID3D12GraphicsCommandList> commandList;
 
-	// Asset Data
-	com_ptr<ID3D12Resource> vertexBuffer;
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
+	Egg::Mesh::Shaded::P shadedTriangle;
 
 	std::unique_ptr<PsoManager> psoManager;
 
 	void PopulateCommandList() {
 		commandAllocator->Reset();
-		commandList->Reset(commandAllocator.Get(), basicPso.Get());
+		commandList->Reset(commandAllocator.Get(), nullptr);
 
-		commandList->SetGraphicsRootSignature(rootSignature.Get());
 		commandList->RSSetViewports(1, &viewPort);
 		commandList->RSSetScissorRects(1, &scissorRect);
 
@@ -38,9 +32,8 @@ protected:
 		const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
 		commandList->ClearRenderTargetView(rHandle, clearColor, 0, nullptr);
 
-		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
-		commandList->DrawInstanced(3, 1, 0, 0);
+		shadedTriangle->SetPipelineState(commandList.Get());
+		shadedTriangle->Draw(commandList.Get());
 
 		commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
@@ -98,68 +91,25 @@ public:
 			{ { -0.866025f , -0.5f , 0.5f }, { 0.0f, 0.0f, 1.0f } }
 		};
 
-		unsigned int vertexBufferSize = sizeof(triangleVertices);
+		com_ptr<ID3DBlob> vertexShader = Shader::LoadCso("Shaders/DefaultVS.cso");
+		com_ptr<ID3DBlob> pixelShader = Shader::LoadCso("Shaders/DefaultPS.cso");
+		com_ptr<ID3D12RootSignature> rootSignature = Shader::LoadRootSignature(device.Get(), vertexShader.Get());
 
-		DX_API("Failed to create commited resource")
-			device->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-											D3D12_HEAP_FLAG_NONE,
-											&CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
-											D3D12_RESOURCE_STATE_GENERIC_READ,
-											nullptr,
-											IID_PPV_ARGS(vertexBuffer.GetAddressOf()));
+		Egg::Mesh::Geometry::P geometry = Egg::Mesh::VertexStreamGeometry::Create(device.Get(), reinterpret_cast<void*>(triangleVertices), sizeof(triangleVertices), sizeof(Vertex));
+		geometry->AddInputElement({ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
+		geometry->AddInputElement({ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
+		
+		Egg::Mesh::Material::P material = Egg::Mesh::Material::Create();
+		material->SetRootSignature(rootSignature);
+		material->SetVertexShader(vertexShader);
+		material->SetPixelShader(pixelShader);
 
-		vertexBuffer->SetName(L"Vertex Buffer");
-
-		UINT8 * vertexDataBegin;
-		CD3DX12_RANGE readRange(0, 0); // CPU read is not mapped
-		vertexBuffer->Map(0, &readRange, reinterpret_cast<void**>(&vertexDataBegin));
-		memcpy(vertexDataBegin, triangleVertices, vertexBufferSize);
-		vertexBuffer->Unmap(0, nullptr);
-
-		vertexBufferView.BufferLocation = vertexBuffer->GetGPUVirtualAddress();
-		vertexBufferView.StrideInBytes = sizeof(Vertex);
-		vertexBufferView.SizeInBytes = vertexBufferSize;
+		shadedTriangle = Egg::Mesh::Shaded::Create(psoManager.get(), material, geometry);
 	}
 
 	virtual void CreateResources() override {
 		App::CreateResources();
 		psoManager.reset(new PsoManager{ device });
-
-		// Create Root Signature
-
-		D3D12_ROOT_SIGNATURE_DESC rootDesc = { 0 };
-		rootDesc.NumParameters = 0;
-		rootDesc.NumStaticSamplers = 0;
-		rootDesc.pStaticSamplers = nullptr;
-		rootDesc.pParameters = nullptr;
-		rootDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-
-		com_ptr<ID3DBlob> signature;
-		com_ptr<ID3DBlob> error;
-
-		DX_API("Failed to serialize root signature")
-			D3D12SerializeRootSignature(&rootDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, signature.GetAddressOf(), error.GetAddressOf());
-
-		DX_API("Failed to create root signature")
-			device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(rootSignature.GetAddressOf()));
-
-		// Input Layout
-
-		D3D12_INPUT_ELEMENT_DESC inputDesc[] = {
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-			{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
-		};
-
-		D3D12_INPUT_LAYOUT_DESC inputLayout;
-		inputLayout.NumElements = _countof(inputDesc);
-		inputLayout.pInputElementDescs = inputDesc;
-
-		// Vertex / Pixel Shaders
-
-		Shader vertexShader = Shader::LoadCSO("Shaders/DefaultVS.cso");
-		Shader pixelShader = Shader::LoadCSO("Shaders/DefaultPS.cso");
-
-		basicPso = psoManager->Add(rootSignature.Get(), inputLayout, vertexShader.GetByteCode(), pixelShader.GetByteCode());
 
 		// Create Command Allocator
 		DX_API("Failed to create command allocator")
@@ -167,7 +117,7 @@ public:
 
 		// Create Graphics Command List, set the newly created GPSO as its initial state
 		DX_API("Failed to greate graphics command list")
-			device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator.Get(), basicPso.Get(), IID_PPV_ARGS(commandList.GetAddressOf()));
+			device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator.Get(), nullptr, IID_PPV_ARGS(commandList.GetAddressOf()));
 
 		commandList->Close();
 
@@ -175,15 +125,13 @@ public:
 	}
 
 	virtual void ReleaseAssets() override {
-		vertexBuffer.Reset();
 		App::ReleaseAssets();
 	}
 
 	virtual void ReleaseResources() override {
 		psoManager.reset(nullptr);
 		commandList.Reset();
-		rootSignature.Reset();
-		basicPso.Reset();
+		shadedTriangle.reset();
 		fence.Reset();
 		commandAllocator.Reset();
 		App::ReleaseResources();
