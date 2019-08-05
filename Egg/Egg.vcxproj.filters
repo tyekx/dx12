@@ -141,6 +141,15 @@
     <ClInclude Include="Mesh\Geometry.h">
       <Filter>Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="SimpleApp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh\Prefabs.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utility.cpp">

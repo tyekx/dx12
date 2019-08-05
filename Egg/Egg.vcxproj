@@ -73,10 +73,13 @@
     <ClInclude Include="Math\UInt4Swizzle.hpp" />
     <ClInclude Include="Mesh\Geometry.h" />
     <ClInclude Include="Mesh\Material.h" />
+    <ClInclude Include="Mesh\Prefabs.h" />
     <ClInclude Include="Mesh\Shaded.h" />
     <ClInclude Include="PsoManager.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="SimpleApp.h" />
     <ClInclude Include="Utility.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Internal.cpp" />

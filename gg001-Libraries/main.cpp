@@ -1,19 +1,15 @@
-#include "HelloTriangleApp.h"
+#include <Egg/SimpleApp.h>
 #include <Egg/Utility.h>
 #include <chrono>
 #include <type_traits>
 #include <Egg/Math/Math.h>
+#include <Egg/Mesh/Prefabs.h>
+#include <sstream>
  
 using namespace Egg::Math;
 
 __declspec(align(16)) struct PerObjectCb {
 	Float4x4 modelTransform;
-};
-
-struct PNT_Vertex {
-	Float3 position;
-	Float3 normal;
-	Float2 tex;
 };
 
 template<typename T>
@@ -46,6 +42,12 @@ public:
 		CD3DX12_RANGE rr(0, 0);
 		DX_API("Failed to map constant buffer")
 			constantBuffer->Map(0, &rr, reinterpret_cast<void**>(&mappedPtr));
+
+		// for debugging purposes, this will name and index the constant buffers for easier identifications
+		static int Id = 0;
+		std::wstringstream wss;
+		wss << "CB(" << typeid(T).name() << ")#" << Id++;
+		constantBuffer->SetName(wss.str().c_str());
 	}
 
 	D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() const {
@@ -62,11 +64,6 @@ public:
 
 	void Upload() {
 		memcpy(mappedPtr, &data, sizeof(T));
-	}
-
-	void Bind(ID3D12GraphicsCommandList * commandList) {
-		Upload();
-		commandList->SetGraphicsRootConstantBufferView(0, constantBuffer->GetGPUVirtualAddress());
 	}
 
 	T & operator=(const T & rhs) {
@@ -92,79 +89,32 @@ public:
 	void Update(double T) {
 		rotation = Float4x4::rotation(Float3{1.0f, 1.0f, 1.0f}, ((float)T) * speed);
 		cb->modelTransform = scale * rotation * translation;
+		cb.Upload();
 	}
 
 	void Draw(ID3D12GraphicsCommandList * commandList) {
 		shadedBox->SetPipelineState(commandList);
-		//cb.Bind(commandList);
-		shadedBox->BindConstantBuffer(commandList, cb, "MiertNemJo");
+		shadedBox->BindConstantBuffer(commandList, cb);
 		shadedBox->Draw(commandList);
 	}
 
 	void CreateResources(ID3D12Device * device, Egg::PsoManager * psoManager) {
 		cb.CreateResources(device);
 
-		PNT_Vertex vertices[] = {
-			{ { -0.4f, -0.4f, -0.4f }, { 0.0f, 0.0f, -1.0f }, { 0.0f, 0.0f } },
-			{ { -0.4f,  0.4f, -0.4f }, { 0.0f, 0.0f, -1.0f }, { 0.0f, 1.0f } },
-			{ {  0.4f, -0.4f, -0.4f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 0.0f } },
-			{ {  0.4f, -0.4f, -0.4f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 0.0f } },
-			{ { -0.4f,  0.4f, -0.4f }, { 0.0f, 0.0f, -1.0f }, { 0.0f, 1.0f } },
-			{ {  0.4f,  0.4f, -0.4f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f } },
-
-			{ { -0.4f,  0.4f, -0.4f }, { 0.0f, 1.0f,  0.0f }, { 0.0f, 0.0f } },
-			{ { -0.4f,  0.4f,  0.4f }, { 0.0f, 1.0f,  0.0f }, { 0.0f, 1.0f } },
-			{ {  0.4f,  0.4f, -0.4f }, { 0.0f, 1.0f,  0.0f }, { 1.0f, 0.0f } },
-			{ {  0.4f,  0.4f, -0.4f }, { 0.0f, 1.0f,  0.0f }, { 1.0f, 0.0f } },
-			{ { -0.4f,  0.4f,  0.4f }, { 0.0f, 1.0f,  0.0f }, { 0.0f, 1.0f } },
-			{ {  0.4f,  0.4f,  0.4f }, { 0.0f, 1.0f,  0.0f }, { 1.0f, 1.0f } },
-
-			{ {  0.4f, -0.4f, -0.4f }, { 1.0f, 0.0f,  0.0f }, { 0.0f, 0.0f } },
-			{ {  0.4f,  0.4f, -0.4f }, { 1.0f, 0.0f,  0.0f }, { 0.0f, 1.0f } },
-			{ {  0.4f, -0.4f, 0.4f }, { 1.0f, 0.0f,  0.0f }, { 1.0f, 0.0f } },
-			{ {  0.4f, -0.4f, 0.4f }, { 1.0f, 0.0f,  0.0f }, { 1.0f, 0.0f } },
-			{ {  0.4f,  0.4f, -0.4f }, { 1.0f, 0.0f,  0.0f }, { 0.0f, 1.0f } },
-			{ {  0.4f,  0.4f, 0.4f }, { 1.0f, 0.0f,  0.0f }, { 1.0f, 1.0f } },
-
-			{ {  0.4f, -0.4f, 0.4f }, { 0.0f, 0.0f,  1.0f }, { 0.0f, 0.0f } },
-			{ {  0.4f,  0.4f, 0.4f }, { 0.0f, 0.0f,  1.0f }, { 0.0f, 1.0f } },
-			{ { -0.4f, -0.4f, 0.4f }, { 0.0f, 0.0f,  1.0f }, { 1.0f, 0.0f } },
-			{ { -0.4f, -0.4f, 0.4f }, { 0.0f, 0.0f,  1.0f }, { 1.0f, 0.0f } },
-			{ {  0.4f,  0.4f, 0.4f }, { 0.0f, 0.0f,  1.0f }, { 0.0f, 1.0f } },
-			{ { -0.4f,  0.4f, 0.4f }, { 0.0f, 0.0f,  1.0f }, { 1.0f, 1.0f } },
-
-			{ { -0.4f, -0.4f, 0.4f }, { 0.0f, -1.0f,  0.0f }, { 0.0f, 0.0f } },
-			{ { -0.4f, -0.4f, -0.4f }, { 0.0f, -1.0f,  0.0f }, { 0.0f, 1.0f } },
-			{ {  0.4f, -0.4f, 0.4f }, { 0.0f, -1.0f,  0.0f }, { 1.0f, 0.0f } },
-			{ {  0.4f, -0.4f, 0.4f }, { 0.0f, -1.0f,  0.0f }, { 1.0f, 0.0f } },
-			{ { -0.4f, -0.4f, -0.4f }, { 0.0f, -1.0f,  0.0f }, { 0.0f, 1.0f } },
-			{ {  0.4f, -0.4f, -0.4f }, { 0.0f, -1.0f,  0.0f }, { 1.0f, 1.0f } },
-
-			{ {  -0.4f, -0.4f, 0.4f }, { -1.0f, 0.0f,  0.0f }, { 0.0f, 0.0f } },
-			{ {  -0.4f,  0.4f, 0.4f }, { -1.0f, 0.0f,  0.0f }, { 0.0f, 1.0f } },
-			{ {  -0.4f, -0.4f, -0.4f }, { -1.0f, 0.0f,  0.0f }, { 1.0f, 0.0f } },
-			{ {  -0.4f, -0.4f, -0.4f }, { -1.0f, 0.0f,  0.0f }, { 1.0f, 0.0f } },
-			{ {  -0.4f,  0.4f, 0.4f }, { -1.0f, 0.0f,  0.0f }, { 0.0f, 1.0f } },
-			{ {  -0.4f,  0.4f, -0.4f }, { -1.0f, 0.0f,  0.0f }, { 1.0f, 1.0f } }
-		};
-
-		unsigned int vertexBufferSize = sizeof(vertices);
 
 		// Vertex / Pixel Shaders
 
-		com_ptr<ID3DBlob> vertexShader = Shader::LoadCso("Shaders/cbBasicVS.cso");
-		com_ptr<ID3DBlob> pixelShader = Shader::LoadCso("Shaders/DefaultPS.cso");
-		com_ptr<ID3D12RootSignature> rootSig = Shader::LoadRootSignature(device, vertexShader.Get());
+		com_ptr<ID3DBlob> vertexShader = Egg::Shader::LoadCso("Shaders/cbBasicVS.cso");
+		com_ptr<ID3DBlob> pixelShader = Egg::Shader::LoadCso("Shaders/DefaultPS.cso");
+		com_ptr<ID3D12RootSignature> rootSig = Egg::Shader::LoadRootSignature(device, vertexShader.Get());
 
-		Egg::Mesh::Geometry::P geometry = Egg::Mesh::VertexStreamGeometry::Create(device, reinterpret_cast<void*>(vertices), vertexBufferSize, sizeof(PNT_Vertex));
-		geometry->AddInputElement({ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		geometry->AddInputElement({ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
-		geometry->AddInputElement({ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
 
 		Egg::Mesh::Material::P material = Egg::Mesh::Material::Create();
 		material->SetRootSignature(rootSig);
 		material->SetVertexShader(vertexShader);
 		material->SetPixelShader(pixelShader);
+
+		Egg::Mesh::Geometry::P geometry = Egg::Mesh::Prefabs::UnitBox(device);
 
 		shadedBox = Egg::Mesh::Shaded::Create(psoManager, material, geometry);
 	}
@@ -172,7 +122,7 @@ public:
 };
 
 
-class HelloConstantBufferApp : public HelloTriangleApp {
+class HelloConstantBufferApp : public Egg::SimpleApp {
 protected:
 	Box boxes[8];
 public:
@@ -182,7 +132,7 @@ public:
 		}
 	}
 
-	void PopulateCommandList() {
+	virtual void PopulateCommandList() {
 		commandAllocator->Reset();
 		commandList->Reset(commandAllocator.Get(), nullptr);
 
@@ -248,7 +198,7 @@ LRESULT CALLBACK WindowProcess(HWND windowHandle, UINT message, WPARAM wParam, L
 		break;
 	}
 
-	return DefWindowProc(windowHandle, message, wParam, lParam);
+	return DefWindowProcW(windowHandle, message, wParam, lParam);
 }
 
 HWND InitWindow(HINSTANCE hInstance) {

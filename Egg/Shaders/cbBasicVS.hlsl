@@ -11,7 +11,7 @@ struct VSOutput {
 	float3 color : COLOR;
 };
 
-cbuffer MiertNemJo : register(b0) {
+cbuffer PerObjectCb : register(b0) {
 	float4x4 modelMat;
 }
 

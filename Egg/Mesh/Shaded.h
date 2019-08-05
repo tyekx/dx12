@@ -15,9 +15,9 @@ namespace Egg {
 			Material::P material;
 			Geometry::P geometry;
 
+			com_ptr<ID3D12RootSignatureDeserializer> rsDeserializer;
 			com_ptr<ID3D12ShaderReflection> vsReflection;
 			com_ptr<ID3D12ShaderReflection> psReflection;
-			D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc;
 		public:
 			Shaded(PsoManager * psoMan, Material::P mat, Geometry::P geom) : pipelineState{ nullptr }, gpsoDesc{}, material{ mat }, geometry{ geom } {
 				ZeroMemory(&gpsoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -26,8 +26,6 @@ namespace Egg {
 				gpsoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 				gpsoDesc.InputLayout = geom->GetInputLayout();
 				mat->ApplyToDescriptor(gpsoDesc);
-
-				com_ptr<ID3D12RootSignatureDeserializer> des;
 			
 				DX_API("Failed to reflect vertex shader")
 					D3DReflect(gpsoDesc.VS.pShaderBytecode, gpsoDesc.VS.BytecodeLength, IID_PPV_ARGS(vsReflection.GetAddressOf()));
@@ -36,9 +34,7 @@ namespace Egg {
 					D3DReflect(gpsoDesc.PS.pShaderBytecode, gpsoDesc.PS.BytecodeLength, IID_PPV_ARGS(psReflection.GetAddressOf()));
 
 				DX_API("Failed to deserialize root signature")
-					D3D12CreateRootSignatureDeserializer(gpsoDesc.VS.pShaderBytecode, gpsoDesc.VS.BytecodeLength, IID_PPV_ARGS(des.GetAddressOf()));
-
-				rootSignatureDesc = *des->GetRootSignatureDesc();
+					D3D12CreateRootSignatureDeserializer(gpsoDesc.VS.pShaderBytecode, gpsoDesc.VS.BytecodeLength, IID_PPV_ARGS(rsDeserializer.GetAddressOf()));
 
 				pipelineState = psoMan->Get(gpsoDesc);
 			}
@@ -57,10 +53,12 @@ namespace Egg {
 				DX_API("Failed to get resource binding")
 					vsReflection->GetResourceBindingDescByName(name.c_str(), &bindDesc);
 
+				const D3D12_ROOT_SIGNATURE_DESC & rootSignatureDesc = *(rsDeserializer->GetRootSignatureDesc());
 				for(unsigned int i = 0; i < rootSignatureDesc.NumParameters; ++i) {
 					const D3D12_ROOT_PARAMETER & param = rootSignatureDesc.pParameters[i];
-					if(param.Descriptor.ShaderRegister == bindDesc.BindPoint &&
-						param.Descriptor.RegisterSpace == bindDesc.Space) {
+					if(param.ParameterType == D3D12_ROOT_PARAMETER_TYPE_CBV &&
+					   param.Descriptor.ShaderRegister == bindDesc.BindPoint &&
+					   param.Descriptor.RegisterSpace == bindDesc.Space) {
 						commandList->SetGraphicsRootConstantBufferView(i, resource.GetGPUVirtualAddress());
 						return;
 					}
