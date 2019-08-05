@@ -18,6 +18,17 @@ namespace Egg {
 			}
 		}
 
+		std::wstring WFormat(const wchar_t * format, ...) {
+			va_list va;
+			va_start(va, format);
+			std::wstring wstr;
+			wstr.resize(1024);
+			vswprintf_s(&(wstr.at(0)), 1024, format, va);
+			va_end(va);
+			wstr.shrink_to_fit();
+			return wstr;
+		}
+
 		// prints a formatted wide string to the VS output window
 		void WDebugf(const wchar_t * format, ...) {
 			va_list va;
@@ -43,7 +54,6 @@ namespace Egg {
 
 			vsprintf_s(&(str.at(0)), 1024, format, va);
 
-
 			OutputDebugString(str.c_str());
 
 			va_end(va);
@@ -65,9 +75,7 @@ namespace Egg {
 					DXGI_ADAPTER_DESC desc;
 					tempAdapter->GetDesc(&desc);
 
-					OutputDebugStringW(L"\t");
-					OutputDebugStringW(desc.Description);
-					OutputDebugStringW(L"\n");
+					WDebugf(L"    %s\n", desc.Description);
 
 					adapters.push_back(std::move(tempAdapter));
 					tempAdapter.Reset();

@@ -44,7 +44,7 @@ public:
 		material->SetVertexShader(vertexShader);
 		material->SetPixelShader(pixelShader);
 
-		Egg::Mesh::Geometry::P geometry = Egg::Mesh::Prefabs::UnitBox(device);
+		Egg::Mesh::Geometry::P geometry = Egg::Mesh::Prefabs::IndexedFullscreenQuad(device);
 
 		shadedBox = Egg::Mesh::Shaded::Create(psoManager, material, geometry);
 	}

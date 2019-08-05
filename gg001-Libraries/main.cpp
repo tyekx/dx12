@@ -3,7 +3,7 @@
 #include <chrono>
 #include "ggl001App.h"
 
-Egg::App * app;
+std::unique_ptr<Egg::App> app{ nullptr };
 
 LRESULT CALLBACK WindowProcess(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam) {
 	switch(message) {
@@ -127,7 +127,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	DX_API("Failed to make window association") // disable ALT+Enter shortcut to full screen mode
 		dxgiFactory->MakeWindowAssociation(windowHandle, DXGI_MWA_NO_ALT_ENTER);
 
-	app = new ggl001App{};
+	app = std::make_unique<ggl001App>();
 	app->SetDevice(device);
 	app->SetCommandQueue(commandQueue);
 	app->SetSwapChain(swapChain);
@@ -159,8 +159,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 			app->Render();
 		}
 	}
-
-	delete app;
 
 	return 0;
 }
