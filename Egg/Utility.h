@@ -19,16 +19,16 @@ namespace Egg {
 		}
 
 		void GetAdapters(IDXGIFactory6 * dxgiFactory, std::vector<com_ptr<IDXGIAdapter1>> & adapters) {
-			HRESULT adapterQueryResult;
-			unsigned int adapterId = 0;
+			com_ptr<IDXGIAdapter1> tempAdapter{ nullptr };
 			OutputDebugStringW(L"Detected Video Adapters:\n");
-			do {
-				com_ptr<IDXGIAdapter1> tempAdapter{ nullptr };
-				adapterQueryResult = dxgiFactory->EnumAdapters1(adapterId, tempAdapter.GetAddressOf());
+			unsigned int adapterId = 0;
+			
+			for(HRESULT query = dxgiFactory->EnumAdapters1(adapterId, tempAdapter.GetAddressOf());
+				query != DXGI_ERROR_NOT_FOUND;
+				query = dxgiFactory->EnumAdapters1(++adapterId, tempAdapter.GetAddressOf())) {
 
-				if(adapterQueryResult != S_OK && adapterQueryResult != DXGI_ERROR_NOT_FOUND) {
-					ASSERT(false, "Failed to query DXGI adapter");
-				}
+				// check if not S_OK
+				DX_API("Failed to query DXGI adapter") query;
 
 				if(tempAdapter != nullptr) {
 					DXGI_ADAPTER_DESC desc;
@@ -39,10 +39,9 @@ namespace Egg {
 					OutputDebugStringW(L"\n");
 
 					adapters.push_back(std::move(tempAdapter));
+					tempAdapter.Reset();
 				}
-
-				adapterId++;
-			} while(adapterQueryResult != DXGI_ERROR_NOT_FOUND);
+			}
 		}
 
 	}

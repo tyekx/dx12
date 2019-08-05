@@ -61,7 +61,10 @@ namespace Egg {
 
 				CD3DX12_RANGE readRange{ 0, 0 };
 				void * mappedPtr = nullptr;
-				vertexBuffer->Map(0, &readRange, &mappedPtr);
+
+				DX_API("Failed to map vertex buffer (VertexStreamGeometry)")
+					vertexBuffer->Map(0, &readRange, &mappedPtr);
+
 				memcpy(mappedPtr, data, sizeInBytes);
 				vertexBuffer->Unmap(0, nullptr);
 

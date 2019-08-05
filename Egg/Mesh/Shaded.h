@@ -50,7 +50,7 @@ namespace Egg {
 
 				D3D12_SHADER_INPUT_BIND_DESC bindDesc;
 
-				DX_API("Failed to get resource binding")
+				DX_API("Failed to get resource binding: %s", name.c_str())
 					vsReflection->GetResourceBindingDescByName(name.c_str(), &bindDesc);
 
 				const D3D12_ROOT_SIGNATURE_DESC & rootSignatureDesc = *(rsDeserializer->GetRootSignatureDesc());

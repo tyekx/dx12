@@ -55,13 +55,6 @@ namespace Egg {
 			void ApplyToDescriptor(D3D12_GRAPHICS_PIPELINE_STATE_DESC & psoDesc) {
 				psoDesc.pRootSignature = rootSignature.Get();
 				psoDesc.VS = CD3DX12_SHADER_BYTECODE(vertexShader.Get());
-				/*
-				com_ptr<ID3D12ShaderReflection> reflection;
-
-				D3DReflect(vertexShader->GetBufferPointer(), vertexShader->GetBufferSize(), IID_PPV_ARGS(reflection.GetAddressOf()));
-				*/
-				
-
 				if(geometryShader != nullptr) {
 					psoDesc.GS = CD3DX12_SHADER_BYTECODE(geometryShader.Get());
 				}

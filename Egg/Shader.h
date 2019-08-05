@@ -28,7 +28,7 @@ namespace Egg {
 		static com_ptr<ID3D12RootSignature> LoadRootSignature(ID3D12Device * device, ID3DBlob * blobWithRootSignature) {
 			com_ptr<ID3D12RootSignature> rootSig{ nullptr };
 
-			DX_API("Failed to compile root signature")
+			DX_API("Failed to create root signature")
 				device->CreateRootSignature(0, blobWithRootSignature->GetBufferPointer(),
 											   blobWithRootSignature->GetBufferSize(), IID_PPV_ARGS(rootSig.GetAddressOf()));
 
@@ -38,7 +38,7 @@ namespace Egg {
 		static com_ptr<ID3DBlob> LoadCso(const std::string & filename) {
 			std::ifstream file{ filename, std::ios::binary | std::ios::ate };
 
-			ASSERT(file.is_open(), "Failed to open blob file");
+			ASSERT(file.is_open(), "Failed to open blob file: %s", filename.c_str());
 
 			std::streamsize size = file.tellg();
 
