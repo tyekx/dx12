@@ -27,78 +27,77 @@ namespace Egg {
 				float l[16];
 			};
 
-			Float4x4();
+			Float4x4() noexcept;
 
 			Float4x4(
 				float _00, float _01, float _02, float _03,
 				float _10, float _11, float _12, float _13,
 				float _20, float _21, float _22, float _23,
-				float _30, float _31, float _32, float _33);
+				float _30, float _31, float _32, float _33) noexcept;
 
 			static const Float4x4 Identity;
 
-			Float4x4 elementwiseProduct(const Float4x4& o) const;
+			Float4x4 ElementwiseProduct(const Float4x4& o) const noexcept;
 
-			Float4x4 operator+(const Float4x4& o) const;
+			Float4x4 operator+(const Float4x4& o) const noexcept;
 
-			Float4x4 operator-(const Float4x4& o) const;
+			Float4x4 operator-(const Float4x4& o) const noexcept;
 
-			Float4x4& assignElementwiseProduct(const Float4x4& o);
+			Float4x4& AssignElementwiseProduct(const Float4x4& o) noexcept;
 
-			Float4x4& operator*=(float s);
+			Float4x4& operator*=(float s) noexcept;
 
-			Float4x4& operator/=(float s);
+			Float4x4& operator/=(float s) noexcept;
 
-			Float4x4& operator+=(const Float4x4& o);
+			Float4x4& operator+=(const Float4x4& o) noexcept;
 
-			Float4x4& operator-=(const Float4x4& o);
+			Float4x4& operator-=(const Float4x4& o) noexcept;
 
-			Float4x4 mul(const Float4x4& o) const;
+			Float4x4 Mul(const Float4x4& o) const noexcept;
 
-			Float4x4 operator<<(const Float4x4& o) const;
+			Float4x4 operator<<(const Float4x4& o) const noexcept;
 
-			Float4x4& operator <<=(const Float4x4& o);
+			Float4x4& operator <<=(const Float4x4& o) noexcept;
 
-			Float4x4 operator*(const Float4x4& o) const;
+			Float4x4 operator*(const Float4x4& o) const noexcept;
 
-			Float4x4& operator*=(const Float4x4& o);
+			Float4x4& operator*=(const Float4x4& o) noexcept;
 
-			Float4 mul(const Float4& v) const;
+			Float4 Mul(const Float4& v) const noexcept;
 
-			Float4 transform(const Float4& v) const;
+			Float4 Transform(const Float4& v) const noexcept;
 
-			Float4 operator*(const Float4& v) const;
+			Float4 operator*(const Float4& v) const noexcept;
 
-			Float4x4 operator*(float s) const;
+			Float4x4 operator*(float s) const noexcept;
 
-			static Float4x4 scaling(const Float3& factors);
+			static Float4x4 Scaling(const Float3& factors) noexcept;
 
-			static Float4x4 translation(const Float3& offset);
+			static Float4x4 Translation(const Float3& offset) noexcept;
 
-			static Float4x4 rotation(const Float3& axis, float angle);
+			static Float4x4 Rotation(const Float3& axis, float angle) noexcept;
 
-			static Float4x4 reflection(const Float4& plane);
+			static Float4x4 Reflection(const Float4& plane) noexcept;
 
+			static Float4x4 View(const Float3& eye, const Float3& ahead, const Float3& up) noexcept;
 
-			static Float4x4 view(const Float3& eye, const Float3& ahead, const Float3& up);
+			static Float4x4 Proj(float fovy, float aspect, float zn, float zf) noexcept;
 
-			static Float4x4 proj(float fovy, float aspect, float zn, float zf);
+			Float4x4 Transpose() const noexcept;
 
-			Float4x4 transpose() const;
+			Float4x4 _Invert() const noexcept;
 
-			Float4x4 _invert() const;
-
-			Float4x4 invert() const;
+			Float4x4 Invert() const noexcept;
 		};
 
-		inline Float4 operator*(const Float4& v, const Float4x4& m)
+		inline Float4 operator*(const Float4& v, const Float4x4& m) noexcept
 		{
-			return m.transform(v);
+			return m.Transform(v);
 		}
 
-		inline const Float4& operator*=(Float4& v, const Float4x4& m)
+		inline const Float4& operator*=(Float4& v, const Float4x4& m) noexcept
 		{
-			v = m.transform(v);
+			v = m.Transform(v);
 			return v;
 		}
 	}

@@ -4,7 +4,7 @@ namespace Egg {
 	namespace Math {
 
 
-		Float4x4::Float4x4() :
+		Float4x4::Float4x4() noexcept :
 			_00(1.0f), _01(0.0f), _02(0.0f), _03(0.0f),
 			_10(0.0f), _11(1.0f), _12(0.0f), _13(0.0f),
 			_20(0.0f), _21(0.0f), _22(1.0f), _23(0.0f),
@@ -15,7 +15,7 @@ namespace Egg {
 			float _00, float _01, float _02, float _03,
 			float _10, float _11, float _12, float _13,
 			float _20, float _21, float _22, float _23,
-			float _30, float _31, float _32, float _33) :
+			float _30, float _31, float _32, float _33) noexcept :
 			_00(_00), _01(_01), _02(_02), _03(_03),
 			_10(_10), _11(_11), _12(_12), _13(_13),
 			_20(_20), _21(_21), _22(_22), _23(_23),
@@ -24,7 +24,7 @@ namespace Egg {
 
 		const Float4x4 Float4x4::Identity{};
 
-		Float4x4 Float4x4::elementwiseProduct(const Float4x4& o) const
+		Float4x4 Float4x4::ElementwiseProduct(const Float4x4& o) const noexcept
 		{
 			Float4x4 r;
 			for(int i = 0; i < 16; i++)
@@ -32,7 +32,7 @@ namespace Egg {
 			return r;
 		}
 
-		Float4x4 Float4x4::operator+(const Float4x4& o) const
+		Float4x4 Float4x4::operator+(const Float4x4& o) const noexcept
 		{
 			Float4x4 r;
 			for(int i = 0; i < 16; i++)
@@ -40,7 +40,7 @@ namespace Egg {
 			return r;
 		}
 
-		Float4x4 Float4x4::operator-(const Float4x4& o) const
+		Float4x4 Float4x4::operator-(const Float4x4& o) const noexcept
 		{
 			Float4x4 r;
 			for(int i = 0; i < 16; i++)
@@ -48,21 +48,21 @@ namespace Egg {
 			return r;
 		}
 
-		Float4x4& Float4x4::assignElementwiseProduct(const Float4x4& o)
+		Float4x4& Float4x4::AssignElementwiseProduct(const Float4x4& o) noexcept
 		{
 			for(int i = 0; i < 16; i++)
 				l[i] *= o.l[i];
 			return *this;
 		}
 
-		Float4x4& Float4x4::operator*=(float s)
+		Float4x4& Float4x4::operator*=(float s) noexcept
 		{
 			for(int i = 0; i < 16; i++)
 				l[i] *= s;
 			return *this;
 		}
 
-		Float4x4& Float4x4::operator/=(float s)
+		Float4x4& Float4x4::operator/=(float s) noexcept
 		{
 			float is = 1 / s;
 			for(int i = 0; i < 16; i++)
@@ -70,21 +70,21 @@ namespace Egg {
 			return *this;
 		}
 
-		Float4x4& Float4x4::operator+=(const Float4x4& o)
+		Float4x4& Float4x4::operator+=(const Float4x4& o) noexcept
 		{
 			for(int i = 0; i < 16; i++)
 				l[i] += o.l[i];
 			return *this;
 		}
 
-		Float4x4& Float4x4::operator-=(const Float4x4& o)
+		Float4x4& Float4x4::operator-=(const Float4x4& o) noexcept
 		{
 			for(int i = 0; i < 16; i++)
 				l[i] -= o.l[i];
 			return *this;
 		}
 
-		Float4x4 Float4x4::mul(const Float4x4& o) const
+		Float4x4 Float4x4::Mul(const Float4x4& o) const noexcept
 		{
 			Float4x4 product;
 
@@ -99,34 +99,34 @@ namespace Egg {
 			return product;
 		}
 
-		Float4x4 Float4x4::operator<<(const Float4x4& o) const
+		Float4x4 Float4x4::operator<<(const Float4x4& o) const noexcept
 		{
-			return mul(o);
+			return Mul(o);
 		}
 
-		Float4x4& Float4x4::operator <<=(const Float4x4& o)
+		Float4x4& Float4x4::operator <<=(const Float4x4& o) noexcept
 		{
 			*this = *this << o;
 			return *this;
 		}
 
-		Float4x4 Float4x4::operator*(const Float4x4& o) const
+		Float4x4 Float4x4::operator*(const Float4x4& o) const noexcept
 		{
-			return mul(o);
+			return Mul(o);
 		}
 
-		Float4x4& Float4x4::operator*=(const Float4x4& o)
+		Float4x4& Float4x4::operator*=(const Float4x4& o) noexcept
 		{
 			*this = *this * o;
 			return *this;
 		}
 
-		Float4 Float4x4::mul(const Float4& v) const
+		Float4 Float4x4::Mul(const Float4& v) const noexcept
 		{
 			return Float4(v.Dot(*(Float4*)m[0]), v.Dot(*(Float4*)m[1]), v.Dot(*(Float4*)m[2]), v.Dot(*(Float4*)m[3]));
 		}
 
-		Float4 Float4x4::transform(const Float4& v) const
+		Float4 Float4x4::Transform(const Float4& v) const noexcept
 		{
 			return Float4(
 				_00 * v.x + _10 * v.y + _20 * v.z + _30 * v.w,
@@ -136,12 +136,12 @@ namespace Egg {
 			);
 		}
 
-		Float4 Float4x4::operator*(const Float4& v) const
+		Float4 Float4x4::operator*(const Float4& v) const noexcept
 		{
-			return mul(v);
+			return Mul(v);
 		}
 
-		Float4x4 Float4x4::operator*(float s) const
+		Float4x4 Float4x4::operator*(float s) const noexcept
 		{
 			Float4x4 r;
 			for(int i = 0; i < 16; i++)
@@ -149,7 +149,7 @@ namespace Egg {
 			return r;
 		}
 
-		Float4x4 Float4x4::scaling(const Float3& factors)
+		Float4x4 Float4x4::Scaling(const Float3& factors) noexcept
 		{
 			Float4x4 s = Identity;
 			s._00 = factors.x;
@@ -159,7 +159,7 @@ namespace Egg {
 			return s;
 		}
 
-		Float4x4 Float4x4::translation(const Float3& offset)
+		Float4x4 Float4x4::Translation(const Float3& offset) noexcept
 		{
 			Float4x4 t = Identity;
 			t._30 = offset.x;
@@ -168,7 +168,7 @@ namespace Egg {
 			return t;
 		}
 
-		Float4x4 Float4x4::rotation(const Float3& axis, float angle)
+		Float4x4 Float4x4::Rotation(const Float3& axis, float angle) noexcept
 		{
 			Float4x4 r = Identity;
 
@@ -200,7 +200,7 @@ namespace Egg {
 			return r;
 		}
 
-		Float4x4 Float4x4::reflection(const Float4& plane)
+		Float4x4 Float4x4::Reflection(const Float4& plane) noexcept
 		{
 			Float4 normalPlane = plane / plane.xyz.Length();
 
@@ -212,7 +212,7 @@ namespace Egg {
 		}
 
 
-		Float4x4 Float4x4::view(const Float3& eye, const Float3& ahead, const Float3& up)
+		Float4x4 Float4x4::View(const Float3& eye, const Float3& ahead, const Float3& up) noexcept
 		{
 			Float3 zaxis = ahead.Normalize();
 			Float3 xaxis = up.Cross(zaxis).Normalize();
@@ -225,7 +225,7 @@ namespace Egg {
 				-xaxis.Dot(eye), -yaxis.Dot(eye), -zaxis.Dot(eye), 1);
 		}
 
-		Float4x4 Float4x4::proj(float fovy, float aspect, float zn, float zf)
+		Float4x4 Float4x4::Proj(float fovy, float aspect, float zn, float zf) noexcept
 		{
 			float yScale = 1.0f / ::tanf(fovy * 0.5f);
 			float xScale = yScale / aspect;
@@ -236,7 +236,7 @@ namespace Egg {
 				0.0f, 0.0f, -zn * zf / (zf - zn), 0);
 		}
 
-		Float4x4 Float4x4::transpose() const
+		Float4x4 Float4x4::Transpose() const noexcept
 		{
 			return Float4x4(
 				_00, _10, _20, _30,
@@ -245,7 +245,7 @@ namespace Egg {
 				_03, _13, _23, _33);
 		}
 
-		Float4x4 Float4x4::_invert() const
+		Float4x4 Float4x4::_Invert() const noexcept
 		{
 			float det;
 			float d10, d20, d21, d31, d32, d03;
@@ -309,13 +309,13 @@ namespace Egg {
 			}
 		}
 
-		Float4x4 Float4x4::invert() const
+		Float4x4 Float4x4::Invert() const noexcept
 		{
 			float det;
 
 			if(_03 != 0.0f || _13 != 0.0f || _23 != 0.0f || _33 != 1.0f)
 			{
-				return _invert();
+				return _Invert();
 			}
 
 			Float4x4 inv;

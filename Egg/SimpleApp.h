@@ -12,8 +12,6 @@ namespace Egg {
 		com_ptr<ID3D12CommandAllocator> commandAllocator;
 		com_ptr<ID3D12GraphicsCommandList> commandList;
 
-		Egg::Mesh::Shaded::P shadedTriangle;
-
 		std::unique_ptr<PsoManager> psoManager;
 
 		virtual void PopulateCommandList() = 0;
@@ -70,7 +68,6 @@ namespace Egg {
 		virtual void ReleaseResources() override {
 			psoManager.reset(nullptr);
 			commandList.Reset();
-			shadedTriangle.reset();
 			fence.Reset();
 			commandAllocator.Reset();
 			App::ReleaseResources();

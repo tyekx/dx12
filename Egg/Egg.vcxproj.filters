@@ -150,6 +150,9 @@
     <ClInclude Include="Mesh\Prefabs.h">
       <Filter>Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="ConstantBuffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utility.cpp">

@@ -5,6 +5,7 @@
 #include "Geometry.h"
 #include "../PsoManager.h"
 #include <typeinfo>
+#include <map>
 
 namespace Egg {
 	namespace Mesh {
@@ -17,9 +18,10 @@ namespace Egg {
 
 			com_ptr<ID3D12RootSignatureDeserializer> rsDeserializer;
 			com_ptr<ID3D12ShaderReflection> vsReflection;
+			com_ptr<ID3D12ShaderReflection> gsReflection;
 			com_ptr<ID3D12ShaderReflection> psReflection;
 		public:
-			Shaded(PsoManager * psoMan, Material::P mat, Geometry::P geom) : pipelineState{ nullptr }, gpsoDesc{}, material{ mat }, geometry{ geom } {
+			Shaded(PsoManager * psoMan, Material::P mat, Geometry::P geom) : pipelineState{ nullptr }, gpsoDesc{}, material{ mat }, geometry{ geom }, rsDeserializer{ nullptr }, vsReflection{ nullptr }, gsReflection{ nullptr }, psReflection{ nullptr } {
 				ZeroMemory(&gpsoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 				gpsoDesc.NumRenderTargets = 1;
 				gpsoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
@@ -32,6 +34,11 @@ namespace Egg {
 
 				DX_API("Failed to reflect pixel shader")
 					D3DReflect(gpsoDesc.PS.pShaderBytecode, gpsoDesc.PS.BytecodeLength, IID_PPV_ARGS(psReflection.GetAddressOf()));
+
+				if(gpsoDesc.GS.pShaderBytecode != nullptr) {
+					DX_API("Failed to reflect geometry shader")
+						D3DReflect(gpsoDesc.GS.pShaderBytecode, gpsoDesc.GS.BytecodeLength, IID_PPV_ARGS(gsReflection.GetAddressOf()));
+				}
 
 				DX_API("Failed to deserialize root signature")
 					D3D12CreateRootSignatureDeserializer(gpsoDesc.VS.pShaderBytecode, gpsoDesc.VS.BytecodeLength, IID_PPV_ARGS(rsDeserializer.GetAddressOf()));
@@ -50,8 +57,24 @@ namespace Egg {
 
 				D3D12_SHADER_INPUT_BIND_DESC bindDesc;
 
-				DX_API("Failed to get resource binding: %s", name.c_str())
-					vsReflection->GetResourceBindingDescByName(name.c_str(), &bindDesc);
+				ID3D12ShaderReflection* reflections[] = {
+					vsReflection.Get(), gsReflection.Get(), psReflection.Get()
+				};
+
+				HRESULT hr;
+				for(unsigned int i = 0; i < _countof(reflections); ++i) {
+					if(!reflections[i]) {
+						continue;
+					}
+
+					hr = reflections[i]->GetResourceBindingDescByName(name.c_str(), &bindDesc);
+
+					if(SUCCEEDED(hr)) {
+						break;
+					}
+				}
+
+				ASSERT(SUCCEEDED(hr), "Failed to find constant buffer '%s'\r\nPossible errors:\r\n-Optimized away\r\n-Name mismatch\r\n-Wrong shader used", name.c_str());
 
 				const D3D12_ROOT_SIGNATURE_DESC & rootSignatureDesc = *(rsDeserializer->GetRootSignatureDesc());
 				for(unsigned int i = 0; i < rootSignatureDesc.NumParameters; ++i) {
@@ -63,7 +86,8 @@ namespace Egg {
 						return;
 					}
 				}
-				OutputDebugString("Failed to bind constant buffer");
+
+				ASSERT(false, "Failed to bind constant buffer '%s' to root signature.\r\nPossible errors:\r\n-Wrong root signature used on Vertex Shader", name.c_str());
 			}
 
 			void SetPipelineState(ID3D12GraphicsCommandList * commandList) {
