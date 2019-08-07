@@ -1,8 +1,10 @@
 #include "RootSignatures.hlsli"
 
-struct IAOutput {
-	float3 position : POSITION;
-	float3 color : COLOR;
+struct IAOutput
+{
+    float3 position : POSITION;
+    float3 normal : NORMAL;
+    float2 texCoord : TEXCOORD;
 };
 
 struct VSOutput {
@@ -14,6 +16,6 @@ struct VSOutput {
 VSOutput main(IAOutput iao) {
 	VSOutput vso;
 	vso.position = float4(iao.position, 1.0f);
-	vso.color = iao.color;
+	vso.color = iao.normal;
 	return vso;
 }

@@ -153,6 +153,9 @@
     <ClInclude Include="ConstantBuffer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh\Importer.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Utility.cpp">
@@ -216,6 +219,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh\Importer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

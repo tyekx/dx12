@@ -28,7 +28,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\sdk\assimp\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\sdk\assimp\lib\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -36,6 +39,9 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <Lib>
+      <AdditionalDependencies>assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -73,6 +79,7 @@
     <ClInclude Include="Math\UInt4.h" />
     <ClInclude Include="Math\UInt4Swizzle.hpp" />
     <ClInclude Include="Mesh\Geometry.h" />
+    <ClInclude Include="Mesh\Importer.h" />
     <ClInclude Include="Mesh\Material.h" />
     <ClInclude Include="Mesh\Prefabs.h" />
     <ClInclude Include="Mesh\Shaded.h" />
@@ -101,6 +108,7 @@
     <ClCompile Include="Math\UInt2.cpp" />
     <ClCompile Include="Math\UInt3.cpp" />
     <ClCompile Include="Math\UInt4.cpp" />
+    <ClCompile Include="Mesh\Importer.cpp" />
     <ClCompile Include="PsoManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Utility.cpp" />
