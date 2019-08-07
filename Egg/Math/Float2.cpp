@@ -9,6 +9,8 @@ namespace Egg {
 
         Float2::Float2(const Float2 & xy) : x { xy.x }, y { xy.y }{ }
 
+        Float2::Float2() : x{ 0.0f }, y{ 0.0f }{ }
+
         Float2 & Float2::operator=(const Float2 & rhs) noexcept {
             this->x = rhs.x;
             this->y = rhs.y;
@@ -220,6 +222,12 @@ namespace Egg {
 
         Bool2 Float2::operator<=(const Float2 & rhs) const noexcept {
             return Bool2 { x <= rhs.x, y <= rhs.y };
+        }
+
+        Float2 Float2::Random(float lower, float upper) noexcept {
+            float range = upper - lower;
+            return Float2 {  rand() * range / RAND_MAX + lower,
+             rand() * range / RAND_MAX + lower };
         }
 
         Float2 Float2::operator+(float v) const noexcept {

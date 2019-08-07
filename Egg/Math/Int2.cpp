@@ -8,6 +8,8 @@ namespace Egg {
 
         Int2::Int2(const Int2 & xy) : x { xy.x }, y { xy.y }{ }
 
+        Int2::Int2() : x{ 0 }, y{ 0 }{ }
+
         Int2 & Int2::operator=(const Int2 & rhs) noexcept {
             this->x = rhs.x;
             this->y = rhs.y;
@@ -168,6 +170,12 @@ namespace Egg {
 
         Int2 Int2::operator--(int) noexcept {
             return Int2 { x--, y-- };
+        }
+
+        Int2 Int2::Random(int lower, int upper) noexcept {
+            int range = upper - lower + 1;
+             return Int2 {  rand() % range + lower,
+             rand() % range + lower };
         }
 
         Int2 Int2::operator-() const noexcept {

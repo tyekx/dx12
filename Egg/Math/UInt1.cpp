@@ -6,6 +6,8 @@ namespace Egg {
 
         UInt1::UInt1(unsigned int x) : x { x }{ }
 
+        UInt1::UInt1() : x{ 0U }{ }
+
         UInt1 & UInt1::operator=(const UInt1 & rhs) noexcept {
             this->x = rhs.x;
             return *this;
@@ -155,6 +157,11 @@ namespace Egg {
 
         UInt1 UInt1::operator--(int) noexcept {
             return UInt1 { x-- };
+        }
+
+        UInt1 UInt1::Random(unsigned int lower, unsigned int upper) noexcept {
+            unsigned int range = upper - lower + 1;
+             return UInt1 {  rand() % range + lower };
         }
 
     }

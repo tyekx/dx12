@@ -134,6 +134,7 @@ namespace Egg {
             return I { t.x--, t.y--, t.z--, t.w-- };
         }
 
+
         };
     }
 }

@@ -64,6 +64,8 @@ namespace Egg {
 
             Float2(const Float2 & xy);
 
+            Float2();
+
             Float2 & operator=(const Float2 & rhs) noexcept;
 
             Float2 & operator+=(const Float2 & rhs) noexcept;
@@ -163,6 +165,8 @@ namespace Egg {
             Bool2 operator>=(const Float2 & rhs) const noexcept;
 
             Bool2 operator<=(const Float2 & rhs) const noexcept;
+
+            static Float2 Random(float lower = 0.0f, float upper = 1.0f) noexcept;
 
             Float2 operator+(float v) const noexcept;
 

@@ -12,6 +12,8 @@ namespace Egg {
 
         UInt3::UInt3(const UInt3 & xyz) : x { xyz.x }, y { xyz.y }, z { xyz.z }{ }
 
+        UInt3::UInt3() : x{ 0U }, y{ 0U }, z{ 0U }{ }
+
         UInt3 & UInt3::operator=(const UInt3 & rhs) noexcept {
             this->x = rhs.x;
             this->y = rhs.y;
@@ -183,6 +185,13 @@ namespace Egg {
 
         UInt3 UInt3::operator--(int) noexcept {
             return UInt3 { x--, y--, z-- };
+        }
+
+        UInt3 UInt3::Random(unsigned int lower, unsigned int upper) noexcept {
+            unsigned int range = upper - lower + 1;
+             return UInt3 {  rand() % range + lower,
+             rand() % range + lower,
+             rand() % range + lower };
         }
 
         const UInt3 UInt3::One { 1, 1, 1 };

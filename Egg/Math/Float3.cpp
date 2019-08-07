@@ -13,6 +13,8 @@ namespace Egg {
 
         Float3::Float3(const Float3 & xyz) : x { xyz.x }, y { xyz.y }, z { xyz.z }{ }
 
+        Float3::Float3() : x{ 0.0f }, y{ 0.0f }, z{ 0.0f }{ }
+
         Float3 & Float3::operator=(const Float3 & rhs) noexcept {
             this->x = rhs.x;
             this->y = rhs.y;
@@ -230,6 +232,13 @@ namespace Egg {
 
         Bool3 Float3::operator<=(const Float3 & rhs) const noexcept {
             return Bool3 { x <= rhs.x, y <= rhs.y, z <= rhs.z };
+        }
+
+        Float3 Float3::Random(float lower, float upper) noexcept {
+            float range = upper - lower;
+            return Float3 {  rand() * range / RAND_MAX + lower,
+             rand() * range / RAND_MAX + lower,
+             rand() * range / RAND_MAX + lower };
         }
 
         Float3 Float3::operator+(float v) const noexcept {

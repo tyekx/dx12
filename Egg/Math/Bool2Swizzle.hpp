@@ -32,6 +32,7 @@ namespace Egg {
             return t != rhs;
         }
 
+
         bool Any() const noexcept {
             B t = *this;
             return t.x || t.y;

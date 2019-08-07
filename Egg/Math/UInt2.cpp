@@ -8,6 +8,8 @@ namespace Egg {
 
         UInt2::UInt2(const UInt2 & xy) : x { xy.x }, y { xy.y }{ }
 
+        UInt2::UInt2() : x{ 0U }, y{ 0U }{ }
+
         UInt2 & UInt2::operator=(const UInt2 & rhs) noexcept {
             this->x = rhs.x;
             this->y = rhs.y;
@@ -168,6 +170,12 @@ namespace Egg {
 
         UInt2 UInt2::operator--(int) noexcept {
             return UInt2 { x--, y-- };
+        }
+
+        UInt2 UInt2::Random(unsigned int lower, unsigned int upper) noexcept {
+            unsigned int range = upper - lower + 1;
+             return UInt2 {  rand() % range + lower,
+             rand() % range + lower };
         }
 
         const UInt2 UInt2::One { 1, 1 };

@@ -377,6 +377,8 @@ namespace Egg {
 
             Int4(const Int4 & xyzw);
 
+            Int4();
+
             Int4 & operator=(const Int4 & rhs) noexcept;
 
             Int4 & operator+=(const Int4 & rhs) noexcept;
@@ -446,6 +448,8 @@ namespace Egg {
             Int4 operator--() noexcept;
 
             Int4 operator--(int) noexcept;
+
+            static Int4 Random(int lower = 0, int upper = 6) noexcept;
 
             Int4 operator-() const noexcept;
 

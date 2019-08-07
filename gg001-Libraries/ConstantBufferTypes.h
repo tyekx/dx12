@@ -7,4 +7,3 @@ using namespace Egg::Math;
 __declspec(align(16)) struct PerObjectCb {
 	Float4x4 modelTransform;
 };
-

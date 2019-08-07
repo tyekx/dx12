@@ -18,6 +18,8 @@ namespace Egg {
 
         Bool4::Bool4(const Bool4 & xyzw) : x { xyzw.x }, y { xyzw.y }, z { xyzw.z }, w { xyzw.w }{ }
 
+        Bool4::Bool4() : x{ false }, y{ false }, z{ false }, w{ false }{ }
+
         Bool4 & Bool4::operator=(const Bool4 & rhs) noexcept {
             this->x = rhs.x;
             this->y = rhs.y;
@@ -40,6 +42,10 @@ namespace Egg {
 
         Bool4 Bool4::operator!=(const Bool4 & rhs) const noexcept {
             return Bool4 { this->x != rhs.x, this->y != rhs.y, this->z != rhs.z, this->w != rhs.w };
+        }
+
+        Bool4 Bool4::Random() noexcept {
+            return Bool4 { rand() % 2 == 0, rand() % 2 == 0, rand() % 2 == 0, rand() % 2 == 0 };
         }
 
         bool Bool4::Any() const noexcept {

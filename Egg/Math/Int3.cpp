@@ -12,6 +12,8 @@ namespace Egg {
 
         Int3::Int3(const Int3 & xyz) : x { xyz.x }, y { xyz.y }, z { xyz.z }{ }
 
+        Int3::Int3() : x{ 0 }, y{ 0 }, z{ 0 }{ }
+
         Int3 & Int3::operator=(const Int3 & rhs) noexcept {
             this->x = rhs.x;
             this->y = rhs.y;
@@ -183,6 +185,13 @@ namespace Egg {
 
         Int3 Int3::operator--(int) noexcept {
             return Int3 { x--, y--, z-- };
+        }
+
+        Int3 Int3::Random(int lower, int upper) noexcept {
+            int range = upper - lower + 1;
+             return Int3 {  rand() % range + lower,
+             rand() % range + lower,
+             rand() % range + lower };
         }
 
         Int3 Int3::operator-() const noexcept {

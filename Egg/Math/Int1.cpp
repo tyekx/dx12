@@ -6,6 +6,8 @@ namespace Egg {
 
         Int1::Int1(int x) : x { x }{ }
 
+        Int1::Int1() : x{ 0 }{ }
+
         Int1 & Int1::operator=(const Int1 & rhs) noexcept {
             this->x = rhs.x;
             return *this;
@@ -155,6 +157,11 @@ namespace Egg {
 
         Int1 Int1::operator--(int) noexcept {
             return Int1 { x-- };
+        }
+
+        Int1 Int1::Random(int lower, int upper) noexcept {
+            int range = upper - lower + 1;
+             return Int1 {  rand() % range + lower };
         }
 
         Int1 Int1::operator-() const noexcept {

@@ -132,6 +132,7 @@ namespace Egg {
             return I { t.x--, t.y-- };
         }
 
+
         I operator-() const noexcept {
             I t = *this;
             return I { -t.x, -t.y };

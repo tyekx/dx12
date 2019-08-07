@@ -8,6 +8,8 @@ namespace Egg {
 
         Bool2::Bool2(const Bool2 & xy) : x { xy.x }, y { xy.y }{ }
 
+        Bool2::Bool2() : x{ false }, y{ false }{ }
+
         Bool2 & Bool2::operator=(const Bool2 & rhs) noexcept {
             this->x = rhs.x;
             this->y = rhs.y;
@@ -28,6 +30,10 @@ namespace Egg {
 
         Bool2 Bool2::operator!=(const Bool2 & rhs) const noexcept {
             return Bool2 { this->x != rhs.x, this->y != rhs.y };
+        }
+
+        Bool2 Bool2::Random() noexcept {
+            return Bool2 { rand() % 2 == 0, rand() % 2 == 0 };
         }
 
         bool Bool2::Any() const noexcept {

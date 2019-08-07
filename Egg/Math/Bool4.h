@@ -373,6 +373,8 @@ namespace Egg {
 
             Bool4(const Bool4 & xyzw);
 
+            Bool4();
+
             Bool4 & operator=(const Bool4 & rhs) noexcept;
 
             Bool4 operator||(const Bool4 & rhs) const noexcept;
@@ -382,6 +384,8 @@ namespace Egg {
             Bool4 operator==(const Bool4 & rhs) const noexcept;
 
             Bool4 operator!=(const Bool4 & rhs) const noexcept;
+
+            static Bool4 Random() noexcept;
 
             bool Any() const noexcept;
 

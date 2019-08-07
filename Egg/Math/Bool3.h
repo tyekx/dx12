@@ -147,6 +147,8 @@ namespace Egg {
 
             Bool3(const Bool3 & xyz);
 
+            Bool3();
+
             Bool3 & operator=(const Bool3 & rhs) noexcept;
 
             Bool3 operator||(const Bool3 & rhs) const noexcept;
@@ -156,6 +158,8 @@ namespace Egg {
             Bool3 operator==(const Bool3 & rhs) const noexcept;
 
             Bool3 operator!=(const Bool3 & rhs) const noexcept;
+
+            static Bool3 Random() noexcept;
 
             bool Any() const noexcept;
 

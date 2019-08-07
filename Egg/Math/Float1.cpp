@@ -7,6 +7,8 @@ namespace Egg {
 
         Float1::Float1(float x) : x { x }{ }
 
+        Float1::Float1() : x{ 0.0f }{ }
+
         Float1 & Float1::operator=(const Float1 & rhs) noexcept {
             this->x = rhs.x;
             return *this;
@@ -212,6 +214,11 @@ namespace Egg {
 
         Bool1 Float1::operator<=(const Float1 & rhs) const noexcept {
             return Bool1 { x <= rhs.x };
+        }
+
+        Float1 Float1::Random(float lower, float upper) noexcept {
+            float range = upper - lower;
+            return Float1 {  rand() * range / RAND_MAX + lower };
         }
 
     }

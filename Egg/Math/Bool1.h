@@ -17,6 +17,8 @@ namespace Egg {
 
             Bool1(bool x);
 
+            Bool1();
+
             Bool1 & operator=(const Bool1 & rhs) noexcept;
 
             Bool1 operator||(const Bool1 & rhs) const noexcept;
@@ -26,6 +28,8 @@ namespace Egg {
             Bool1 operator==(const Bool1 & rhs) const noexcept;
 
             Bool1 operator!=(const Bool1 & rhs) const noexcept;
+
+            static Bool1 Random() noexcept;
 
             bool Any() const noexcept;
 

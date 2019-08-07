@@ -12,6 +12,8 @@ namespace Egg {
 
         Bool3::Bool3(const Bool3 & xyz) : x { xyz.x }, y { xyz.y }, z { xyz.z }{ }
 
+        Bool3::Bool3() : x{ false }, y{ false }, z{ false }{ }
+
         Bool3 & Bool3::operator=(const Bool3 & rhs) noexcept {
             this->x = rhs.x;
             this->y = rhs.y;
@@ -33,6 +35,10 @@ namespace Egg {
 
         Bool3 Bool3::operator!=(const Bool3 & rhs) const noexcept {
             return Bool3 { this->x != rhs.x, this->y != rhs.y, this->z != rhs.z };
+        }
+
+        Bool3 Bool3::Random() noexcept {
+            return Bool3 { rand() % 2 == 0, rand() % 2 == 0, rand() % 2 == 0 };
         }
 
         bool Bool3::Any() const noexcept {

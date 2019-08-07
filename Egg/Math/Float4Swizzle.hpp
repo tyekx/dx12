@@ -235,6 +235,7 @@ namespace Egg {
             return B { t.x <= rhs.x, t.y <= rhs.y, t.z <= rhs.z, t.w <= rhs.w };
         }
 
+
         F operator+(float v) const noexcept {
             F t = *this;
             return F { t.x + v , t.y + v , t.z + v , t.w + v  };

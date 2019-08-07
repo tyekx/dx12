@@ -18,6 +18,8 @@ namespace Egg {
 
         Int4::Int4(const Int4 & xyzw) : x { xyzw.x }, y { xyzw.y }, z { xyzw.z }, w { xyzw.w }{ }
 
+        Int4::Int4() : x{ 0 }, y{ 0 }, z{ 0 }, w{ 0 }{ }
+
         Int4 & Int4::operator=(const Int4 & rhs) noexcept {
             this->x = rhs.x;
             this->y = rhs.y;
@@ -200,6 +202,14 @@ namespace Egg {
 
         Int4 Int4::operator--(int) noexcept {
             return Int4 { x--, y--, z--, w-- };
+        }
+
+        Int4 Int4::Random(int lower, int upper) noexcept {
+            int range = upper - lower + 1;
+             return Int4 {  rand() % range + lower,
+             rand() % range + lower,
+             rand() % range + lower,
+             rand() % range + lower };
         }
 
         Int4 Int4::operator-() const noexcept {

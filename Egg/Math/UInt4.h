@@ -377,6 +377,8 @@ namespace Egg {
 
             UInt4(const UInt4 & xyzw);
 
+            UInt4();
+
             UInt4 & operator=(const UInt4 & rhs) noexcept;
 
             UInt4 & operator+=(const UInt4 & rhs) noexcept;
@@ -446,6 +448,8 @@ namespace Egg {
             UInt4 operator--() noexcept;
 
             UInt4 operator--(int) noexcept;
+
+            static UInt4 Random(unsigned int lower = 0, unsigned int upper = 6) noexcept;
 
             static const UInt4 One;
             static const UInt4 Zero;

@@ -19,6 +19,8 @@ namespace Egg {
 
         Float4::Float4(const Float4 & xyzw) : x { xyzw.x }, y { xyzw.y }, z { xyzw.z }, w { xyzw.w }{ }
 
+        Float4::Float4() : x{ 0.0f }, y{ 0.0f }, z{ 0.0f }, w{ 0.0f }{ }
+
         Float4 & Float4::operator=(const Float4 & rhs) noexcept {
             this->x = rhs.x;
             this->y = rhs.y;
@@ -242,6 +244,14 @@ namespace Egg {
 
         Bool4 Float4::operator<=(const Float4 & rhs) const noexcept {
             return Bool4 { x <= rhs.x, y <= rhs.y, z <= rhs.z, w <= rhs.w };
+        }
+
+        Float4 Float4::Random(float lower, float upper) noexcept {
+            float range = upper - lower;
+            return Float4 {  rand() * range / RAND_MAX + lower,
+             rand() * range / RAND_MAX + lower,
+             rand() * range / RAND_MAX + lower,
+             rand() * range / RAND_MAX + lower };
         }
 
         Float4 Float4::operator+(float v) const noexcept {

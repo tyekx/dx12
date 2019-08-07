@@ -151,6 +151,8 @@ namespace Egg {
 
             Int3(const Int3 & xyz);
 
+            Int3();
+
             Int3 & operator=(const Int3 & rhs) noexcept;
 
             Int3 & operator+=(const Int3 & rhs) noexcept;
@@ -220,6 +222,8 @@ namespace Egg {
             Int3 operator--() noexcept;
 
             Int3 operator--(int) noexcept;
+
+            static Int3 Random(int lower = 0, int upper = 6) noexcept;
 
             Int3 operator-() const noexcept;
 
