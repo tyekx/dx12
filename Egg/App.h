@@ -87,7 +87,7 @@ namespace Egg {
 		}
 
 		virtual void Render() = 0;
-		virtual void Update(double T, double dt) = 0;
+		virtual void Update(float T, float dt) = 0;
 
 		virtual void LoadAssets() { }
 

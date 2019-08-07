@@ -8,11 +8,9 @@ class ggl001App : public Egg::SimpleApp {
 protected:
 	Box boxes[8];
 public:
-	virtual void Update(double T, double dt) override {
+	virtual void Update(float dt, float T) override {
 		for(int i = 0; i < 8; ++i) {
 			boxes[i].Update(dt, T);
-			//boxes[i].cb->modelTransform *= Float4x4::Proj(1.5f, aspectRatio, 0.0f, 1.0f);
-			//boxes[i].cb.Upload();
 		}
 	}
 

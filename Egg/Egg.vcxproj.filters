@@ -212,6 +212,12 @@
     <ClCompile Include="Math\UInt4.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="PsoManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\DefaultPS.hlsl">

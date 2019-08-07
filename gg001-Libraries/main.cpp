@@ -54,7 +54,7 @@ HWND InitWindow(HINSTANCE hInstance) {
 }
 
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, LPWSTR command, INT nShowCmd) {
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR command, _In_ INT nShowCmd) {
 
 	HWND windowHandle = InitWindow(hInstance);
 	// DirectX stuff
@@ -143,19 +143,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 	std::chrono::time_point<clock_t> start = clock_t::now();
 	std::chrono::time_point<clock_t> end;
-	double T = 0.0;
-	double dt = 0.0;
+	float T = 0.0;
+	float dt = 0.0;
 	while(winMessage.message != WM_QUIT) {
 		if(PeekMessage(&winMessage, NULL, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&winMessage);
 			DispatchMessage(&winMessage);
 		} else {
 			end = clock_t::now();
-			dt = std::chrono::duration<double>(end - start).count();
+			dt = std::chrono::duration<float>(end - start).count();
 			T += dt;
 			start = end;
 			
-			app->Update(T, dt);
+			app->Update(dt, T);
 			app->Render();
 		}
 	}

@@ -43,7 +43,7 @@ namespace Egg {
 			commandQueue->ExecuteCommandLists(_countof(cLists), cLists);
 
 			DX_API("Failed to present swap chain")
-				swapChain->Present(1, 0);
+				swapChain->Present(0, 0);
 
 			// Sync
 			WaitForPreviousFrame();
