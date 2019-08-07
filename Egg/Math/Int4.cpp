@@ -28,11 +28,27 @@ namespace Egg {
             return *this;
         }
 
+        Int4 & Int4::operator=(int rhs) noexcept {
+            this->x = rhs;
+            this->y = rhs;
+            this->z = rhs;
+            this->w = rhs;
+            return *this;
+        }
+
         Int4 & Int4::operator+=(const Int4 & rhs) noexcept {
             this->x += rhs.x;
             this->y += rhs.y;
             this->z += rhs.z;
             this->w += rhs.w;
+            return *this;
+        }
+
+        Int4 & Int4::operator+=(int rhs) noexcept {
+            this->x += rhs;
+            this->y += rhs;
+            this->z += rhs;
+            this->w += rhs;
             return *this;
         }
 
@@ -44,11 +60,27 @@ namespace Egg {
             return *this;
         }
 
+        Int4 & Int4::operator-=(int rhs) noexcept {
+            this->x -= rhs;
+            this->y -= rhs;
+            this->z -= rhs;
+            this->w -= rhs;
+            return *this;
+        }
+
         Int4 & Int4::operator/=(const Int4 & rhs) noexcept {
             this->x /= rhs.x;
             this->y /= rhs.y;
             this->z /= rhs.z;
             this->w /= rhs.w;
+            return *this;
+        }
+
+        Int4 & Int4::operator/=(int rhs) noexcept {
+            this->x /= rhs;
+            this->y /= rhs;
+            this->z /= rhs;
+            this->w /= rhs;
             return *this;
         }
 
@@ -60,11 +92,27 @@ namespace Egg {
             return *this;
         }
 
+        Int4 & Int4::operator*=(int rhs) noexcept {
+            this->x *= rhs;
+            this->y *= rhs;
+            this->z *= rhs;
+            this->w *= rhs;
+            return *this;
+        }
+
         Int4 & Int4::operator%=(const Int4 & rhs) noexcept {
             this->x %= rhs.x;
             this->y %= rhs.y;
             this->z %= rhs.z;
             this->w %= rhs.w;
+            return *this;
+        }
+
+        Int4 & Int4::operator%=(int rhs) noexcept {
+            this->x %= rhs;
+            this->y %= rhs;
+            this->z %= rhs;
+            this->w %= rhs;
             return *this;
         }
 
@@ -76,11 +124,27 @@ namespace Egg {
             return *this;
         }
 
+        Int4 & Int4::operator|=(int rhs) noexcept {
+            this->x |= rhs;
+            this->y |= rhs;
+            this->z |= rhs;
+            this->w |= rhs;
+            return *this;
+        }
+
         Int4 & Int4::operator&=(const Int4 & rhs) noexcept {
             this->x &= rhs.x;
             this->y &= rhs.y;
             this->z &= rhs.z;
             this->w &= rhs.w;
+            return *this;
+        }
+
+        Int4 & Int4::operator&=(int rhs) noexcept {
+            this->x &= rhs;
+            this->y &= rhs;
+            this->z &= rhs;
+            this->w &= rhs;
             return *this;
         }
 
@@ -92,6 +156,14 @@ namespace Egg {
             return *this;
         }
 
+        Int4 & Int4::operator^=(int rhs) noexcept {
+            this->x ^= rhs;
+            this->y ^= rhs;
+            this->z ^= rhs;
+            this->w ^= rhs;
+            return *this;
+        }
+
         Int4 & Int4::operator<<=(const Int4 & rhs) noexcept {
             this->x <<= rhs.x;
             this->y <<= rhs.y;
@@ -100,11 +172,27 @@ namespace Egg {
             return *this;
         }
 
+        Int4 & Int4::operator<<=(int rhs) noexcept {
+            this->x <<= rhs;
+            this->y <<= rhs;
+            this->z <<= rhs;
+            this->w <<= rhs;
+            return *this;
+        }
+
         Int4 & Int4::operator>>=(const Int4 & rhs) noexcept {
             this->x >>= rhs.x;
             this->y >>= rhs.y;
             this->z >>= rhs.z;
             this->w >>= rhs.w;
+            return *this;
+        }
+
+        Int4 & Int4::operator>>=(int rhs) noexcept {
+            this->x >>= rhs;
+            this->y >>= rhs;
+            this->z >>= rhs;
+            this->w >>= rhs;
             return *this;
         }
 

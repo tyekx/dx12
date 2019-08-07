@@ -384,14 +384,19 @@ namespace Egg {
             Float4();
 
             Float4 & operator=(const Float4 & rhs) noexcept;
+Float4 & operator=(float rhs) noexcept;
 
             Float4 & operator+=(const Float4 & rhs) noexcept;
+Float4 & operator+=(float rhs) noexcept;
 
             Float4 & operator-=(const Float4 & rhs) noexcept;
+Float4 & operator-=(float rhs) noexcept;
 
             Float4 & operator/=(const Float4 & rhs) noexcept;
+Float4 & operator/=(float rhs) noexcept;
 
             Float4 & operator*=(const Float4 & rhs) noexcept;
+Float4 & operator*=(float rhs) noexcept;
 
             Float4 operator*(const Float4 & rhs) const noexcept;
 

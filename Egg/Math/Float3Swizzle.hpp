@@ -13,6 +13,76 @@ namespace Egg {
                     (s2 >= 0) ? v[s2] : ((s2 == -1) ? 0.0f : 1.0f)
                 };
             }
+        Float3Swizzle & operator=(const F & rhs) noexcept {
+            if(s0 >= 0) v[s0] = rhs.x;
+            if(s1 >= 0) v[s1] = rhs.y;
+            if(s2 >= 0) v[s2] = rhs.z;
+            return *this;
+        }
+
+        Float3Swizzle & operator=(float rhs) noexcept {
+            if(s0 >= 0) v[s0] = rhs;
+            if(s1 >= 0) v[s1] = rhs;
+            if(s2 >= 0) v[s2] = rhs;
+            return *this;
+        }
+
+        Float3Swizzle & operator+=(const F & rhs) noexcept {
+            if(s0 >= 0) v[s0] += rhs.x;
+            if(s1 >= 0) v[s1] += rhs.y;
+            if(s2 >= 0) v[s2] += rhs.z;
+            return *this;
+        }
+
+        Float3Swizzle & operator+=(float rhs) noexcept {
+            if(s0 >= 0) v[s0] += rhs;
+            if(s1 >= 0) v[s1] += rhs;
+            if(s2 >= 0) v[s2] += rhs;
+            return *this;
+        }
+
+        Float3Swizzle & operator-=(const F & rhs) noexcept {
+            if(s0 >= 0) v[s0] -= rhs.x;
+            if(s1 >= 0) v[s1] -= rhs.y;
+            if(s2 >= 0) v[s2] -= rhs.z;
+            return *this;
+        }
+
+        Float3Swizzle & operator-=(float rhs) noexcept {
+            if(s0 >= 0) v[s0] -= rhs;
+            if(s1 >= 0) v[s1] -= rhs;
+            if(s2 >= 0) v[s2] -= rhs;
+            return *this;
+        }
+
+        Float3Swizzle & operator/=(const F & rhs) noexcept {
+            if(s0 >= 0) v[s0] /= rhs.x;
+            if(s1 >= 0) v[s1] /= rhs.y;
+            if(s2 >= 0) v[s2] /= rhs.z;
+            return *this;
+        }
+
+        Float3Swizzle & operator/=(float rhs) noexcept {
+            if(s0 >= 0) v[s0] /= rhs;
+            if(s1 >= 0) v[s1] /= rhs;
+            if(s2 >= 0) v[s2] /= rhs;
+            return *this;
+        }
+
+        Float3Swizzle & operator*=(const F & rhs) noexcept {
+            if(s0 >= 0) v[s0] *= rhs.x;
+            if(s1 >= 0) v[s1] *= rhs.y;
+            if(s2 >= 0) v[s2] *= rhs.z;
+            return *this;
+        }
+
+        Float3Swizzle & operator*=(float rhs) noexcept {
+            if(s0 >= 0) v[s0] *= rhs;
+            if(s1 >= 0) v[s1] *= rhs;
+            if(s2 >= 0) v[s2] *= rhs;
+            return *this;
+        }
+
         F operator*(const F & rhs) const noexcept {
             F t = *this;
             return t * rhs;

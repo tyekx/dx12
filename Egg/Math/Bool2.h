@@ -59,6 +59,7 @@ namespace Egg {
             Bool2();
 
             Bool2 & operator=(const Bool2 & rhs) noexcept;
+Bool2 & operator=(bool rhs) noexcept;
 
             Bool2 operator||(const Bool2 & rhs) const noexcept;
 

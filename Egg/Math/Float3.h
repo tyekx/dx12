@@ -159,14 +159,19 @@ namespace Egg {
             Float3();
 
             Float3 & operator=(const Float3 & rhs) noexcept;
+Float3 & operator=(float rhs) noexcept;
 
             Float3 & operator+=(const Float3 & rhs) noexcept;
+Float3 & operator+=(float rhs) noexcept;
 
             Float3 & operator-=(const Float3 & rhs) noexcept;
+Float3 & operator-=(float rhs) noexcept;
 
             Float3 & operator/=(const Float3 & rhs) noexcept;
+Float3 & operator/=(float rhs) noexcept;
 
             Float3 & operator*=(const Float3 & rhs) noexcept;
+Float3 & operator*=(float rhs) noexcept;
 
             Float3 operator*(const Float3 & rhs) const noexcept;
 

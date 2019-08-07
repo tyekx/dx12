@@ -376,6 +376,7 @@ namespace Egg {
             Bool4();
 
             Bool4 & operator=(const Bool4 & rhs) noexcept;
+Bool4 & operator=(bool rhs) noexcept;
 
             Bool4 operator||(const Bool4 & rhs) const noexcept;
 

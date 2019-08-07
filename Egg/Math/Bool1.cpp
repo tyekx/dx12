@@ -13,6 +13,11 @@ namespace Egg {
             return *this;
         }
 
+        Bool1 & Bool1::operator=(bool rhs) noexcept {
+            this->x = rhs;
+            return *this;
+        }
+
         Bool1 Bool1::operator||(const Bool1 & rhs) const noexcept {
             return Bool1 { this->x || rhs.x };
         }

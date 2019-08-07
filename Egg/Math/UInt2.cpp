@@ -16,9 +16,21 @@ namespace Egg {
             return *this;
         }
 
+        UInt2 & UInt2::operator=(unsigned int rhs) noexcept {
+            this->x = rhs;
+            this->y = rhs;
+            return *this;
+        }
+
         UInt2 & UInt2::operator+=(const UInt2 & rhs) noexcept {
             this->x += rhs.x;
             this->y += rhs.y;
+            return *this;
+        }
+
+        UInt2 & UInt2::operator+=(unsigned int rhs) noexcept {
+            this->x += rhs;
+            this->y += rhs;
             return *this;
         }
 
@@ -28,9 +40,21 @@ namespace Egg {
             return *this;
         }
 
+        UInt2 & UInt2::operator-=(unsigned int rhs) noexcept {
+            this->x -= rhs;
+            this->y -= rhs;
+            return *this;
+        }
+
         UInt2 & UInt2::operator/=(const UInt2 & rhs) noexcept {
             this->x /= rhs.x;
             this->y /= rhs.y;
+            return *this;
+        }
+
+        UInt2 & UInt2::operator/=(unsigned int rhs) noexcept {
+            this->x /= rhs;
+            this->y /= rhs;
             return *this;
         }
 
@@ -40,9 +64,21 @@ namespace Egg {
             return *this;
         }
 
+        UInt2 & UInt2::operator*=(unsigned int rhs) noexcept {
+            this->x *= rhs;
+            this->y *= rhs;
+            return *this;
+        }
+
         UInt2 & UInt2::operator%=(const UInt2 & rhs) noexcept {
             this->x %= rhs.x;
             this->y %= rhs.y;
+            return *this;
+        }
+
+        UInt2 & UInt2::operator%=(unsigned int rhs) noexcept {
+            this->x %= rhs;
+            this->y %= rhs;
             return *this;
         }
 
@@ -52,9 +88,21 @@ namespace Egg {
             return *this;
         }
 
+        UInt2 & UInt2::operator|=(unsigned int rhs) noexcept {
+            this->x |= rhs;
+            this->y |= rhs;
+            return *this;
+        }
+
         UInt2 & UInt2::operator&=(const UInt2 & rhs) noexcept {
             this->x &= rhs.x;
             this->y &= rhs.y;
+            return *this;
+        }
+
+        UInt2 & UInt2::operator&=(unsigned int rhs) noexcept {
+            this->x &= rhs;
+            this->y &= rhs;
             return *this;
         }
 
@@ -64,15 +112,33 @@ namespace Egg {
             return *this;
         }
 
+        UInt2 & UInt2::operator^=(unsigned int rhs) noexcept {
+            this->x ^= rhs;
+            this->y ^= rhs;
+            return *this;
+        }
+
         UInt2 & UInt2::operator<<=(const UInt2 & rhs) noexcept {
             this->x <<= rhs.x;
             this->y <<= rhs.y;
             return *this;
         }
 
+        UInt2 & UInt2::operator<<=(unsigned int rhs) noexcept {
+            this->x <<= rhs;
+            this->y <<= rhs;
+            return *this;
+        }
+
         UInt2 & UInt2::operator>>=(const UInt2 & rhs) noexcept {
             this->x >>= rhs.x;
             this->y >>= rhs.y;
+            return *this;
+        }
+
+        UInt2 & UInt2::operator>>=(unsigned int rhs) noexcept {
+            this->x >>= rhs;
+            this->y >>= rhs;
             return *this;
         }
 

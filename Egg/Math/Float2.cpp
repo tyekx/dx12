@@ -17,9 +17,21 @@ namespace Egg {
             return *this;
         }
 
+        Float2 & Float2::operator=(float rhs) noexcept {
+            this->x = rhs;
+            this->y = rhs;
+            return *this;
+        }
+
         Float2 & Float2::operator+=(const Float2 & rhs) noexcept {
             this->x += rhs.x;
             this->y += rhs.y;
+            return *this;
+        }
+
+        Float2 & Float2::operator+=(float rhs) noexcept {
+            this->x += rhs;
+            this->y += rhs;
             return *this;
         }
 
@@ -29,15 +41,33 @@ namespace Egg {
             return *this;
         }
 
+        Float2 & Float2::operator-=(float rhs) noexcept {
+            this->x -= rhs;
+            this->y -= rhs;
+            return *this;
+        }
+
         Float2 & Float2::operator/=(const Float2 & rhs) noexcept {
             this->x /= rhs.x;
             this->y /= rhs.y;
             return *this;
         }
 
+        Float2 & Float2::operator/=(float rhs) noexcept {
+            this->x /= rhs;
+            this->y /= rhs;
+            return *this;
+        }
+
         Float2 & Float2::operator*=(const Float2 & rhs) noexcept {
             this->x *= rhs.x;
             this->y *= rhs.y;
+            return *this;
+        }
+
+        Float2 & Float2::operator*=(float rhs) noexcept {
+            this->x *= rhs;
+            this->y *= rhs;
             return *this;
         }
 

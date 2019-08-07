@@ -21,6 +21,13 @@ namespace Egg {
             return *this;
         }
 
+        Bool3 & Bool3::operator=(bool rhs) noexcept {
+            this->x = rhs;
+            this->y = rhs;
+            this->z = rhs;
+            return *this;
+        }
+
         Bool3 Bool3::operator||(const Bool3 & rhs) const noexcept {
             return Bool3 { this->x || rhs.x, this->y || rhs.y, this->z || rhs.z };
         }

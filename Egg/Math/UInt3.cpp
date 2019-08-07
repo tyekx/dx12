@@ -21,10 +21,24 @@ namespace Egg {
             return *this;
         }
 
+        UInt3 & UInt3::operator=(unsigned int rhs) noexcept {
+            this->x = rhs;
+            this->y = rhs;
+            this->z = rhs;
+            return *this;
+        }
+
         UInt3 & UInt3::operator+=(const UInt3 & rhs) noexcept {
             this->x += rhs.x;
             this->y += rhs.y;
             this->z += rhs.z;
+            return *this;
+        }
+
+        UInt3 & UInt3::operator+=(unsigned int rhs) noexcept {
+            this->x += rhs;
+            this->y += rhs;
+            this->z += rhs;
             return *this;
         }
 
@@ -35,10 +49,24 @@ namespace Egg {
             return *this;
         }
 
+        UInt3 & UInt3::operator-=(unsigned int rhs) noexcept {
+            this->x -= rhs;
+            this->y -= rhs;
+            this->z -= rhs;
+            return *this;
+        }
+
         UInt3 & UInt3::operator/=(const UInt3 & rhs) noexcept {
             this->x /= rhs.x;
             this->y /= rhs.y;
             this->z /= rhs.z;
+            return *this;
+        }
+
+        UInt3 & UInt3::operator/=(unsigned int rhs) noexcept {
+            this->x /= rhs;
+            this->y /= rhs;
+            this->z /= rhs;
             return *this;
         }
 
@@ -49,10 +77,24 @@ namespace Egg {
             return *this;
         }
 
+        UInt3 & UInt3::operator*=(unsigned int rhs) noexcept {
+            this->x *= rhs;
+            this->y *= rhs;
+            this->z *= rhs;
+            return *this;
+        }
+
         UInt3 & UInt3::operator%=(const UInt3 & rhs) noexcept {
             this->x %= rhs.x;
             this->y %= rhs.y;
             this->z %= rhs.z;
+            return *this;
+        }
+
+        UInt3 & UInt3::operator%=(unsigned int rhs) noexcept {
+            this->x %= rhs;
+            this->y %= rhs;
+            this->z %= rhs;
             return *this;
         }
 
@@ -63,10 +105,24 @@ namespace Egg {
             return *this;
         }
 
+        UInt3 & UInt3::operator|=(unsigned int rhs) noexcept {
+            this->x |= rhs;
+            this->y |= rhs;
+            this->z |= rhs;
+            return *this;
+        }
+
         UInt3 & UInt3::operator&=(const UInt3 & rhs) noexcept {
             this->x &= rhs.x;
             this->y &= rhs.y;
             this->z &= rhs.z;
+            return *this;
+        }
+
+        UInt3 & UInt3::operator&=(unsigned int rhs) noexcept {
+            this->x &= rhs;
+            this->y &= rhs;
+            this->z &= rhs;
             return *this;
         }
 
@@ -77,6 +133,13 @@ namespace Egg {
             return *this;
         }
 
+        UInt3 & UInt3::operator^=(unsigned int rhs) noexcept {
+            this->x ^= rhs;
+            this->y ^= rhs;
+            this->z ^= rhs;
+            return *this;
+        }
+
         UInt3 & UInt3::operator<<=(const UInt3 & rhs) noexcept {
             this->x <<= rhs.x;
             this->y <<= rhs.y;
@@ -84,10 +147,24 @@ namespace Egg {
             return *this;
         }
 
+        UInt3 & UInt3::operator<<=(unsigned int rhs) noexcept {
+            this->x <<= rhs;
+            this->y <<= rhs;
+            this->z <<= rhs;
+            return *this;
+        }
+
         UInt3 & UInt3::operator>>=(const UInt3 & rhs) noexcept {
             this->x >>= rhs.x;
             this->y >>= rhs.y;
             this->z >>= rhs.z;
+            return *this;
+        }
+
+        UInt3 & UInt3::operator>>=(unsigned int rhs) noexcept {
+            this->x >>= rhs;
+            this->y >>= rhs;
+            this->z >>= rhs;
             return *this;
         }
 

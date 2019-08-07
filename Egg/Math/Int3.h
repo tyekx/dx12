@@ -154,26 +154,37 @@ namespace Egg {
             Int3();
 
             Int3 & operator=(const Int3 & rhs) noexcept;
+Int3 & operator=(int rhs) noexcept;
 
             Int3 & operator+=(const Int3 & rhs) noexcept;
+Int3 & operator+=(int rhs) noexcept;
 
             Int3 & operator-=(const Int3 & rhs) noexcept;
+Int3 & operator-=(int rhs) noexcept;
 
             Int3 & operator/=(const Int3 & rhs) noexcept;
+Int3 & operator/=(int rhs) noexcept;
 
             Int3 & operator*=(const Int3 & rhs) noexcept;
+Int3 & operator*=(int rhs) noexcept;
 
             Int3 & operator%=(const Int3 & rhs) noexcept;
+Int3 & operator%=(int rhs) noexcept;
 
             Int3 & operator|=(const Int3 & rhs) noexcept;
+Int3 & operator|=(int rhs) noexcept;
 
             Int3 & operator&=(const Int3 & rhs) noexcept;
+Int3 & operator&=(int rhs) noexcept;
 
             Int3 & operator^=(const Int3 & rhs) noexcept;
+Int3 & operator^=(int rhs) noexcept;
 
             Int3 & operator<<=(const Int3 & rhs) noexcept;
+Int3 & operator<<=(int rhs) noexcept;
 
             Int3 & operator>>=(const Int3 & rhs) noexcept;
+Int3 & operator>>=(int rhs) noexcept;
 
             Int3 operator*(const Int3 & rhs) const noexcept;
 

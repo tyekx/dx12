@@ -63,26 +63,37 @@ namespace Egg {
             UInt2();
 
             UInt2 & operator=(const UInt2 & rhs) noexcept;
+UInt2 & operator=(unsigned int rhs) noexcept;
 
             UInt2 & operator+=(const UInt2 & rhs) noexcept;
+UInt2 & operator+=(unsigned int rhs) noexcept;
 
             UInt2 & operator-=(const UInt2 & rhs) noexcept;
+UInt2 & operator-=(unsigned int rhs) noexcept;
 
             UInt2 & operator/=(const UInt2 & rhs) noexcept;
+UInt2 & operator/=(unsigned int rhs) noexcept;
 
             UInt2 & operator*=(const UInt2 & rhs) noexcept;
+UInt2 & operator*=(unsigned int rhs) noexcept;
 
             UInt2 & operator%=(const UInt2 & rhs) noexcept;
+UInt2 & operator%=(unsigned int rhs) noexcept;
 
             UInt2 & operator|=(const UInt2 & rhs) noexcept;
+UInt2 & operator|=(unsigned int rhs) noexcept;
 
             UInt2 & operator&=(const UInt2 & rhs) noexcept;
+UInt2 & operator&=(unsigned int rhs) noexcept;
 
             UInt2 & operator^=(const UInt2 & rhs) noexcept;
+UInt2 & operator^=(unsigned int rhs) noexcept;
 
             UInt2 & operator<<=(const UInt2 & rhs) noexcept;
+UInt2 & operator<<=(unsigned int rhs) noexcept;
 
             UInt2 & operator>>=(const UInt2 & rhs) noexcept;
+UInt2 & operator>>=(unsigned int rhs) noexcept;
 
             UInt2 operator*(const UInt2 & rhs) const noexcept;
 

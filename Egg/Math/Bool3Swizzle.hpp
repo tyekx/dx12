@@ -13,6 +13,20 @@ namespace Egg {
                     (s2 >= 0) ? v[s2] : ((s2 == -1) ? 0.0f : 1.0f)
                 };
             }
+        Bool3Swizzle & operator=(const B & rhs) noexcept {
+            if(s0 >= 0) v[s0] = rhs.x;
+            if(s1 >= 0) v[s1] = rhs.y;
+            if(s2 >= 0) v[s2] = rhs.z;
+            return *this;
+        }
+
+        Bool3Swizzle & operator=(bool rhs) noexcept {
+            if(s0 >= 0) v[s0] = rhs;
+            if(s1 >= 0) v[s1] = rhs;
+            if(s2 >= 0) v[s2] = rhs;
+            return *this;
+        }
+
         B operator||(const B & rhs) const noexcept {
             B t = *this;
             return t || rhs;

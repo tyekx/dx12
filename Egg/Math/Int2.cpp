@@ -16,9 +16,21 @@ namespace Egg {
             return *this;
         }
 
+        Int2 & Int2::operator=(int rhs) noexcept {
+            this->x = rhs;
+            this->y = rhs;
+            return *this;
+        }
+
         Int2 & Int2::operator+=(const Int2 & rhs) noexcept {
             this->x += rhs.x;
             this->y += rhs.y;
+            return *this;
+        }
+
+        Int2 & Int2::operator+=(int rhs) noexcept {
+            this->x += rhs;
+            this->y += rhs;
             return *this;
         }
 
@@ -28,9 +40,21 @@ namespace Egg {
             return *this;
         }
 
+        Int2 & Int2::operator-=(int rhs) noexcept {
+            this->x -= rhs;
+            this->y -= rhs;
+            return *this;
+        }
+
         Int2 & Int2::operator/=(const Int2 & rhs) noexcept {
             this->x /= rhs.x;
             this->y /= rhs.y;
+            return *this;
+        }
+
+        Int2 & Int2::operator/=(int rhs) noexcept {
+            this->x /= rhs;
+            this->y /= rhs;
             return *this;
         }
 
@@ -40,9 +64,21 @@ namespace Egg {
             return *this;
         }
 
+        Int2 & Int2::operator*=(int rhs) noexcept {
+            this->x *= rhs;
+            this->y *= rhs;
+            return *this;
+        }
+
         Int2 & Int2::operator%=(const Int2 & rhs) noexcept {
             this->x %= rhs.x;
             this->y %= rhs.y;
+            return *this;
+        }
+
+        Int2 & Int2::operator%=(int rhs) noexcept {
+            this->x %= rhs;
+            this->y %= rhs;
             return *this;
         }
 
@@ -52,9 +88,21 @@ namespace Egg {
             return *this;
         }
 
+        Int2 & Int2::operator|=(int rhs) noexcept {
+            this->x |= rhs;
+            this->y |= rhs;
+            return *this;
+        }
+
         Int2 & Int2::operator&=(const Int2 & rhs) noexcept {
             this->x &= rhs.x;
             this->y &= rhs.y;
+            return *this;
+        }
+
+        Int2 & Int2::operator&=(int rhs) noexcept {
+            this->x &= rhs;
+            this->y &= rhs;
             return *this;
         }
 
@@ -64,15 +112,33 @@ namespace Egg {
             return *this;
         }
 
+        Int2 & Int2::operator^=(int rhs) noexcept {
+            this->x ^= rhs;
+            this->y ^= rhs;
+            return *this;
+        }
+
         Int2 & Int2::operator<<=(const Int2 & rhs) noexcept {
             this->x <<= rhs.x;
             this->y <<= rhs.y;
             return *this;
         }
 
+        Int2 & Int2::operator<<=(int rhs) noexcept {
+            this->x <<= rhs;
+            this->y <<= rhs;
+            return *this;
+        }
+
         Int2 & Int2::operator>>=(const Int2 & rhs) noexcept {
             this->x >>= rhs.x;
             this->y >>= rhs.y;
+            return *this;
+        }
+
+        Int2 & Int2::operator>>=(int rhs) noexcept {
+            this->x >>= rhs;
+            this->y >>= rhs;
             return *this;
         }
 

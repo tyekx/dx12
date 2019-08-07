@@ -12,6 +12,18 @@ namespace Egg {
                     (s1 >= 0) ? v[s1] : ((s1 == -1) ? 0.0f : 1.0f)
                 };
             }
+        Bool2Swizzle & operator=(const B & rhs) noexcept {
+            if(s0 >= 0) v[s0] = rhs.x;
+            if(s1 >= 0) v[s1] = rhs.y;
+            return *this;
+        }
+
+        Bool2Swizzle & operator=(bool rhs) noexcept {
+            if(s0 >= 0) v[s0] = rhs;
+            if(s1 >= 0) v[s1] = rhs;
+            return *this;
+        }
+
         B operator||(const B & rhs) const noexcept {
             B t = *this;
             return t || rhs;

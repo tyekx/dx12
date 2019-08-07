@@ -20,6 +20,7 @@ namespace Egg {
             Bool1();
 
             Bool1 & operator=(const Bool1 & rhs) noexcept;
+Bool1 & operator=(bool rhs) noexcept;
 
             Bool1 operator||(const Bool1 & rhs) const noexcept;
 

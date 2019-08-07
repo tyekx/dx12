@@ -154,26 +154,37 @@ namespace Egg {
             UInt3();
 
             UInt3 & operator=(const UInt3 & rhs) noexcept;
+UInt3 & operator=(unsigned int rhs) noexcept;
 
             UInt3 & operator+=(const UInt3 & rhs) noexcept;
+UInt3 & operator+=(unsigned int rhs) noexcept;
 
             UInt3 & operator-=(const UInt3 & rhs) noexcept;
+UInt3 & operator-=(unsigned int rhs) noexcept;
 
             UInt3 & operator/=(const UInt3 & rhs) noexcept;
+UInt3 & operator/=(unsigned int rhs) noexcept;
 
             UInt3 & operator*=(const UInt3 & rhs) noexcept;
+UInt3 & operator*=(unsigned int rhs) noexcept;
 
             UInt3 & operator%=(const UInt3 & rhs) noexcept;
+UInt3 & operator%=(unsigned int rhs) noexcept;
 
             UInt3 & operator|=(const UInt3 & rhs) noexcept;
+UInt3 & operator|=(unsigned int rhs) noexcept;
 
             UInt3 & operator&=(const UInt3 & rhs) noexcept;
+UInt3 & operator&=(unsigned int rhs) noexcept;
 
             UInt3 & operator^=(const UInt3 & rhs) noexcept;
+UInt3 & operator^=(unsigned int rhs) noexcept;
 
             UInt3 & operator<<=(const UInt3 & rhs) noexcept;
+UInt3 & operator<<=(unsigned int rhs) noexcept;
 
             UInt3 & operator>>=(const UInt3 & rhs) noexcept;
+UInt3 & operator>>=(unsigned int rhs) noexcept;
 
             UInt3 operator*(const UInt3 & rhs) const noexcept;
 

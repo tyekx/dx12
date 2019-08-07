@@ -22,10 +22,24 @@ namespace Egg {
             return *this;
         }
 
+        Float3 & Float3::operator=(float rhs) noexcept {
+            this->x = rhs;
+            this->y = rhs;
+            this->z = rhs;
+            return *this;
+        }
+
         Float3 & Float3::operator+=(const Float3 & rhs) noexcept {
             this->x += rhs.x;
             this->y += rhs.y;
             this->z += rhs.z;
+            return *this;
+        }
+
+        Float3 & Float3::operator+=(float rhs) noexcept {
+            this->x += rhs;
+            this->y += rhs;
+            this->z += rhs;
             return *this;
         }
 
@@ -36,6 +50,13 @@ namespace Egg {
             return *this;
         }
 
+        Float3 & Float3::operator-=(float rhs) noexcept {
+            this->x -= rhs;
+            this->y -= rhs;
+            this->z -= rhs;
+            return *this;
+        }
+
         Float3 & Float3::operator/=(const Float3 & rhs) noexcept {
             this->x /= rhs.x;
             this->y /= rhs.y;
@@ -43,10 +64,24 @@ namespace Egg {
             return *this;
         }
 
+        Float3 & Float3::operator/=(float rhs) noexcept {
+            this->x /= rhs;
+            this->y /= rhs;
+            this->z /= rhs;
+            return *this;
+        }
+
         Float3 & Float3::operator*=(const Float3 & rhs) noexcept {
             this->x *= rhs.x;
             this->y *= rhs.y;
             this->z *= rhs.z;
+            return *this;
+        }
+
+        Float3 & Float3::operator*=(float rhs) noexcept {
+            this->x *= rhs;
+            this->y *= rhs;
+            this->z *= rhs;
             return *this;
         }
 

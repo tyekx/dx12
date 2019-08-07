@@ -150,6 +150,7 @@ namespace Egg {
             Bool3();
 
             Bool3 & operator=(const Bool3 & rhs) noexcept;
+Bool3 & operator=(bool rhs) noexcept;
 
             Bool3 operator||(const Bool3 & rhs) const noexcept;
 
