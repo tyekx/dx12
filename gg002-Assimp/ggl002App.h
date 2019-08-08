@@ -23,8 +23,6 @@ public:
 		commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 		CD3DX12_CPU_DESCRIPTOR_HANDLE rHandle(rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), frameIndex, rtvDescriptorHandleIncrementSize);
-		commandList->OMSetRenderTargets(1, &rHandle, FALSE, nullptr);
-
 		CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle(depthStencilDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 		commandList->OMSetRenderTargets(1, &rHandle, FALSE, &dsvHandle);
 
@@ -69,7 +67,7 @@ public:
 				&CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, scissorRect.right, scissorRect.bottom, 1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL),
 				D3D12_RESOURCE_STATE_DEPTH_WRITE,
 				&depthOptimizedClearValue,
-				IID_PPV_ARGS(&depthStencilBuffer)
+				IID_PPV_ARGS(depthStencilBuffer.GetAddressOf())
 			);
 
 		depthStencilBuffer->SetName(L"Depth Stencil Buffer");
@@ -94,6 +92,7 @@ public:
 		material->SetRootSignature(rootSig);
 		material->SetVertexShader(vertexShader);
 		material->SetPixelShader(pixelShader);
+		material->SetDepthStencilState(CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT));
 
 		Egg::Mesh::Geometry::P geometry = Egg::Mesh::Importer::ImportSimpleObj(device.Get(), "C:/work/dx12/Media/giraffe.obj");
 

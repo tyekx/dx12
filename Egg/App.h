@@ -39,6 +39,8 @@ namespace Egg {
 			viewPort.TopLeftY = 0;
 			viewPort.Width = (float)scDesc.BufferDesc.Width;
 			viewPort.Height = (float)scDesc.BufferDesc.Height;
+			viewPort.MinDepth = 0.0f;
+			viewPort.MaxDepth = 1.0f;
 
 			aspectRatio = viewPort.Width / (float)viewPort.Height;
 
