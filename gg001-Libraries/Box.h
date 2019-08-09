@@ -6,7 +6,7 @@
 #include <Egg/ConstantBuffer.hpp>
 #include "ConstantBufferTypes.h"
 
-class Box {
+GG_CLASS(Box) 
 public:
 	Egg::Mesh::Shaded::P shadedMesh;
 
@@ -28,4 +28,4 @@ public:
 		// create cb resources here
 	}
 
-};
+GG_ENDCLASS
