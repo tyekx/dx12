@@ -53,8 +53,8 @@ namespace Egg {
 				indices.emplace_back(face.mIndices[2]);
 			}
 
-			Egg::Mesh::Geometry::P geometry = Egg::Mesh::IndexedGeometry::Create(device, &(vertices.at(0)), vertices.size() * sizeof(PNT_Vertex), sizeof(PNT_Vertex),
-																						  &(indices.at(0)), indices.size() * 4, DXGI_FORMAT_R32_UINT);
+			Egg::Mesh::Geometry::P geometry = Egg::Mesh::IndexedGeometry::Create(device, &(vertices.at(0)), (unsigned int)(vertices.size() * sizeof(PNT_Vertex)), (unsigned int)sizeof(PNT_Vertex),
+																						  &(indices.at(0)), (unsigned int)(indices.size() * 4), DXGI_FORMAT_R32_UINT);
 
 			geometry->AddInputElement({ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
 			geometry->AddInputElement({ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
