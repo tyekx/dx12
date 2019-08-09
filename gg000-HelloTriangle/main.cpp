@@ -75,7 +75,7 @@ void GetAdapters(IDXGIFactory6 * dxgiFactory, std::vector<com_ptr<IDXGIAdapter1>
 	} while(adapterQueryResult != DXGI_ERROR_NOT_FOUND);
 }
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, LPWSTR command, INT nShowCmd) {
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR command, _In_ INT nShowCmd) {
 
 	HWND windowHandle = InitWindow(hInstance);
 	// DirectX stuff

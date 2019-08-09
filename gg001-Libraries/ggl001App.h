@@ -6,14 +6,10 @@
 
 class ggl001App : public Egg::SimpleApp {
 protected:
-	Box boxes[1];
+
 public:
 	virtual void Update(float dt, float T) override {
-		for(int i = 0; i < 1; ++i) {
-			boxes[i].Update(dt, T);
-			boxes[i].cb->modelTransform *= Float4x4::Proj(2.0f, aspectRatio, 0.0f, 2.0f);
-			boxes[i].cb.Upload();
-		}
+
 	}
 
 	virtual void PopulateCommandList() {
@@ -30,10 +26,6 @@ public:
 
 		const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
 		commandList->ClearRenderTargetView(rHandle, clearColor, 0, nullptr);
-
-		for(int i = 0; i < 1; ++i) {
-			boxes[i].Draw(commandList.Get());
-		}
 
 		commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
@@ -55,12 +47,7 @@ public:
 
 		Egg::Mesh::Shaded::P shadedBox = Egg::Mesh::Shaded::Create(psoManager.get(), material, geometry);
 
-		for(int i = 0; i < 1; ++i) {
-			boxes[i].shadedMesh = shadedBox;
-			boxes[i].CreateResources(device.Get());
-			boxes[i].scale = Float4x4::Scaling(Float3{ 0.2f, 0.2f, 0.1f });
-			boxes[i].position = Float3{ 0.0f, 0.85f, 0.5f };
-		}
+
 	}
 
 };
