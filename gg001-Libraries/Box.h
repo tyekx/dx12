@@ -5,30 +5,33 @@
 #include <Egg/Mesh/Prefabs.h>
 #include <Egg/ConstantBuffer.hpp>
 #include "ConstantBufferTypes.h"
+#include <Egg/Math/Math.h>
 
-class Box {
+using namespace Egg::Math;
+
+GG_CLASS(Box)
 public:
 	Egg::Mesh::Shaded::P shadedMesh;
 
-	Egg::ConstantBuffer<PerObjectCb> cb;
+	Egg::ConstantBuffer<PerObjectCb> constantBuffer;
 
-	Float4x4 translation;
-	Float4x4 rotation;
 	Float4x4 scale;
+	Float4x4 rotation;
+	Float4x4 translation;
+	Float4x4 meshTransform;
 
+	Float3 position;
 	Float3 speed;
 	Float3 gravity;
-	Float3 position;
 
-	Box() {
+	Box(Egg::Mesh::Shaded::P shadedm) : shadedMesh{ shadedm }, constantBuffer{}, scale{}, rotation{}, translation{}, meshTransform{} {
 		gravity = Float3{ 0.0f, -0.931f, 0.0f };
-		speed = Float3::Random();
-		speed.xz = 0.0f;
 	}
 
 	void Update(float dt, float T) {
-		speed -= gravity * dt;
-		position -= speed * dt;
+		speed += gravity * dt;
+		position += speed * dt;
+
 		if(position.y < -1.0f) {
 			speed = -speed;
 			position.y = -1.0f;
@@ -36,18 +39,18 @@ public:
 
 		translation = Float4x4::Translation(position);
 
-		cb->modelTransform = scale * rotation * translation;
-		cb.Upload();
+		constantBuffer->modelTransform = meshTransform * scale * rotation * translation;
+		constantBuffer.Upload();
 	}
 
 	void Draw(ID3D12GraphicsCommandList * commandList) {
 		shadedMesh->SetPipelineState(commandList);
-		shadedMesh->BindConstantBuffer(commandList, cb);
+		shadedMesh->BindConstantBuffer(commandList, constantBuffer);
 		shadedMesh->Draw(commandList);
 	}
 
 	void CreateResources(ID3D12Device * device) {
-		cb.CreateResources(device);
+		constantBuffer.CreateResources(device);
 	}
 
-};
+GG_ENDCLASS
