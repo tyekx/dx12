@@ -107,7 +107,7 @@ public:
 		material->SetDepthStencilState(CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT));
 		material->SetDSVFormat(DXGI_FORMAT_D32_FLOAT);
 
-		Egg::Mesh::Geometry::P geometry = Egg::Importer::ImportSimpleObj(device.Get(), "C:/work/dx12/Media/giraffe.obj");
+		Egg::Mesh::Geometry::P geometry = Egg::Importer::ImportSimpleObj(device.Get(), "giraffe.obj");
 
 		shadedMesh = Egg::Mesh::Shaded::Create(psoManager.get(), material, geometry);
 	}
