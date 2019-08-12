@@ -50,7 +50,7 @@ public:
 		material->SetVertexShader(vertexShader);
 		material->SetPixelShader(pixelShader);
 
-		Egg::Mesh::Geometry::P geometry = Egg::Importer::ImportSimpleObj(device.Get(), "C:/work/dx12/Media/giraffe.obj");
+		Egg::Mesh::Geometry::P geometry = Egg::Importer::ImportSimpleObj(device.Get(), "giraffe.obj");
 
 		shadedMesh = Egg::Mesh::Shaded::Create(psoManager.get(), material, geometry);
 	}
