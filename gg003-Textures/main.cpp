@@ -91,6 +91,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 	debugController->EnableDebugLayer();
 
+	// needed to load WIC files (Windows Imaging Component) such as Jpg-s.
+	DX_API("Failed to initialize COM library (ImportTexture)")
+		CoInitialize(NULL);
+
 	DX_API("Failed to create DXGI factory")
 		CreateDXGIFactory1(IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
 
@@ -169,6 +173,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 			app->Run();
 		}
 	}
+
+	CoUninitialize();
 
 	return 0;
 }

@@ -7,8 +7,75 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <system_error>
+
+#include <DirectXTex/DirectXTex.h>
+
 namespace Egg {
 	namespace Importer {
+		Texture ImportTexture(ID3D12Device * device, const std::string & filePath) {
+			// ONLY ON WINDOWS: when printing narrow string (1 byte / character) into wide string, you have to use %S.
+			std::wstring wstr = Egg::Utility::WFormat(L"C:\\work\\dx12\\Media\\%S", filePath.c_str());
+
+			DirectX::TexMetadata metaData;
+			DirectX::ScratchImage sImage;
+
+
+			DX_API("Failed to load image: %s", filePath.c_str())
+				DirectX::LoadFromWICFile(wstr.c_str(), 0, &metaData, sImage);
+
+			D3D12_RESOURCE_DESC rdsc;
+			ZeroMemory(&rdsc, sizeof(D3D12_RESOURCE_DESC));
+			rdsc.DepthOrArraySize = 1;
+			rdsc.Height = (unsigned int)metaData.height;
+			rdsc.Width = (unsigned int)metaData.width;
+			// benefits of using DirectXTex is that the enums are DXGI/DirectX, so easily assignable
+			rdsc.Format = metaData.format;
+			rdsc.MipLevels = 1;
+			rdsc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+			rdsc.Alignment = 0;
+			rdsc.SampleDesc.Count = 1;
+			rdsc.SampleDesc.Quality = 0;
+			rdsc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+			rdsc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+			com_ptr<ID3D12Resource> resource;
+			com_ptr<ID3D12Resource> uploadResource;
+
+			DX_API("failed to create committed resource for texture file")
+				device->CreateCommittedResource(
+					&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+					D3D12_HEAP_FLAG_NONE,
+					&rdsc,
+					D3D12_RESOURCE_STATE_COPY_DEST,
+					nullptr,
+					IID_PPV_ARGS(resource.GetAddressOf()));
+
+			UINT64 copyableSize;
+			device->GetCopyableFootprints(&rdsc, 0, 1, 0, nullptr, nullptr, nullptr, &copyableSize);
+
+			DX_API("failed to create committed resource for texture file (upload buffer)")
+				device->CreateCommittedResource(
+					&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+					D3D12_HEAP_FLAG_NONE,
+					&CD3DX12_RESOURCE_DESC::Buffer(copyableSize),
+					D3D12_RESOURCE_STATE_GENERIC_READ,
+					nullptr,
+					IID_PPV_ARGS(uploadResource.GetAddressOf()));
+
+			CD3DX12_RANGE readRange{ 0,0 };
+			void * mappedPtr;
+
+			DX_API("Failed to map upload resource")
+				uploadResource->Map(0, &readRange, &mappedPtr);
+
+			memcpy(mappedPtr, sImage.GetPixels(), sImage.GetPixelsSize());
+
+			uploadResource->Unmap(0, nullptr);
+
+			return Texture{ std::move(resource), std::move(uploadResource) };
+		}
+
 		Egg::Mesh::Geometry::P ImportSimpleObj(ID3D12Device * device, const std::string & filePath) {
 			std::string path = "../Media/" + filePath;
 

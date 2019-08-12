@@ -7,18 +7,18 @@ struct IAOutput {
 };
 
 struct VSOutput {
-	float4 position : SV_Position;
-	float3 color : COLOR;
+    float4 position : SV_Position;
+    float2 texCoord : TEXCOORD;
 };
 
 cbuffer PerObjectCb : register(b0) {
 	float4x4 modelMat;
 }
 
-[RootSignature(RootSig1)]
+[RootSignature(RootSig2)]
 VSOutput main(IAOutput iao) {
 	VSOutput vso;
 	vso.position = mul(modelMat, float4(iao.position, 1.0f));
-    vso.color = iao.normal;
+    vso.texCoord = iao.texCoord;
 	return vso;
 }

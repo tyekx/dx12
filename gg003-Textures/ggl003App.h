@@ -14,6 +14,10 @@ protected:
 	Egg::Mesh::Shaded::P shadedMesh;
 	Float4x4 rotation;
 	Egg::ConstantBuffer<PerObjectCb> cb;
+	com_ptr<ID3D12DescriptorHeap> testHeap;
+	Egg::Texture tex;
+	bool b = false;
+	bool c = false;
 public:
 	virtual void Update(float dt, float T) override {
 		rotation *= Float4x4::Rotation(Float3::UnitY, dt);
@@ -24,6 +28,14 @@ public:
 	virtual void PopulateCommandList() {
 		commandAllocator->Reset();
 		commandList->Reset(commandAllocator.Get(), nullptr);
+
+		if(!b) {
+			tex.InitializeOnFirstFrame(commandList.Get());
+			b = true;
+		} else if(b && !c) {
+			tex.AfterFirstFrame();
+			c = true;
+		}
 
 		commandList->RSSetViewports(1, &viewPort);
 		commandList->RSSetScissorRects(1, &scissorRect);
@@ -38,8 +50,12 @@ public:
 		commandList->ClearRenderTargetView(rHandle, clearColor, 0, nullptr);
 		commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
+		ID3D12DescriptorHeap* descriptorHeaps[] = { testHeap.Get() };
+		commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+
 		shadedMesh->SetPipelineState(commandList.Get());
 		shadedMesh->BindConstantBuffer(commandList.Get(), cb);
+		commandList->SetGraphicsRootDescriptorTable(1, testHeap->GetGPUDescriptorHandleForHeapStart());
 		shadedMesh->Draw(commandList.Get());
 
 		commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
@@ -63,9 +79,29 @@ public:
 		material->SetDepthStencilState(CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT));
 		material->SetDSVFormat(DXGI_FORMAT_D32_FLOAT);
 
-		Egg::Mesh::Geometry::P geometry = Egg::Importer::ImportSimpleObj(device.Get(), "C:/work/dx12/Media/giraffe.obj");
+		Egg::Mesh::Geometry::P geometry = Egg::Importer::ImportSimpleObj(device.Get(), "giraffe.obj");
+
+		tex = Egg::Importer::ImportTexture(device.Get(), "giraffe.jpg");
 
 		shadedMesh = Egg::Mesh::Shaded::Create(psoManager.get(), material, geometry);
+
+		D3D12_DESCRIPTOR_HEAP_DESC dhd;
+		dhd.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+		dhd.NodeMask = 0;
+		dhd.NumDescriptors = 1;
+		dhd.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+
+		DX_API("Failed to create descriptor heap for texture")
+			device->CreateDescriptorHeap(&dhd, IID_PPV_ARGS(testHeap.GetAddressOf()));
+
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvd;
+		ZeroMemory(&srvd, sizeof(D3D12_SHADER_RESOURCE_VIEW_DESC));
+		srvd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		srvd.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvd.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvd.Texture2D.MipLevels = 1;
+
+		device->CreateShaderResourceView(tex.resource.Get(), &srvd, testHeap->GetCPUDescriptorHandleForHeapStart());
 	}
 
 };

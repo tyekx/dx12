@@ -1,8 +1,14 @@
+#include "RootSignatures.hlsli"
+
 struct VSOutput {
 	float4 position : SV_Position;
-	float3 color : COLOR;
+    float2 texCoord : TEXCOORD;
 };
 
+Texture2D txt : register(t0);
+SamplerState sampl : register(s0);
+
+[RootSignature(RootSig2)]
 float4 main(VSOutput vso) : SV_Target {
-	return float4(vso.color, 1.0f);
+    return txt.Sample(sampl, vso.texCoord);
 }

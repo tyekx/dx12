@@ -30,8 +30,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\sdk\assimp\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\sdk\assimp\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\sdk\DirectXTex\include;C:\sdk\assimp\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\sdk\assimp\lib\x64;C:\sdk\DirectXTex\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -41,7 +41,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc140-mt.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -87,6 +87,7 @@
     <ClInclude Include="PsoManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SimpleApp.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
