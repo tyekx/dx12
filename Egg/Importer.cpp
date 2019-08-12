@@ -73,7 +73,7 @@ namespace Egg {
 
 			uploadResource->Unmap(0, nullptr);
 
-			return Texture{ std::move(resource), std::move(uploadResource) };
+			return Texture{ std::move(resource), std::move(uploadResource), rdsc };
 		}
 
 		Egg::Mesh::Geometry::P ImportSimpleObj(ID3D12Device * device, const std::string & filePath) {

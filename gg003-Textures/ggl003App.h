@@ -25,17 +25,9 @@ public:
 		cb.Upload();
 	}
 
-	virtual void PopulateCommandList() {
+	virtual void PopulateCommandList() override {
 		commandAllocator->Reset();
 		commandList->Reset(commandAllocator.Get(), nullptr);
-
-		if(!b) {
-			tex.InitializeOnFirstFrame(commandList.Get());
-			b = true;
-		} else if(b && !c) {
-			tex.AfterFirstFrame();
-			c = true;
-		}
 
 		commandList->RSSetViewports(1, &viewPort);
 		commandList->RSSetScissorRects(1, &scissorRect);
@@ -62,6 +54,26 @@ public:
 
 		DX_API("Failed to close command list")
 			commandList->Close();
+	}
+
+	/*
+	Almost a render call
+	*/
+	void UploadResources() {
+		DX_API("Failed to reset command allocator (UploadResources)")
+			commandAllocator->Reset();
+		DX_API("Failed to reset command list (UploadResources)")
+			commandList->Reset(commandAllocator.Get(), nullptr);
+
+		tex.UploadResource(commandList.Get());
+
+		DX_API("Failed to close command list (UploadResources)")
+			commandList->Close();
+
+		ID3D12CommandList * commandLists[] = { commandList.Get() };
+		commandQueue->ExecuteCommandLists(_countof(commandLists), commandLists);
+
+		WaitForPreviousFrame();
 	}
 
 
@@ -101,7 +113,9 @@ public:
 		srvd.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		srvd.Texture2D.MipLevels = 1;
 
-		device->CreateShaderResourceView(tex.resource.Get(), &srvd, testHeap->GetCPUDescriptorHandleForHeapStart());
+		device->CreateShaderResourceView(tex.operator->(), &srvd, testHeap->GetCPUDescriptorHandleForHeapStart());
+
+		UploadResources();
 	}
 
 };
