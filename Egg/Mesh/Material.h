@@ -23,6 +23,7 @@ namespace Egg {
 				depthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 				depthStencilState.DepthEnable = FALSE;
 				depthStencilState.StencilEnable = FALSE;
+				dsvFormat = DXGI_FORMAT_UNKNOWN;
 			}
 
 			void SetDepthStencilState(const D3D12_DEPTH_STENCIL_DESC & dsd) {
