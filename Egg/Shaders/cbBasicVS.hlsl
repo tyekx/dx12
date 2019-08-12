@@ -19,6 +19,6 @@ cbuffer PerObjectCb : register(b0) {
 VSOutput main(IAOutput iao) {
 	VSOutput vso;
 	vso.position = mul(modelMat, float4(iao.position, 1.0f));
-	vso.color = float3(iao.texCoord, 0.0f);
+    vso.color = iao.normal;
 	return vso;
 }

@@ -14,6 +14,7 @@ namespace Egg {
 			D3D12_BLEND_DESC blendState;
 			D3D12_RASTERIZER_DESC rasterizerState;
 			D3D12_DEPTH_STENCIL_DESC depthStencilState;
+			DXGI_FORMAT dsvFormat;
 		public:
 
 			Material() : rootSignature{ nullptr }, vertexShader{ nullptr }, geometryShader{ nullptr }, pixelShader{ nullptr }, blendState{}, rasterizerState{}, depthStencilState{} {
@@ -52,6 +53,10 @@ namespace Egg {
 				geometryShader = gs;
 			}
 
+			void SetDSVFormat(DXGI_FORMAT format) {
+				dsvFormat = format;
+			}
+
 			void ApplyToDescriptor(D3D12_GRAPHICS_PIPELINE_STATE_DESC & psoDesc) {
 				psoDesc.pRootSignature = rootSignature.Get();
 				psoDesc.VS = CD3DX12_SHADER_BYTECODE(vertexShader.Get());
@@ -62,6 +67,7 @@ namespace Egg {
 				psoDesc.BlendState = blendState;
 				psoDesc.RasterizerState = rasterizerState;
 				psoDesc.DepthStencilState = depthStencilState;
+				psoDesc.DSVFormat = dsvFormat;
 				psoDesc.SampleDesc.Count = 1;
 				psoDesc.SampleDesc.Quality = 0;
 				psoDesc.SampleMask = UINT_MAX;

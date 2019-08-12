@@ -12,11 +12,14 @@ LRESULT CALLBACK WindowProcess(HWND windowHandle, UINT message, WPARAM wParam, L
 		PostQuitMessage(0);
 		return 0;
 	case WM_SIZE:
-		int height = HIWORD(lParam);
-		int width = LOWORD(lParam);
 		if(app != nullptr) {
+			int height = HIWORD(lParam);
+			int width = LOWORD(lParam);
 			app->Resize(width, height);
 		}
+		break;
+	case WM_PAINT:
+		app->Run();
 		break;
 	}
 
@@ -29,6 +32,10 @@ HWND InitWindow(HINSTANCE hInstance) {
 	WNDCLASSW windowClass;
 	ZeroMemory(&windowClass, sizeof(WNDCLASSW));
 
+	/*
+	if any user input changes the window's height or width, we get a WM_PAINT message automatically.
+	*/
+	windowClass.style = CS_VREDRAW | CS_HREDRAW;
 	windowClass.lpfnWndProc = WindowProcess;
 	windowClass.lpszClassName = windowClassName;
 	windowClass.hInstance = hInstance;
@@ -37,7 +44,7 @@ HWND InitWindow(HINSTANCE hInstance) {
 
 	HWND wnd = CreateWindowExW(0,
 							   windowClassName,
-							   L"Hello Triangle",
+							   L"gg002-Assimp",
 							   WS_OVERLAPPEDWINDOW,
 							   CW_USEDEFAULT,
 							   CW_USEDEFAULT,
@@ -139,24 +146,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	ShowWindow(windowHandle, nShowCmd);
 	MSG winMessage = { 0 };
 
-	using clock_t = std::chrono::high_resolution_clock;
 
-	std::chrono::time_point<clock_t> start = clock_t::now();
-	std::chrono::time_point<clock_t> end;
-	float T = 0.0;
-	float dt = 0.0;
 	while(winMessage.message != WM_QUIT) {
 		if(PeekMessage(&winMessage, NULL, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&winMessage);
 			DispatchMessage(&winMessage);
 		} else {
-			end = clock_t::now();
-			dt = std::chrono::duration<float>(end - start).count();
-			T += dt;
-			start = end;
-			
-			app->Update(dt, T);
-			app->Render();
+			app->Run();
 		}
 	}
 

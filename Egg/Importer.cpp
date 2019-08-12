@@ -1,17 +1,15 @@
 #include "Importer.h"
 
-#include "../Utility.h"
-#include "../Vertex.h"
+#include "Utility.h"
+#include "Vertex.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
 namespace Egg {
-	namespace Mesh {
-
-
-		Geometry::P Importer::ImportSimpleObj(ID3D12Device * device, const std::string & filePath) {
+	namespace Importer {
+		Egg::Mesh::Geometry::P ImportSimpleObj(ID3D12Device * device, const std::string & filePath) {
 
 			Assimp::Importer importer;
 
@@ -54,7 +52,7 @@ namespace Egg {
 			}
 
 			Egg::Mesh::Geometry::P geometry = Egg::Mesh::IndexedGeometry::Create(device, &(vertices.at(0)), (unsigned int)(vertices.size() * sizeof(PNT_Vertex)), (unsigned int)sizeof(PNT_Vertex),
-																						  &(indices.at(0)), (unsigned int)(indices.size() * 4), DXGI_FORMAT_R32_UINT);
+																				 &(indices.at(0)), (unsigned int)(indices.size() * 4), DXGI_FORMAT_R32_UINT);
 
 			geometry->AddInputElement({ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
 			geometry->AddInputElement({ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 });
@@ -62,6 +60,5 @@ namespace Egg {
 
 			return geometry;
 		}
-
 	}
 }

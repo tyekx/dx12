@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include <vector>
+#include <chrono>
 
 namespace Egg {
 
@@ -26,8 +27,30 @@ namespace Egg {
 		HANDLE fenceEvent;
 		unsigned long long fenceValue;
 		unsigned int frameIndex;
+
+	private:
+		// time objects
+		using clock_type = std::chrono::high_resolution_clock;
+		std::chrono::time_point<clock_type> timestampStart;
+		std::chrono::time_point<clock_type> timestampEnd;
+	protected:
+		float elapsedTime;
 	public:
 		virtual ~App() = default;
+
+		App() {
+			timestampStart = clock_type::now();
+			timestampEnd = timestampStart;
+		}
+
+		void Run() {
+			timestampEnd = clock_type::now();
+			float deltaTime = std::chrono::duration<float>(timestampEnd - timestampStart).count();
+			elapsedTime += deltaTime;
+			timestampStart = timestampEnd;
+			Update(deltaTime, elapsedTime);
+			Render();
+		}
 
 		virtual void CreateSwapChainResources() {
 			DXGI_SWAP_CHAIN_DESC scDesc;
@@ -89,7 +112,7 @@ namespace Egg {
 		}
 
 		virtual void Render() = 0;
-		virtual void Update(float T, float dt) = 0;
+		virtual void Update(float dt, float T) = 0;
 
 		virtual void LoadAssets() { }
 
