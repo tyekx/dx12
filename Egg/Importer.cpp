@@ -10,14 +10,15 @@
 namespace Egg {
 	namespace Importer {
 		Egg::Mesh::Geometry::P ImportSimpleObj(ID3D12Device * device, const std::string & filePath) {
+			std::string path = "../Media/" + filePath;
 
 			Assimp::Importer importer;
 
-			const aiScene * scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_GenUVCoords);
+			const aiScene * scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_GenUVCoords);
 
-			ASSERT(scene != nullptr, "Failed to load obj file: '%s'. Assimp error message: '%s'", filePath.c_str(), importer.GetErrorString());
+			ASSERT(scene != nullptr, "Failed to load obj file: '%s'. Assimp error message: '%s'", path.c_str(), importer.GetErrorString());
 
-			ASSERT(scene->HasMeshes(), "Obj file: '%s' does not contain a mesh.", filePath.c_str());
+			ASSERT(scene->HasMeshes(), "Obj file: '%s' does not contain a mesh.", path.c_str());
 
 			// for this example we only load the first mesh
 			const aiMesh * mesh = scene->mMeshes[0];
