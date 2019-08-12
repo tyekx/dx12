@@ -74,6 +74,8 @@ public:
 		commandQueue->ExecuteCommandLists(_countof(commandLists), commandLists);
 
 		WaitForPreviousFrame();
+
+		tex.ReleaseUploadResources();
 	}
 
 
