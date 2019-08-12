@@ -5,8 +5,15 @@
 
 std::unique_ptr<Egg::App> app{ nullptr };
 
+UINT_PTR timerHandle = 0;
+
+void TimerProcess(HWND windowHandle, UINT a1, UINT_PTR a2, DWORD a3) {
+	PostMessage(windowHandle, WM_PAINT, 0, 0);
+}
+
 LRESULT CALLBACK WindowProcess(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam) {
 	switch(message) {
+
 	case WM_DESTROY:
 		app->Destroy();
 		PostQuitMessage(0);
@@ -17,6 +24,17 @@ LRESULT CALLBACK WindowProcess(HWND windowHandle, UINT message, WPARAM wParam, L
 			int width = LOWORD(lParam);
 			app->Resize(width, height);
 		}
+		break;
+		/*
+		when resizing or moving the window we always have to "left click" somewhere, NC: non client area => borders of the window
+		when we hold down left click we'll set up a timer to continue sending WM paint messages to be able to repaint the window not too often, 16ms in this example,
+		so the window will stay responsive while the game model is being updated
+		*/
+	case WM_NCLBUTTONDOWN:
+		timerHandle = SetTimer(windowHandle, 0, 16, TimerProcess);
+		break;
+	case WM_NCLBUTTONUP:
+		KillTimer(windowHandle, timerHandle);
 		break;
 	case WM_PAINT:
 		app->Run();
@@ -32,10 +50,6 @@ HWND InitWindow(HINSTANCE hInstance) {
 	WNDCLASSW windowClass;
 	ZeroMemory(&windowClass, sizeof(WNDCLASSW));
 
-	/*
-	if any user input changes the window's height or width, we get a WM_PAINT message automatically.
-	*/
-	windowClass.style = CS_VREDRAW | CS_HREDRAW;
 	windowClass.lpfnWndProc = WindowProcess;
 	windowClass.lpszClassName = windowClassName;
 	windowClass.hInstance = hInstance;
