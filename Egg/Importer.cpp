@@ -13,13 +13,11 @@
 
 namespace Egg {
 	namespace Importer {
-		Texture ImportTexture(ID3D12Device * device, const std::string & filePath) {
-			// ONLY ON WINDOWS: when printing narrow string (1 byte / character) into wide string, you have to use %S.
-			std::wstring wstr = Egg::Utility::WFormat(L"C:\\work\\dx12\\Media\\%S", filePath.c_str());
+		Texture2D ImportTexture2D(ID3D12Device * device, const std::string & filePath) {
+			std::wstring wstr = Egg::Utility::WFormat(L"../Media/%S", filePath.c_str());
 
 			DirectX::TexMetadata metaData;
 			DirectX::ScratchImage sImage;
-
 
 			DX_API("Failed to load image: %s", filePath.c_str())
 				DirectX::LoadFromWICFile(wstr.c_str(), 0, &metaData, sImage);
@@ -29,7 +27,6 @@ namespace Egg {
 			rdsc.DepthOrArraySize = 1;
 			rdsc.Height = (unsigned int)metaData.height;
 			rdsc.Width = (unsigned int)metaData.width;
-			// benefits of using DirectXTex is that the enums are DXGI/DirectX, so easily assignable
 			rdsc.Format = metaData.format;
 			rdsc.MipLevels = 1;
 			rdsc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -73,7 +70,7 @@ namespace Egg {
 
 			uploadResource->Unmap(0, nullptr);
 
-			return Texture{ std::move(resource), std::move(uploadResource), rdsc };
+			return Texture2D{ std::move(resource), std::move(uploadResource), rdsc };
 		}
 
 		Egg::Mesh::Geometry::P ImportSimpleObj(ID3D12Device * device, const std::string & filePath) {

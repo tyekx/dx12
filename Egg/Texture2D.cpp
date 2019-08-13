@@ -1,27 +1,27 @@
-#include "Texture.h"
+#include "Texture2D.h"
 #include <DirectXTex/DirectXTex.h>
 
 namespace Egg {
 
 
-	Texture::Texture() : resource{ nullptr }, uploadResource{ nullptr }, resourceDesc{} { }
+	Texture2D::Texture2D() : resource{ nullptr }, uploadResource{ nullptr }, resourceDesc{} { }
 
 	// copy-and-swap idiom (c++11)
-	Texture & Texture::operator=(Texture t) {
+	Texture2D & Texture2D::operator=(Texture2D t) {
 		std::swap(resource, t.resource);
 		std::swap(uploadResource, t.uploadResource);
 		resourceDesc = t.resourceDesc;
 		return *this;
 	}
 
-	Texture::Texture(com_ptr<ID3D12Resource> && resource, com_ptr<ID3D12Resource> && uploadResource, D3D12_RESOURCE_DESC resourceDesc) :
+	Texture2D::Texture2D(com_ptr<ID3D12Resource> && resource, com_ptr<ID3D12Resource> && uploadResource, D3D12_RESOURCE_DESC resourceDesc) :
 		resource{ std::move(resource) },
 		uploadResource{ std::move(uploadResource) },
 		resourceDesc{ resourceDesc } {
 
 	}
 
-	void Texture::UploadResource(ID3D12GraphicsCommandList * commandList) {
+	void Texture2D::UploadResource(ID3D12GraphicsCommandList * commandList) {
 		CD3DX12_TEXTURE_COPY_LOCATION dst{ resource.Get(), 0 };
 		D3D12_PLACED_SUBRESOURCE_FOOTPRINT psf;
 		psf.Offset = 0;
@@ -35,7 +35,7 @@ namespace Egg {
 		commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(resource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ));
 	}
 
-	void Texture::ReleaseUploadResources() {
+	void Texture2D::ReleaseUploadResources() {
 		uploadResource.Reset();
 	}
 
