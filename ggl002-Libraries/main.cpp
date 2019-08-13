@@ -1,7 +1,7 @@
 #include <Egg/App.h>
 #include <Egg/Utility.h>
 #include <chrono>
-#include "ggl001App.h"
+#include "ggl002App.h"
 
 std::unique_ptr<Egg::App> app{ nullptr };
 
@@ -127,7 +127,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	DX_API("Failed to make window association") // disable ALT+Enter shortcut to full screen mode
 		dxgiFactory->MakeWindowAssociation(windowHandle, DXGI_MWA_NO_ALT_ENTER);
 
-	app = std::make_unique<ggl001App>();
+	app = std::make_unique<ggl002App>();
 	app->SetDevice(device);
 	app->SetCommandQueue(commandQueue);
 	app->SetSwapChain(swapChain);
