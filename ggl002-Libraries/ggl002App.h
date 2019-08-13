@@ -4,7 +4,7 @@
 #include <Egg/SimpleApp.h>
 
 
-class ggl001App : public Egg::SimpleApp {
+class ggl002App : public Egg::SimpleApp {
 protected:
 	std::vector<Box::P> boxes;
 
