@@ -23,10 +23,10 @@
     <ClInclude Include="ConstantBufferTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ggl001App.h">
+    <ClInclude Include="Box.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Box.h">
+    <ClInclude Include="ggl002App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
