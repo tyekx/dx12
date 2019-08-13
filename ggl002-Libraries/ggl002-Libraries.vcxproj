@@ -49,7 +49,7 @@
   <ItemGroup>
     <ClInclude Include="Box.h" />
     <ClInclude Include="ConstantBufferTypes.h" />
-    <ClInclude Include="ggl001App.h" />
+    <ClInclude Include="ggl002App.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
