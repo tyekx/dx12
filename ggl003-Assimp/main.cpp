@@ -58,7 +58,7 @@ HWND InitWindow(HINSTANCE hInstance) {
 
 	HWND wnd = CreateWindowExW(0,
 							   windowClassName,
-							   L"gg002-Assimp",
+							   L"Assimp",
 							   WS_OVERLAPPEDWINDOW,
 							   CW_USEDEFAULT,
 							   CW_USEDEFAULT,
