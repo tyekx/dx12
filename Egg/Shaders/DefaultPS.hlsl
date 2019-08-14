@@ -2,13 +2,10 @@
 
 struct VSOutput {
 	float4 position : SV_Position;
-    float2 texCoord : TEXCOORD;
+    float3 color : COLOR;
 };
 
-Texture2D txt : register(t0);
-SamplerState sampl : register(s0);
-
-[RootSignature(RootSig2)]
 float4 main(VSOutput vso) : SV_Target {
-    return txt.Sample(sampl, vso.texCoord);
+    return float4(vso.color, 1.0f);
+
 }

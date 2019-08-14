@@ -8,7 +8,7 @@ struct IAOutput {
 
 struct VSOutput {
     float4 position : SV_Position;
-    float2 texCoord : TEXCOORD;
+    float3 color : COLOR;
 };
 
 cbuffer PerObjectCb : register(b0) {
@@ -19,6 +19,6 @@ cbuffer PerObjectCb : register(b0) {
 VSOutput main(IAOutput iao) {
 	VSOutput vso;
 	vso.position = mul(modelMat, float4(iao.position, 1.0f));
-    vso.texCoord = iao.texCoord;
+    vso.color = iao.normal;
 	return vso;
 }
