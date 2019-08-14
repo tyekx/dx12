@@ -14,6 +14,10 @@
 
 #include "d3d12.h"
 
+#if _EGG_SDK_VERSION <= 14393
+#define LEGACY_VERSION
+#endif
+
 #if defined( __cplusplus )
 
 struct CD3DX12_DEFAULT {};
@@ -220,6 +224,7 @@ struct CD3DX12_DEPTH_STENCIL_DESC : public D3D12_DEPTH_STENCIL_DESC
     }
 };
 
+#ifndef LEGACY_VERSION
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_DEPTH_STENCIL_DESC1 : public D3D12_DEPTH_STENCIL_DESC1
 {
@@ -312,6 +317,7 @@ struct CD3DX12_DEPTH_STENCIL_DESC1 : public D3D12_DEPTH_STENCIL_DESC1
         return D;
     }
 };
+#endif
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_BLEND_DESC : public D3D12_BLEND_DESC
@@ -574,6 +580,7 @@ struct CD3DX12_RANGE : public D3D12_RANGE
     }
 };
 
+#ifndef LEGACY_VERSION
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_RANGE_UINT64 : public D3D12_RANGE_UINT64
 {
@@ -614,6 +621,7 @@ struct CD3DX12_SUBRESOURCE_RANGE_UINT64 : public D3D12_SUBRESOURCE_RANGE_UINT64
         Range.End = end;
     }
 };
+#endif
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_SHADER_BYTECODE : public D3D12_SHADER_BYTECODE
@@ -1824,6 +1832,7 @@ inline bool operator==( const D3D12_RESOURCE_DESC& l, const D3D12_RESOURCE_DESC&
 inline bool operator!=( const D3D12_RESOURCE_DESC& l, const D3D12_RESOURCE_DESC& r )
 { return !( l == r ); }
 
+#ifndef LEGACY_VERSION
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_VIEW_INSTANCING_DESC : public D3D12_VIEW_INSTANCING_DESC
 {
@@ -1847,6 +1856,7 @@ struct CD3DX12_VIEW_INSTANCING_DESC : public D3D12_VIEW_INSTANCING_DESC
         Flags = InFlags;
     }
 };
+#endif
 
 //------------------------------------------------------------------------------------------------
 // Row-by-row memcpy
@@ -2144,6 +2154,7 @@ inline HRESULT D3DX12SerializeVersionedRootSignature(
     return E_INVALIDARG;
 }
 
+#ifndef LEGACY_VERSION
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_RT_FORMAT_ARRAY : public D3D12_RT_FORMAT_ARRAY
 {
@@ -3430,6 +3441,8 @@ private:
     void* Data() { return &m_Desc; }
     D3D12_NODE_MASK m_Desc;
 };
+
+#endif
 
 #endif // #ifndef D3DX12_NO_STATE_OBJECT_HELPERS
 
