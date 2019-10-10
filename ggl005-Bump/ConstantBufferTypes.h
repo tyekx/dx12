@@ -11,7 +11,7 @@ __declspec(align(16)) struct PerObjectCb {
 
 __declspec(align(16)) struct PerFrameCb {
 	Float4x4 viewProj;
-	Float3 eyePos;
 	Float4 lightPos;
-	Float3 lightIntensity;
+	Float4 eyePos;
+	Float4 lightIntensity;
 };

@@ -28,9 +28,9 @@ public:
 		cb.Upload();
 
 		perFrameCb->viewProj = Float4x4::Proj(0.9f, aspectRatio, 0.001f, 5.0f);
-		perFrameCb->eyePos = Float3::Zero;
-		perFrameCb->lightPos = Float4{ -1, -1, -1, 0 };
-		perFrameCb->lightIntensity = Float3::One;
+		perFrameCb->eyePos = Float4::Zero;
+		perFrameCb->lightPos = Float4{ -1, 1, -1, 0 };
+		perFrameCb->lightIntensity = Float4::One;
 		perFrameCb.Upload();
 	}
 
@@ -117,8 +117,8 @@ public:
 		cb.CreateResources(device.Get());
 		perFrameCb.CreateResources(device.Get());
 
-		com_ptr<ID3DBlob> vertexShader = Egg::Shader::LoadCso("Shaders/NormalMapVS.cso");
-		com_ptr<ID3DBlob> pixelShader = Egg::Shader::LoadCso("Shaders/NormalMapPS.cso");
+		com_ptr<ID3DBlob> vertexShader = Egg::Shader::LoadCso("Shaders/ParallaxVS.cso");
+		com_ptr<ID3DBlob> pixelShader = Egg::Shader::LoadCso("Shaders/ParallaxPS.cso");
 		com_ptr<ID3D12RootSignature> rootSig = Egg::Shader::LoadRootSignature(device.Get(), vertexShader.Get());
 
 		Egg::Mesh::Material::P material = Egg::Mesh::Material::Create();
