@@ -8,6 +8,8 @@ namespace Egg {
 
 		Egg::Mesh::Geometry::P ImportSimpleObj(ID3D12Device * device, const std::string & filePath);
 
+		Egg::Mesh::Geometry::P ImportWithTangentSpace(ID3D12Device * device, const std::string & filePath);
+
 		Texture2D ImportTexture2D(ID3D12Device * device, const std::string & filePath);
 
 	};
