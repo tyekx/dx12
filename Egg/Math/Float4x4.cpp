@@ -233,7 +233,7 @@ namespace Egg {
 				xScale, 0.0f, 0.0f, 0.0f,
 				0.0f, yScale, 0.0f, 0.0f,
 				0.0f, 0.0f, zf / (zf - zn), 1,
-				0.0f, 0.0f, -zn * zf / (zf - zn), 0);
+				0.0f, 0.0f, (-zn * zf) / (zf - zn), 0);
 		}
 
 		Float4x4 Float4x4::Transpose() const noexcept

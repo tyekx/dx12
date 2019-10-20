@@ -14,22 +14,29 @@ protected:
 	Egg::Mesh::Shaded::P shadedMesh;
 	Float4x4 rotation;
 	Egg::ConstantBuffer<PerObjectCb> cb;
+	Egg::ConstantBuffer<PerObjectCb> parallaxCb;
 	Egg::ConstantBuffer<PerFrameCb> perFrameCb;
 	com_ptr<ID3D12DescriptorHeap> srvHeap;
 
 	Egg::Texture2D diffuseTex;
 	Egg::Texture2D normalTex;
 	Egg::Texture2D bumpTex;
+
+	Egg::Mesh::Shaded::P parallax;
 public:
 	virtual void Update(float dt, float T) override {
-		rotation *= Float4x4::Rotation(Float3::UnitY, 0.5f * dt);
-		cb->model = Float4x4::Scaling(Float3{ 0.02f, 0.02f, 0.02f }) * rotation * Float4x4::Translation(Float3{ 0.0f, 0.0f, 2.5f });
+		rotation = Float4x4::Rotation(Float3::UnitX, 3.1415926535 / 2.0f) * Float4x4::Rotation(Float3::UnitY, 0.5f * T);
+		cb->model = rotation * Float4x4::Translation(Float3{ 3.0f, 0.0f, 0.0f });
 		cb->invModel = cb->model.Invert();
 		cb.Upload();
 
-		perFrameCb->viewProj = Float4x4::Proj(0.9f, aspectRatio, 0.001f, 5.0f);
-		perFrameCb->eyePos = Float4::Zero;
-		perFrameCb->lightPos = Float4{ -1, 1, -1, 0 };
+		parallaxCb->model = rotation * Float4x4::Translation(Float3{ -3.0f, 0.0f, 0.0f });
+		parallaxCb->invModel = parallaxCb->model.Invert();
+		parallaxCb.Upload();
+
+		perFrameCb->eyePos = Float4{ 0, 0.0f, -10.0f, 1.0f };
+		perFrameCb->viewProj = Float4x4::View(perFrameCb->eyePos.xyz, Float3::UnitZ, Float3::UnitY) *  Float4x4::Proj(0.9f, aspectRatio, 1.0f, 100.0f);
+		perFrameCb->lightPos = Float4{ 0, 1, 0, 0 };
 		perFrameCb->lightIntensity = Float4::One;
 		perFrameCb.Upload();
 	}
@@ -59,6 +66,10 @@ public:
 		shadedMesh->BindConstantBuffer(commandList.Get(), perFrameCb);
 		commandList->SetGraphicsRootDescriptorTable(2, srvHeap->GetGPUDescriptorHandleForHeapStart());
 		shadedMesh->Draw(commandList.Get());
+		
+		parallax->SetPipelineState(commandList.Get());
+		parallax->BindConstantBuffer(commandList.Get(), parallaxCb);
+		parallax->Draw(commandList.Get());
 
 		commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
@@ -109,6 +120,7 @@ public:
 		srvHeap.Reset();
 		cb.ReleaseResources();
 		perFrameCb.ReleaseResources();
+		parallaxCb.ReleaseResources();
 
 		Egg::SimpleApp::ReleaseResources();
 	}
@@ -116,9 +128,10 @@ public:
 	virtual void LoadAssets() override {
 		cb.CreateResources(device.Get());
 		perFrameCb.CreateResources(device.Get());
+		parallaxCb.CreateResources(device.Get());
 
-		com_ptr<ID3DBlob> vertexShader = Egg::Shader::LoadCso("Shaders/ParallaxVS.cso");
-		com_ptr<ID3DBlob> pixelShader = Egg::Shader::LoadCso("Shaders/ParallaxPS.cso");
+		com_ptr<ID3DBlob> vertexShader = Egg::Shader::LoadCso("Shaders/NormalMapVS.cso");
+		com_ptr<ID3DBlob> pixelShader = Egg::Shader::LoadCso("Shaders/NormalMapPS.cso");
 		com_ptr<ID3D12RootSignature> rootSig = Egg::Shader::LoadRootSignature(device.Get(), vertexShader.Get());
 
 		Egg::Mesh::Material::P material = Egg::Mesh::Material::Create();
@@ -128,7 +141,21 @@ public:
 		material->SetDepthStencilState(CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT));
 		material->SetDSVFormat(DXGI_FORMAT_D32_FLOAT);
 
-		Egg::Mesh::Geometry::P bumpGeom = Egg::Importer::ImportWithTangentSpace(device.Get(), "big.x");
+		com_ptr<ID3DBlob> parallaxVS = Egg::Shader::LoadCso("Shaders/ParallaxVS.cso");
+		com_ptr<ID3DBlob> parallaxPS = Egg::Shader::LoadCso("Shaders/ParallaxPS.cso");
+
+		Egg::Mesh::Material::P parallaxMat = Egg::Mesh::Material::Create();
+		parallaxMat->SetRootSignature(rootSig);
+		parallaxMat->SetVertexShader(parallaxVS);
+		parallaxMat->SetPixelShader(parallaxPS);
+		parallaxMat->SetDepthStencilState(CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT));
+		parallaxMat->SetDSVFormat(DXGI_FORMAT_D32_FLOAT);
+
+
+		Egg::Mesh::Geometry::P bumpGeom = Egg::Importer::ImportWithTangentSpace(device.Get(), "sphere.FBX");
+
+
+		parallax = Egg::Mesh::Shaded::Create(psoManager.get(), parallaxMat, bumpGeom);
 
 		shadedMesh = Egg::Mesh::Shaded::Create(psoManager.get(), material, bumpGeom);
 

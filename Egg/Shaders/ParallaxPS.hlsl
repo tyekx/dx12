@@ -26,7 +26,7 @@ cbuffer PerFrameCb : register(b1)
 static const float HEIGHT_SCALE = 0.05f;
 static const float HEIGHT_BIAS = 0.0f;
 
-[RootSignature(RootSig3)]
+[RootSignature(NormalMapRS)]
 float4 main(VSOutput vso) : SV_Target
 {
     float3 l = normalize(vso.lightDirTS);
@@ -35,12 +35,12 @@ float4 main(VSOutput vso) : SV_Target
     float height = bumpTex.Sample(sampl, vso.texCoord) * HEIGHT_SCALE + HEIGHT_BIAS;
     float2 tex = vso.texCoord + height * (v.xy / v.z);
 
-    float3 n = normalTex.Sample(sampl, tex).xyz - float3(0.5, 0.5, 0.5);
+    float3 n = normalize(normalTex.Sample(sampl, tex).xyz - 0.5f);
     float3 h = normalize(l + v);
 
     float ndotl = saturate(dot(n, l));
     float ndoth = saturate(dot(n, h));
-    ndoth = pow(ndoth, 3);
+    ndoth = pow(ndoth, 80);
 
     float3 kd = diffuseTex.Sample(sampl, tex).xyz;
     

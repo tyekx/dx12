@@ -32,29 +32,28 @@ cbuffer PerFrameCb : register(b1)
     float4 lightIntensity;
 }
 
-[RootSignature(RootSig3)]
+[RootSignature(NormalMapRS)]
 VSOutput main(IAOutput iao)
 {
-    VSOutput vso;
-    vso.position = mul(modelMat, float4(iao.position, 1.0f));
+    float4 worldPos = mul(modelMat, float4(iao.position, 1.0f));
+    float3 descartesPos = worldPos.xyz / worldPos.w;
 
-    vso.normal = normalize(mul(float4(iao.normal, 0.0f), invModelMat).xyz);
-    vso.texCoord = iao.texCoord;
+    float3 lightDir = normalize(lightPos.xyz - descartesPos * lightPos.w);
+    float3 viewDir = normalize(eyePos.xyz - descartesPos);
 
-    float3 n = vso.normal;
-    float3 t = normalize(mul(modelMat, float4(iao.tangent, 0)).xyz);
-    float3 b = normalize(mul(modelMat, float4(iao.binormal, 0)).xyz);
-
-    float3 pos = vso.position.xyz / vso.position.w;
-
-    vso.lightDirTS = normalize(lightPos.xyz - pos * lightPos.w);
-    vso.viewDirTS = normalize(eyePos.xyz - pos);
+    float3 t = normalize(mul(float4(iao.tangent, 0.0f), invModelMat).xyz);
+    float3 b = normalize(mul(float4(iao.binormal, 0.0f), invModelMat).xyz);
+    float3 n = normalize(mul(float4(iao.normal, 0.0f), invModelMat).xyz);
 
     float3x3 tbn = { t, b, n };
-    vso.lightDirTS = mul(tbn, vso.lightDirTS);
-    vso.viewDirTS = mul(tbn, vso.viewDirTS);
+    tbn = transpose(tbn);
 
-    vso.position = mul(viewProj, vso.position);
+    VSOutput vso;
+    vso.position = mul(viewProj, worldPos);
+    vso.normal = n;
+    vso.texCoord = iao.texCoord * 4.0f;
+    vso.lightDirTS = mul(tbn, lightDir);
+    vso.viewDirTS = mul(tbn, viewDir);
 
     return vso;
 }
