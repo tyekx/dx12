@@ -50,7 +50,7 @@ VSOutput main(IAOutput iao)
     VSOutput vso;
     vso.position = mul(viewProj, worldPos);
     vso.normal = mul(tbn, n);
-    vso.texCoord = float2(iao.texCoord.x, 1.0f - iao.texCoord.y) * 4.0f;
+    vso.texCoord = iao.texCoord;
     vso.lightDirTS = mul(tbn, lightDir);
     vso.viewDirTS = mul(tbn, viewDir);
 

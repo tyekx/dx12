@@ -12,7 +12,6 @@ struct VSOutput
 Texture2D diffuseTex : register(t0);
 Texture2D normalTex : register(t1);
 Texture2D bumpTex : register(t2);
-
 SamplerState sampl : register(s0);
 
 cbuffer PerFrameCb : register(b1)
@@ -27,7 +26,7 @@ cbuffer PerFrameCb : register(b1)
 float4 main(VSOutput vso) : SV_Target
 {
 
-    float3 n = normalize(normalTex.Sample(sampl, vso.texCoord).yxz - 0.5f);
+    float3 n = normalize(normalTex.Sample(sampl, vso.texCoord).xyz - 0.5f);
     float3 l = normalize(vso.lightDirTS);
     float3 v = normalize(vso.viewDirTS);
     float3 h = normalize(l + v);

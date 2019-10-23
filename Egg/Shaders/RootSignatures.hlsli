@@ -10,4 +10,4 @@
                  "CBV(b0)," \
                  "CBV(b1)," \
                  "DescriptorTable(SRV(t0, numDescriptors=4))," \
-                 "StaticSampler(s0, addressU = TEXTURE_ADDRESS_WRAP, addressV = TEXTURE_ADDRESS_WRAP, filter = FILTER_MIN_MAG_MIP_LINEAR)"
+                 "StaticSampler(s0)"

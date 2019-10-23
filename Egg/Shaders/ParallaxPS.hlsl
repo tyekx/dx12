@@ -21,23 +21,96 @@ cbuffer PerFrameCb : register(b1)
     float4 lightPos;
     float4 eyePos;
     float4 lightIntensity;
- 
 }
 
-static const float HEIGHT_SCALE = 0.05f;
-static const float HEIGHT_BIAS = 0.0f;
+static const float HEIGHT_SCALE = 0.1f;
+
+
+float DepthAt(float2 tex)
+{
+    return bumpTex.Sample(sampl, tex).r;
+}
+
+float2 simple_parallax(float2 tex, float3 viewDirTS)
+{
+    float height = DepthAt(tex) * HEIGHT_SCALE;
+    float2 dtxy = (viewDirTS.xy / viewDirTS.z) * height;
+    return tex - dtxy;
+}
+
+float2 layered_parallax(float2 tex, float3 viewDirTS)
+{
+	const float minLayers = 8.0;
+	const float maxLayers = 32.0;
+	float numLayers = lerp(maxLayers, minLayers, abs(dot(float3(0.0, 0.0, 1.0), viewDirTS)));
+    float layerDepth = 1.0 / numLayers;
+    // depth of current layer
+    float currentLayerDepth = 0.0;
+    // the amount to shift the texture coordinates per layer (from vector P)
+    float2 P = (viewDirTS.xy / viewDirTS.z) * HEIGHT_SCALE;
+    float2 deltaTexCoords = P / float(numLayers);
+
+    // get initial values
+    float2 currentTexCoords = tex;
+    float currentDepthMapValue = DepthAt(currentTexCoords);
+  
+    for (int i = 0; i < (32) && currentLayerDepth < currentDepthMapValue; ++i)
+    {
+        currentTexCoords -= deltaTexCoords;
+        currentDepthMapValue = DepthAt(tex);
+        currentLayerDepth += layerDepth;
+    }
+
+    return currentTexCoords;
+}
+
+float2 occlusion_parallax(float2 tex, float3 viewDirTS) {
+	const float numLayers = 10;
+	float layerDepth = 1.0 / numLayers;
+	// depth of current layer
+	float currentLayerDepth = 0.0;
+	// the amount to shift the texture coordinates per layer (from vector P)
+	float2 P = (viewDirTS.xy / viewDirTS.z) * HEIGHT_SCALE;
+	float2 deltaTexCoords = P / float(numLayers);
+
+	// get initial values
+	float2 currentTexCoords = tex;
+	float currentDepthMapValue = DepthAt(currentTexCoords);
+
+	for(int i = 0; i < (64) && currentLayerDepth < currentDepthMapValue; ++i)
+	{
+		currentTexCoords -= deltaTexCoords;
+		currentDepthMapValue = DepthAt(tex);
+		currentLayerDepth += layerDepth;
+	}
+
+	float2 prevTexCoords = currentTexCoords + deltaTexCoords;
+
+	// get depth after and before collision for linear interpolation
+	float afterDepth = currentDepthMapValue - currentLayerDepth;
+	float beforeDepth = DepthAt(prevTexCoords) - currentLayerDepth + layerDepth;
+
+	// interpolation of texture coordinates
+	float weight = afterDepth / (afterDepth - beforeDepth);
+	float2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
+
+	return finalTexCoords;
+}
 
 [RootSignature(NormalMapRS)]
 float4 main(VSOutput vso) : SV_Target
 {
-    float3 l = normalize(vso.lightDirTS);
+
     float3 v = normalize(vso.viewDirTS);
+    float3 l = normalize(vso.lightDirTS);
+    float2 tex = layered_parallax(vso.texCoord, v);
 
-    float height = bumpTex.Sample(sampl, vso.texCoord) * HEIGHT_SCALE + HEIGHT_BIAS;
-    float2 tex = vso.texCoord + height * (v.xy / v.z);
+	if(tex.x < 0.0f || tex.x > 1.0f || tex.y < 0.0f || tex.y > 1.0f) {
+		discard;
+	}
 
-    float3 n = normalize(normalTex.Sample(sampl, tex).xyz - 0.5f);
     float3 h = normalize(l + v);
+    float3 n = normalize(normalTex.Sample(sampl, tex).xyz - 0.5f);
 
     float ndotl = saturate(dot(n, l));
     float ndoth = saturate(dot(n, h));
@@ -45,5 +118,6 @@ float4 main(VSOutput vso) : SV_Target
 
     float3 kd = diffuseTex.Sample(sampl, tex).xyz;
     
-    return float4(kd * ndotl + ndoth, 1);
+    return float4((kd + ndoth) * ndotl, 1);
+
 }
