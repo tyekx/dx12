@@ -4,6 +4,7 @@
 #include <Egg/Importer.h>
 #include <Egg/Math/Math.h>
 #include <Egg/ConstantBuffer.hpp>
+#include <Egg/Mesh/Prefabs.h>
 
 #include "ConstantBufferTypes.h"
 
@@ -11,6 +12,7 @@ using namespace Egg::Math;
 
 class ggl005App : public Egg::SimpleApp {
 protected:
+	Egg::Mesh::Shaded::P envMapMesh;
 	Egg::Mesh::Shaded::P shadedMesh;
 	Float4x4 rotation;
 	Egg::ConstantBuffer<PerObjectCb> cb;
@@ -22,10 +24,12 @@ protected:
 	Egg::Texture2D normalTex;
 	Egg::Texture2D bumpTex;
 
+	Egg::TextureCube envTex;
+
 	Egg::Mesh::Shaded::P parallax;
 public:
 	virtual void Update(float dt, float T) override {
-		rotation = Float4x4::Rotation(Float3::UnitX, 3.1415926535 / 2.0f) * Float4x4::Rotation(Float3::UnitY, 0.5f * T);
+		rotation = Float4x4::Rotation(Float3::UnitX, 1.58f) * Float4x4::Rotation(Float3::UnitY, 0.5f * T);
 		cb->model = rotation * Float4x4::Translation(Float3{ 3.0f, 0.0f, 0.0f });
 		cb->invModel = cb->model.Invert();
 		cb.Upload();
@@ -38,6 +42,7 @@ public:
 		perFrameCb->viewProj = Float4x4::View(perFrameCb->eyePos.xyz, Float3::UnitZ, Float3::UnitY) *  Float4x4::Proj(0.9f, aspectRatio, 1.0f, 100.0f);
 		perFrameCb->lightPos = Float4{ 0, 1, 0, 0 };
 		perFrameCb->lightIntensity = Float4::One;
+		perFrameCb->invViewProj = (Float4x4::View(Float3::Zero, Float3::UnitZ, Float3::UnitY) * Float4x4::Proj(0.9f, aspectRatio, 1.0f, 100.0f)).Invert();
 		perFrameCb.Upload();
 	}
 
@@ -66,10 +71,16 @@ public:
 		shadedMesh->BindConstantBuffer(commandList.Get(), perFrameCb);
 		commandList->SetGraphicsRootDescriptorTable(2, srvHeap->GetGPUDescriptorHandleForHeapStart());
 		shadedMesh->Draw(commandList.Get());
-		
+
+		envMapMesh->SetPipelineState(commandList.Get());
+		envMapMesh->BindConstantBuffer(commandList.Get(), perFrameCb);
+		commandList->SetGraphicsRootDescriptorTable(2, srvHeap->GetGPUDescriptorHandleForHeapStart());
+		envMapMesh->Draw(commandList.Get());
+
+		/*
 		parallax->SetPipelineState(commandList.Get());
 		parallax->BindConstantBuffer(commandList.Get(), parallaxCb);
-		parallax->Draw(commandList.Get());
+		parallax->Draw(commandList.Get());*/
 
 		commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
@@ -89,6 +100,7 @@ public:
 		diffuseTex.UploadResource(commandList.Get());
 		normalTex.UploadResource(commandList.Get());
 		bumpTex.UploadResource(commandList.Get());
+		envTex.UploadResource(commandList.Get());
 
 		DX_API("Failed to close command list (UploadResources)")
 			commandList->Close();
@@ -101,6 +113,7 @@ public:
 		diffuseTex.ReleaseUploadResources();
 		normalTex.ReleaseUploadResources();
 		bumpTex.ReleaseUploadResources();
+		envTex.ReleaseUploadResources();
 	}
 
 	virtual void CreateResources() override {
@@ -109,7 +122,7 @@ public:
 		D3D12_DESCRIPTOR_HEAP_DESC dhd;
 		dhd.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 		dhd.NodeMask = 0;
-		dhd.NumDescriptors = 3;
+		dhd.NumDescriptors = 4;
 		dhd.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
 		DX_API("Failed to create descriptor heap for texture")
@@ -151,13 +164,29 @@ public:
 		parallaxMat->SetDepthStencilState(CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT));
 		parallaxMat->SetDSVFormat(DXGI_FORMAT_D32_FLOAT);
 
+		com_ptr<ID3DBlob> envMapVS = Egg::Shader::LoadCso("Shaders/EnvMapVS.cso");
+		com_ptr<ID3DBlob> envMapPS = Egg::Shader::LoadCso("Shaders/EnvMapPS.cso");
+		com_ptr<ID3D12RootSignature> envMapRS = Egg::Shader::LoadRootSignature(device.Get(), envMapVS.Get());
 
-		Egg::Mesh::Geometry::P bumpGeom = Egg::Importer::ImportWithTangentSpace(device.Get(), "sphere.FBX");
+		Egg::Mesh::Material::P envMapMat = Egg::Mesh::Material::Create();
+		envMapMat->SetRootSignature(envMapRS);
+		envMapMat->SetVertexShader(envMapVS);
+		envMapMat->SetPixelShader(envMapPS);
+		envMapMat->SetDepthStencilState(CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT));
+		envMapMat->SetDSVFormat(DXGI_FORMAT_D32_FLOAT);
 
+		Egg::Mesh::Geometry::P fsQuad = Egg::Mesh::Prefabs::IndexedFullscreenQuad(device.Get());
+
+		Egg::Mesh::Geometry::P bumpGeom = Egg::Importer::ImportWithTangentSpace(device.Get(), "sphere.fbx");
+
+		envMapMesh = Egg::Mesh::Shaded::Create(psoManager.get(), envMapMat, fsQuad);
 
 		parallax = Egg::Mesh::Shaded::Create(psoManager.get(), parallaxMat, bumpGeom);
 
 		shadedMesh = Egg::Mesh::Shaded::Create(psoManager.get(), material, bumpGeom);
+
+		envTex = Egg::Importer::ImportTextureCube(device.Get(), "cloudynoon.dds");
+		envTex.CreateSRV(device.Get(), srvHeap.Get(), 3);
 
 		diffuseTex = Egg::Importer::ImportTexture2D(device.Get(), "rkd.jpg");
 		diffuseTex.CreateSRV(device.Get(), srvHeap.Get(), 0);

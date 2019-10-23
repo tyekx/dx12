@@ -46,7 +46,6 @@ VSOutput main(IAOutput iao)
     float3 n = normalize(mul(float4(iao.normal, 0.0f), invModelMat).xyz);
 
     float3x3 tbn = { t, b, n };
-    tbn = transpose(tbn);
 
     VSOutput vso;
     vso.position = mul(viewProj, worldPos);

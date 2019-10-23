@@ -14,4 +14,5 @@ __declspec(align(16)) struct PerFrameCb {
 	Float4 lightPos;
 	Float4 eyePos;
 	Float4 lightIntensity;
+	Float4x4 invViewProj;
 };

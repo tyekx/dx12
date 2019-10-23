@@ -21,6 +21,7 @@ cbuffer PerFrameCb : register(b1)
     float4 lightPos;
     float4 eyePos;
     float4 lightIntensity;
+ 
 }
 
 static const float HEIGHT_SCALE = 0.05f;

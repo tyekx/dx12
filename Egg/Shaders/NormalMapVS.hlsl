@@ -46,12 +46,11 @@ VSOutput main(IAOutput iao)
     float3 n = normalize(mul(float4(iao.normal, 0.0f), invModelMat).xyz);
 
     float3x3 tbn = { t, b, n };
-    tbn = transpose(tbn);
     
     VSOutput vso;
     vso.position = mul(viewProj, worldPos);
-    vso.normal = n;
-    vso.texCoord = iao.texCoord * 4.0f;
+    vso.normal = mul(tbn, n);
+    vso.texCoord = float2(iao.texCoord.x, 1.0f - iao.texCoord.y) * 4.0f;
     vso.lightDirTS = mul(tbn, lightDir);
     vso.viewDirTS = mul(tbn, viewDir);
 

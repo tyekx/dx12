@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Common.h"
 #include "Geometry.h"
 #include "../Vertex.h"
 
