@@ -34,8 +34,15 @@ float DepthAt(float2 tex)
 float2 simple_parallax(float2 tex, float3 viewDirTS)
 {
     float height = DepthAt(tex) * HEIGHT_SCALE;
-    float2 dtxy = (viewDirTS.xy / viewDirTS.z) * height;
-    return tex - dtxy;
+    float2 dxy = (viewDirTS.xy / viewDirTS.z) * height;
+	return tex - dxy;
+}
+
+float2 offset_limited_parallax(float2 tex, float3 viewDirTS)
+{
+	float height = DepthAt(tex) * HEIGHT_SCALE;
+	float2 dxy = (viewDirTS.xy) * height;
+	return tex - dxy;
 }
 
 float2 layered_parallax(float2 tex, float3 viewDirTS)
@@ -65,12 +72,14 @@ float2 layered_parallax(float2 tex, float3 viewDirTS)
 }
 
 float2 occlusion_parallax(float2 tex, float3 viewDirTS) {
-	const float numLayers = 10;
+	const float minLayers = 8.0;
+	const float maxLayers = 32.0;
+	float numLayers = lerp(maxLayers, minLayers, abs(dot(float3(0.0, 0.0, 1.0), viewDirTS)));
 	float layerDepth = 1.0 / numLayers;
 	// depth of current layer
 	float currentLayerDepth = 0.0;
 	// the amount to shift the texture coordinates per layer (from vector P)
-	float2 P = (viewDirTS.xy / viewDirTS.z) * HEIGHT_SCALE;
+	float2 P = (viewDirTS.xy) * HEIGHT_SCALE;
 	float2 deltaTexCoords = P / float(numLayers);
 
 	// get initial values
@@ -105,9 +114,10 @@ float4 main(VSOutput vso) : SV_Target
     float3 l = normalize(vso.lightDirTS);
     float2 tex = layered_parallax(vso.texCoord, v);
 
+	/*
 	if(tex.x < 0.0f || tex.x > 1.0f || tex.y < 0.0f || tex.y > 1.0f) {
 		discard;
-	}
+	}*/
 
     float3 h = normalize(l + v);
     float3 n = normalize(normalTex.Sample(sampl, tex).xyz - 0.5f);
@@ -118,6 +128,6 @@ float4 main(VSOutput vso) : SV_Target
 
     float3 kd = diffuseTex.Sample(sampl, tex).xyz;
     
-    return float4((kd + ndoth) * ndotl, 1);
-
+	return float4((kd + ndoth) * ndotl, 1);
+	return float4(v, 1);
 }

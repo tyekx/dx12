@@ -30,17 +30,17 @@ protected:
 public:
 	virtual void Update(float dt, float T) override {
 		rotation =  Float4x4::Rotation(Float3::UnitX, 1.58f) * Float4x4::Rotation(Float3::UnitY, 0.5f * T);
-		cb->model = rotation * Float4x4::Translation(Float3{ 3.0f, 1.25f, 0.0f });
+		cb->model = rotation * Float4x4::Translation(Float3{ 0.0f, 0.0f, 0.0f });
 		cb->invModel = cb->model.Invert();
 		cb.Upload();
 
-		parallaxCb->model = rotation * Float4x4::Translation(Float3{ -3.0f, 1.25f, 0.0f });
+		parallaxCb->model = rotation * Float4x4::Translation(Float3{ 100.0f, 1.25f, 0.0f });
 		parallaxCb->invModel = parallaxCb->model.Invert();
 		parallaxCb.Upload();
 
 		perFrameCb->eyePos = Float4{ 0, 0.0f, -6.0f, 1.0f };
 		perFrameCb->viewProj = Float4x4::View(perFrameCb->eyePos.xyz, Float3::UnitZ, Float3::UnitY) *  Float4x4::Proj(0.9f, aspectRatio, 1.0f, 100.0f);
-		perFrameCb->lightPos = Float4{ 1, 0, -1, 0 };
+		perFrameCb->lightPos = Float4{ 0, 1, 0, 0 };
 		perFrameCb->lightIntensity = Float4::One;
 		perFrameCb->invViewProj = (Float4x4::View(Float3::Zero, Float3::UnitZ, Float3::UnitY) * Float4x4::Proj(0.9f, aspectRatio, 1.0f, 100.0f)).Invert();
 		perFrameCb.Upload();
@@ -143,8 +143,8 @@ public:
 		perFrameCb.CreateResources(device.Get());
 		parallaxCb.CreateResources(device.Get());
 
-		com_ptr<ID3DBlob> vertexShader = Egg::Shader::LoadCso("Shaders/NormalMapVS.cso");
-		com_ptr<ID3DBlob> pixelShader = Egg::Shader::LoadCso("Shaders/NormalMapPS.cso");
+		com_ptr<ID3DBlob> vertexShader = Egg::Shader::LoadCso("Shaders/EnvNormalMapVS.cso");
+		com_ptr<ID3DBlob> pixelShader = Egg::Shader::LoadCso("Shaders/EnvNormalMapPS.cso");
 		com_ptr<ID3D12RootSignature> rootSig = Egg::Shader::LoadRootSignature(device.Get(), vertexShader.Get());
 
 		Egg::Mesh::Material::P material = Egg::Mesh::Material::Create();
@@ -179,7 +179,7 @@ public:
 
 		Egg::Mesh::Geometry::P bumpGeom =// Egg::Mesh::Prefabs::UnitBox(device.Get());
 			
-			Egg::Importer::ImportWithTangentSpace(device.Get(), "box.fbx");
+			Egg::Importer::ImportWithTangentSpace(device.Get(), "sphere.fbx");
 
 		envMapMesh = Egg::Mesh::Shaded::Create(psoManager.get(), envMapMat, fsQuad);
 
@@ -187,10 +187,10 @@ public:
 
 		shadedMesh = Egg::Mesh::Shaded::Create(psoManager.get(), material, bumpGeom);
 
-		diffuseTex = Egg::Importer::ImportTexture2D(device.Get(), "brick3.jpg");
+		diffuseTex = Egg::Importer::ImportTexture2D(device.Get(), "rusty.png");
 		diffuseTex.CreateSRV(device.Get(), srvHeap.Get(), 0);
 		
-		normalTex = Egg::Importer::ImportTexture2D(device.Get(), "brick3_normal.jpg");
+		normalTex = Egg::Importer::ImportTexture2D(device.Get(), "rusted_normal.jpg");
 		normalTex.CreateSRV(device.Get(), srvHeap.Get(), 1);
 
 		bumpTex = Egg::Importer::ImportTexture2D(device.Get(), "brick3_disp.jpg");

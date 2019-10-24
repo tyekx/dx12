@@ -45,14 +45,14 @@ VSOutput main(IAOutput iao)
     float3 b = normalize(mul(float4(iao.binormal, 0.0f), invModelMat).xyz);
     float3 n = normalize(mul(float4(iao.normal, 0.0f), invModelMat).xyz);
 
-    float3x3 tbn = { t, b, n };
+    float3x3 tbn = { t, -b, n };
 
     VSOutput vso;
     vso.position = mul(viewProj, worldPos);
     vso.normal = n;
-    vso.texCoord = iao.texCoord;
+	vso.texCoord = iao.texCoord;//float2(iao.texCoord.x, 1.0f - iao.texCoord.y);
     vso.lightDirTS = mul(tbn, lightDir);
-    vso.viewDirTS = mul(tbn, viewDir);
+	vso.viewDirTS = mul(tbn, viewDir);
 
     return vso;
 }

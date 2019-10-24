@@ -44,7 +44,10 @@ float4 main(VSOutput vso) : SV_Target
 
     float3 normalSample = normalize(normalTex.Sample(sampl, vso.texCoord).xyz - 0.5f);
 
+	float3 surfaceNormal = n;
     n = mul(tbn, normalSample);
+
+
 
     float3 l = normalize(vso.lightDir);
     float3 v = normalize(vso.viewDir);
@@ -52,6 +55,12 @@ float4 main(VSOutput vso) : SV_Target
     float3 h = normalize(l + v);
     float ndoth = saturate(dot(n, h));
     ndoth = pow(ndoth, 80);
+
+	if(dot(surfaceNormal, n) < 0.85f) {
+		float ndotl = dot(n, l);
+		float3 kd = diffuseTex.Sample(sampl, vso.texCoord).xyz;
+		return float4((kd + ndoth) * ndotl, 1);
+	}
 
     float3 reflectedRay = reflect(-v, n);
     
